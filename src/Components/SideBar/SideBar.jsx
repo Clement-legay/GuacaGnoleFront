@@ -11,7 +11,7 @@ import {
     SSearchIcon,
     SSideBar, SSidebarButton, STheme, SThemeLabel, SThemeToggler, SToggleThumb
 } from "./styles";
-import Logo from '../../assets/GuacaGnoleLogo.png'
+import Logo from '../../assets/img/GuacaGnoleLogo.png'
 import {AiOutlineDashboard, AiOutlineLeft, AiOutlineSearch, AiOutlineSetting} from "react-icons/ai";
 import {RiArticleLine, RiTruckLine} from "react-icons/ri";
 import {MdLogout, MdSupportAgent} from "react-icons/md";

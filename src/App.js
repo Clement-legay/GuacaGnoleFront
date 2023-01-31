@@ -1,4 +1,4 @@
-import './App.css';
+import './assets/css/App.css';
 import {Route, Routes} from "react-router-dom";
 import DashBoard from "./Components/DashBoard/DashBoard";
 import {createContext, useState} from "react";
