@@ -1,14 +1,14 @@
-import React, {useEffect, useState} from 'react';
-import {useLocation, useNavigate} from "react-router-dom";
-import NavBar from "../NavBar/NavBar";
+import React from 'react';
+import SideBar from "../SideBar/SideBar";
+import {SLayout, SMain} from "./styles";
 
 const DefaultLayout = ({children}) => {
 
     return (
-        <div className={'h-screen w-screen flex'}>
-            <NavBar/>
-            {children}
-        </div>
+        <SLayout>
+            <SideBar/>
+            <SMain>{children}</SMain>
+        </SLayout>
 
 
     );
