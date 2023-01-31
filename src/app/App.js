@@ -1,6 +1,6 @@
-import './assets/css/App.css';
+import './App.css';
 import {Route, Routes} from "react-router-dom";
-import DashBoard from "./Components/DashBoard/DashBoard";
+import DashBoard from "./Views/DashBoard/DashBoard";
 import {createContext, useState} from "react";
 import {ThemeProvider} from "styled-components";
 import {GlobalStyles} from "./Components/Layout/gobalStyles";

@@ -11,7 +11,6 @@ import {
     SSearchIcon,
     SSideBar, SSidebarButton, STheme, SThemeLabel, SThemeToggler, SToggleThumb
 } from "./styles";
-import Logo from '../../assets/img/GuacaGnoleLogo.png'
 import {AiOutlineDashboard, AiOutlineLeft, AiOutlineSearch, AiOutlineSetting} from "react-icons/ai";
 import {RiArticleLine, RiTruckLine} from "react-icons/ri";
 import {MdLogout, MdSupportAgent} from "react-icons/md";
@@ -44,7 +43,7 @@ const SideBar = () => {
                 </SSidebarButton>
             </>
             <SLogo>
-                <img src={Logo} alt={'logo'}/>
+                <img src={"/assets/img/GuacaGnoleLogo.png"} alt={'logo'}/>
             </SLogo>
             <SSearch style={sidebarOpen ? {width: 'fit-content'} : {}} onClick={searchClickHandler}>
                 <SSearchIcon>
