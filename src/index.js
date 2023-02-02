@@ -1,10 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
-import App from './app/App';
-import reportWebVitals from './app/Utils/reportWebVitals';
+import App from './Components/App';
+import reportWebVitals from './Utils/reportWebVitals';
 import {BrowserRouter} from "react-router-dom";
-import * as serviceWorker from './app/Utils/Services/serviceWorker';
+import * as serviceWorker from './Utils/Services/serviceWorker';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(

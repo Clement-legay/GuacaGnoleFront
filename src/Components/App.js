@@ -1,11 +1,11 @@
-import './App.css';
+import '../Styles/App.css';
 import {Route, Routes} from "react-router-dom";
-import DashBoard from "./Views/DashBoard/DashBoard";
+import DashBoard from "./DashBoard/DashBoard";
 import {createContext, useState} from "react";
 import {ThemeProvider} from "styled-components";
-import {GlobalStyles} from "./Components/Layout/gobalStyles";
-import {darkTheme, lightTheme} from "./Components/Layout/theme";
-import DefaultLayout from "./Components/Layout/DefaultLayout";
+import {GlobalStyles} from "../Styles/Layout/gobalStyles";
+import {darkTheme, lightTheme} from "../Styles/Layout/theme";
+import DefaultLayout from "./Layout/DefaultLayout";
 
 export const ThemeContext = createContext(null);
 

@@ -1,6 +1,6 @@
 import React from 'react';
 import SideBar from "../SideBar/SideBar";
-import {SLayout, SMain} from "./styles";
+import {SLayout, SMain} from "../../Styles/Layout/styles";
 
 const DefaultLayout = ({children}) => {
 
