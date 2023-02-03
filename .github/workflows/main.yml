@@ -25,10 +25,8 @@ jobs:
         password: ${{ secrets.SERVER_PASSWORD }} # mot de passe pour se connecter au serveur
         script: |
           # Fetching the git repositories
-          gitfetch
+          sudo git fetch
           # Pulling the git repositories
-          gitpull
-          # Install all dependencies
-          npminstall
-          # Build the application
-          npmbuild
+          sudo git pull
+          # Install all dependencies and build
+          sudo ./install.sh
