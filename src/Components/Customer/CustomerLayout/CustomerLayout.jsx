@@ -1,6 +1,6 @@
 import React, {useContext} from 'react';
 import {ThemeProvider} from "styled-components";
-import { lightTheme, darkTheme } from "../../../Styles/Layout/CustomerLayout/themeCustomer";
+import { lightTheme, darkTheme } from "../../../Styles/Customer/CustomerLayout/themeCustomer";
 import { MainContext } from "../../../Context/MainContext";
 
 

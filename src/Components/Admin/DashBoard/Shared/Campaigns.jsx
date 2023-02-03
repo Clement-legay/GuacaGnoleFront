@@ -1,6 +1,6 @@
 import {Box, Card} from '@mui/material';
 import MatxProgressBar from '../../PagePart/MatxProgressBar';
-import { Small } from "../../Typography";
+import { Small } from "../../PagePart/Typography";
 
 const Campaigns = () => {
 

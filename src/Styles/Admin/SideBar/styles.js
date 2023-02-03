@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import {btnReset, v} from "../Layout/AdminLayout/variables";
+import {btnReset, v} from "../AdminLayout/variables";
 import {Link} from "react-router-dom";
 
 export const SSideBar = styled.div`

@@ -10,12 +10,12 @@ import {
     SSearch,
     SSearchIcon,
     SSideBar, SSidebarButton, STheme, SThemeLabel, SThemeToggler, SToggleThumb
-} from "../../Styles/SideBar/styles";
+} from "../../../Styles/Admin/SideBar/styles";
 import {AiOutlineDashboard, AiOutlineLeft, AiOutlineSearch, AiOutlineSetting} from "react-icons/ai";
 import {RiArticleLine, RiTruckLine} from "react-icons/ri";
 import {MdLogout, MdSupportAgent} from "react-icons/md";
 import {BsPeople} from "react-icons/bs";
-import {MainContext} from "../../Context/MainContext";
+import {MainContext} from "../../../Context/MainContext";
 import {useLocation} from "react-router-dom";
 
 

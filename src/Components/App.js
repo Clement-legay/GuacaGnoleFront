@@ -1,5 +1,5 @@
 import '../Styles/App.css';
-import PathRoutes from "./routes";
+import PathRoutes from "../Utils/routes";
 import {createContext} from "react";
 import { MainProvider } from "../Context/MainContext";
 

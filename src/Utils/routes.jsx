@@ -1,10 +1,10 @@
 import React from 'react';
 import { Route, Routes } from 'react-router-dom';
 
-import AdminLayout from './Layout/AdminLayout/AdminLayout';
-import CustomerLayout from "./Layout/CustomerLayout/CustomerLayout";
+import AdminLayout from '../Components/Admin/AdminLayout/AdminLayout';
+import CustomerLayout from "../Components/Customer/CustomerLayout/CustomerLayout";
 
-import DashBoard from "./DashBoard/DashBoard";
+import DashBoard from "../Components/Admin/DashBoard/DashBoard";
 
 const PathRoutes = () => {
     const adminRoutes = () => (
