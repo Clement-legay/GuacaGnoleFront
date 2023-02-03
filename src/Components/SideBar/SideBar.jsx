@@ -15,13 +15,13 @@ import {AiOutlineDashboard, AiOutlineLeft, AiOutlineSearch, AiOutlineSetting} fr
 import {RiArticleLine, RiTruckLine} from "react-icons/ri";
 import {MdLogout, MdSupportAgent} from "react-icons/md";
 import {BsPeople} from "react-icons/bs";
-import {ThemeContext} from "../App";
+import {MainContext} from "../../Context/MainContext";
 import {useLocation} from "react-router-dom";
 
 
 const SideBar = () => {
     const searchRef = useRef(null);
-    const {theme, setTheme} = useContext(ThemeContext);
+    const {isDark, setIsDark} = useContext(MainContext);
     const [sidebarOpen, setSidebarOpen] = useState(false);
     const {pathname} = useLocation();
 
@@ -89,9 +89,9 @@ const SideBar = () => {
             <STheme>
                 {sidebarOpen &&
                 <SThemeLabel>Dark mode</SThemeLabel> }
-                <SThemeToggler isActive={theme === "dark"}
-                               onClick={() => setTheme(p => p === 'light' ? "dark" : "light")}>
-                    <SToggleThumb style={theme === "dark" ? {right: "1px"} : {}}/>
+                <SThemeToggler isActive={isDark === "dark"}
+                               onClick={() => setIsDark(p => p === 'light' ? "dark" : "light")}>
+                    <SToggleThumb style={isDark === "dark" ? {right: "1px"} : {}}/>
                 </SThemeToggler>
             </STheme>
         </SSideBar>
@@ -101,30 +101,30 @@ const linksArray = [
     {
         label: "DashBoard",
         icon: <AiOutlineDashboard/>,
-        to: "/",
+        to: "/admin/dashboard",
         notification: 0
     },
     {
         label: "Articles",
         icon: <RiArticleLine/>,
-        to: "/Articles",
+        to: "/admin/articles",
         notification: 0
     },
     {
         label: "Suppliers",
         icon: <RiTruckLine/>,
-        to: "/Suppliers",
+        to: "/admin/suppliers",
         notification: 0
     },
     {
         label: "Customers",
         icon: <BsPeople/>,
-        to: "/Customers",
+        to: "/admin/customers",
         notification: 0
     }, {
         label: "Support",
         icon: <MdSupportAgent/>,
-        to: "/Support",
+        to: "/admin/Support",
         notification: 3
     }
 ]
@@ -133,12 +133,12 @@ const secondLinksArray = [
     {
         label: "Settings",
         icon: <AiOutlineSetting/>,
-        to: "/Settings",
+        to: "/admin/Settings",
         notification: 0
     }, {
         label: "Log out",
         icon: <MdLogout/>,
-        to: "/LogOut",
+        to: "/admin/LogOut",
         notification: 0
     }]
 export default SideBar;
