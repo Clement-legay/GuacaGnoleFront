@@ -6,11 +6,9 @@ import DoughnutChart from './Shared/Doughnut';
 import StatCards from './Shared/StatCards';
 import StatCards2 from './Shared/StatCards2';
 import TopSellingTable from './Shared/TopSellingTable';
-import {ThemeContext} from "../App";
 
 const DashBoard = () => {
     const { palette } = useTheme();
-    const theme = useContext(ThemeContext)
     return (
         <Fragment>
             <ContentBox className="analytics">
@@ -34,7 +32,7 @@ const DashBoard = () => {
                                 color={[palette.primary.dark, palette.primary.main, palette.primary.light]}
                             />
                         </Card>
-                        <Campaigns palette={theme} />
+                        <Campaigns palette={palette} />
                     </Grid>
                 </Grid>
             </ContentBox>

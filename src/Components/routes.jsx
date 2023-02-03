@@ -10,8 +10,7 @@ const PathRoutes = () => {
     const adminRoutes = () => (
         <AdminLayout>
             <Routes>
-                <Route exact path="/admin" component={DashBoard} />
-                <Route path="/admin/dashboard" element={<DashBoard/>}/>
+                <Route path="/dashboard" element={<DashBoard/>}/>
             </Routes>
         </AdminLayout>
     )
@@ -26,8 +25,8 @@ const PathRoutes = () => {
 
     return (
         <Routes>
-            <Route path="/admin" element={adminRoutes()}/>
-            <Route path="/" element={userRoutes()}/>
+            <Route path="/*" element={userRoutes()}/>
+            <Route path="/admin/*" element={adminRoutes()}/>
         </Routes>
     )};
 

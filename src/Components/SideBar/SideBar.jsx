@@ -21,7 +21,7 @@ import {useLocation} from "react-router-dom";
 
 const SideBar = () => {
     const searchRef = useRef(null);
-    const {isDark, setIsDark} = useContext(MainContext);
+    const {theme, setTheme} = useContext(MainContext);
     const [sidebarOpen, setSidebarOpen] = useState(false);
     const {pathname} = useLocation();
 
@@ -89,9 +89,9 @@ const SideBar = () => {
             <STheme>
                 {sidebarOpen &&
                 <SThemeLabel>Dark mode</SThemeLabel> }
-                <SThemeToggler isActive={isDark === "dark"}
-                               onClick={() => setIsDark(p => p === 'light' ? "dark" : "light")}>
-                    <SToggleThumb style={isDark === "dark" ? {right: "1px"} : {}}/>
+                <SThemeToggler isActive={theme === "dark"}
+                               onClick={() => setTheme(p => p === 'light' ? "dark" : "light")}>
+                    <SToggleThumb style={theme === "dark" ? {right: "1px"} : {}}/>
                 </SThemeToggler>
             </STheme>
         </SSideBar>
@@ -138,7 +138,7 @@ const secondLinksArray = [
     }, {
         label: "Log out",
         icon: <MdLogout/>,
-        to: "/admin/LogOut",
+        to: "/",
         notification: 0
     }]
 export default SideBar;

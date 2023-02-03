@@ -10,10 +10,7 @@ import {MainContext} from "../../../Context/MainContext";
 
 const AdminLayout = ({children}) => {
     const context = useContext(MainContext);
-    console.log(context);
-    const themeStyle = context.isDark === 'light' ? lightTheme : darkTheme;
-    console.log(themeStyle);
-
+    const themeStyle = context.theme === 'light' ? lightTheme : darkTheme;
 
     return (
 
