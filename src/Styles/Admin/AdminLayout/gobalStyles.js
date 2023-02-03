@@ -7,8 +7,8 @@ export const GlobalStyles = createGlobalStyle`
   }
 
   body {
-    background: ${({theme}) => theme.bg2};
-    color: ${({theme}) => theme.text};
+    background: ${({theme}) => theme.palette.bg2.main};
+    color: ${({theme}) => theme.palette.text.primary};
     font-family: 'Roboto', sans-serif;
   }
 `;

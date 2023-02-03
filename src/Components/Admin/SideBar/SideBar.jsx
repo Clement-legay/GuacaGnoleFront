@@ -10,18 +10,18 @@ import {
     SSearch,
     SSearchIcon,
     SSideBar, SSidebarButton, STheme, SThemeLabel, SThemeToggler, SToggleThumb
-} from "./styles";
+} from "../../../Styles/Admin/SideBar/styles";
 import {AiOutlineDashboard, AiOutlineLeft, AiOutlineSearch, AiOutlineSetting} from "react-icons/ai";
 import {RiArticleLine, RiTruckLine} from "react-icons/ri";
 import {MdLogout, MdSupportAgent} from "react-icons/md";
 import {BsPeople} from "react-icons/bs";
-import {ThemeContext} from "../../App";
+import {MainContext} from "../../../Context/MainContext";
 import {useLocation} from "react-router-dom";
 
 
 const SideBar = () => {
     const searchRef = useRef(null);
-    const {theme, setTheme} = useContext(ThemeContext);
+    const {theme, setTheme} = useContext(MainContext);
     const [sidebarOpen, setSidebarOpen] = useState(false);
     const {pathname} = useLocation();
 
@@ -101,30 +101,30 @@ const linksArray = [
     {
         label: "DashBoard",
         icon: <AiOutlineDashboard/>,
-        to: "/",
+        to: "/admin/dashboard",
         notification: 0
     },
     {
         label: "Articles",
         icon: <RiArticleLine/>,
-        to: "/Articles",
+        to: "/admin/articles",
         notification: 0
     },
     {
         label: "Suppliers",
         icon: <RiTruckLine/>,
-        to: "/Suppliers",
+        to: "/admin/suppliers",
         notification: 0
     },
     {
         label: "Customers",
         icon: <BsPeople/>,
-        to: "/Customers",
+        to: "/admin/customers",
         notification: 0
     }, {
         label: "Support",
         icon: <MdSupportAgent/>,
-        to: "/Support",
+        to: "/admin/Support",
         notification: 3
     }
 ]
@@ -133,12 +133,12 @@ const secondLinksArray = [
     {
         label: "Settings",
         icon: <AiOutlineSetting/>,
-        to: "/Settings",
+        to: "/admin/Settings",
         notification: 0
     }, {
         label: "Log out",
         icon: <MdLogout/>,
-        to: "/LogOut",
+        to: "/",
         notification: 0
     }]
 export default SideBar;
