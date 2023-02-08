@@ -1,11 +1,9 @@
 import '../Styles/App.css';
 import PathRoutes from "../Utils/routes";
-import {createContext} from "react";
-import { MainProvider } from "../Context/MainContext";
-
-export const ThemeContext = createContext(null);
+import {MainProvider} from "../Context/MainContext";
 
 function App() {
+
     return (
         <MainProvider>
             <PathRoutes/>

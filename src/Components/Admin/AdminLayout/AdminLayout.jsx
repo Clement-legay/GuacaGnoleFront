@@ -1,26 +1,21 @@
-import React, {useContext} from 'react';
+import React from 'react';
 import SideBar from "../SideBar/SideBar";
-import {SLayout, SMain} from "../../../Styles/Admin/AdminLayout/styles";
-import {GlobalStyles} from "../../../Styles/Admin/AdminLayout/gobalStyles";
-import {lightTheme, darkTheme} from "../../../Styles/Admin/AdminLayout/themeAdmin";
-import {ThemeProvider} from "styled-components";
-import {MainContext} from "../../../Context/MainContext";
-
-
+import {Main} from "../../../Styles/Admin/AdminLayout/styles";
+import ThemeAdmin from "../../../Styles/Admin/AdminLayout/themeAdmin";
+import { ThemeProvider } from '@mui/material/styles';
+import {CssBaseline} from "@mui/material";
 
 const AdminLayout = ({children}) => {
-    const context = useContext(MainContext);
-    const themeStyle = context.theme === 'light' ? lightTheme : darkTheme;
 
     return (
 
-            <ThemeProvider theme={themeStyle}>
-                <GlobalStyles/>
-                <SLayout>
-                    <SideBar/>
-                    <SMain>{children}</SMain>
-                </SLayout>
-            </ThemeProvider>
+        <ThemeProvider theme={ThemeAdmin()}>
+            <Main>
+                <CssBaseline/>
+                <SideBar/>
+                {children}
+            </Main>
+        </ThemeProvider>
     );
 };
 

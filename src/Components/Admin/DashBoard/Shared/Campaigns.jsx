@@ -4,11 +4,9 @@ import { Small } from "../../PagePart/Typography";
 
 const Campaigns = () => {
 
-
-
   return (
     <Box>
-      <Card title="Campaigns" sx={{p: 3}}>
+      <Card title="Campaigns" elevation={1} sx={{p: 3}} >
         <Small color="text.secondary">Today</Small>
         <MatxProgressBar value={75} color="primary" text="Google (102k)" />
         <MatxProgressBar value={45} color="secondary" text="Twitter (40k)" />

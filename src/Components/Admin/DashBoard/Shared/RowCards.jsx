@@ -73,7 +73,7 @@ const RowCards = () => {
           <Hidden smDown>
             <Grid item xs={3}>
               <Box display="flex" position="relative" marginLeft="-0.875rem !important">
-                <StyledAvatar src="/assets/images/face-4.jpg" />
+                <StyledAvatar src="/assets/img/guacaGnole.png" />
                 <StyledAvatar src="/assets/images/face-4.jpg" />
                 <StyledAvatar src="/assets/images/face-4.jpg" />
                 <StyledAvatar sx={{ fontSize: '14px' }}>+3</StyledAvatar>

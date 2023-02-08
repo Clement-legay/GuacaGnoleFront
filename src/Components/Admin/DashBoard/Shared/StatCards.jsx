@@ -1,15 +1,9 @@
-import { Box, Card, Grid, Icon, IconButton, styled, Tooltip } from '@mui/material';
+import {Box, Card, Grid, styled} from '@mui/material';
+import InventoryIcon from '@mui/icons-material/Inventory';
+import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
+import StoreIcon from '@mui/icons-material/Store';
+import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import { Small } from '../../PagePart/Typography';
-
-const StyledCard = styled(Card)(({ theme }) => ({
-  display: 'flex',
-  flexWrap: 'wrap',
-  alignItems: 'center',
-  justifyContent: 'space-between',
-  padding: '24px !important',
-  background: theme.palette.background.paper,
-  [theme.breakpoints.down('sm')]: { padding: '16px !important' },
-}));
 
 const ContentBox = styled(Box)(({ theme }) => ({
   display: 'flex',
@@ -29,31 +23,27 @@ const Heading = styled('h6')(({ theme }) => ({
 
 const StatCards = () => {
   const cardList = [
-    { name: 'New Leads', amount: 3050, icon: 'group' },
-    { name: 'This week Sales', amount: '$80,500', icon: 'attach_money' },
-    { name: 'Inventory Status', amount: '8.5% Stock Surplus', icon: 'store' },
-    { name: 'Orders to deliver', amount: '305 Orders', icon: 'shopping_cart' },
+    { name: 'New Leads', amount: 3050, icon: <InventoryIcon/> },
+    { name: 'This week Sales', amount: '$80,500', icon: <AttachMoneyIcon/> },
+    { name: 'Inventory Status', amount: '8.5% Stock Surplus', icon: <StoreIcon/> },
+    { name: 'Orders to deliver', amount: '305 Orders', icon: <ShoppingCartIcon/> },
   ];
 
   return (
     <Grid container spacing={3} sx={{ mb: '24px' }}>
       {cardList.map((item, index) => (
         <Grid item xs={12} md={6} key={index}>
-          <StyledCard elevation={6}>
+          <Card elevation={2} sx={{p:3}} onClick={() => {
+            console.log(item.name, 'clicked');}
+          }>
             <ContentBox>
-              <Icon className="icon">{item.icon}</Icon>
+              {item.icon}
               <Box ml="12px">
                 <Small>{item.name}</Small>
                 <Heading>{item.amount}</Heading>
               </Box>
             </ContentBox>
-
-            <Tooltip title="View Details" placement="top">
-              <IconButton>
-                <Icon>arrow_right_alt</Icon>
-              </IconButton>
-            </Tooltip>
-          </StyledCard>
+          </Card>
         </Grid>
       ))}
     </Grid>

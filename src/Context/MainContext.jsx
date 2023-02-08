@@ -1,15 +1,17 @@
 import React, {createContext, useState} from 'react';
 
 export const MainContext = createContext({
-    theme: "light",
+    themeStyle: "dark",
     user: null,
+    theme: null,
 });
 
 export const MainProvider = ({ children }) => {
-    const [theme, setTheme] = useState("light");
+    const [themeStyle, setThemeStyle] = useState("dark");
     const [user, setUser] = useState(null);
+    const [theme, setTheme] = useState(null);
 
-    const state = { theme, setTheme, user, setUser };
+    const state = { theme, setTheme, user, setUser, themeStyle, setThemeStyle };
 
     return (
         <MainContext.Provider value={state}>

@@ -1,4 +1,4 @@
-import { Card, Grid, useTheme } from '@mui/material';
+import {Card, Grid} from '@mui/material';
 import {Fragment} from 'react';
 import { ContentBox, Title, SubTitle } from '../../../Styles/Admin/Dashboard/DashBoard';
 import Campaigns from './Shared/Campaigns';
@@ -6,9 +6,11 @@ import DoughnutChart from './Shared/Doughnut';
 import StatCards from './Shared/StatCards';
 import StatCards2 from './Shared/StatCards2';
 import TopSellingTable from './Shared/TopSellingTable';
+import {useTheme} from "@mui/material/styles";
 
 const DashBoard = () => {
     const { palette } = useTheme();
+
     return (
         <Fragment>
             <ContentBox className="analytics">
@@ -28,11 +30,11 @@ const DashBoard = () => {
                             <SubTitle>Last 30 days</SubTitle>
 
                             <DoughnutChart
-                                height="300px"
+                                height="300px"Â
                                 color={[palette.primary.dark, palette.primary.main, palette.primary.light]}
                             />
                         </Card>
-                        <Campaigns palette={palette} />
+                        <Campaigns />
                     </Grid>
                 </Grid>
             </ContentBox>

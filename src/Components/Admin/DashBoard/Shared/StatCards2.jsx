@@ -1,93 +1,85 @@
-import { Card, Fab, Grid, Icon, lighten, styled, useTheme } from '@mui/material';
+import {Card, Grid, styled, Typography, useTheme} from '@mui/material';
+import TrendingUpIcon from '@mui/icons-material/TrendingUp';
+import PaidOutlinedIcon from '@mui/icons-material/PaidOutlined';
+import ExpandLessOutlinedIcon from '@mui/icons-material/ExpandLessOutlined';
 
-const ContentBox = styled('div')(() => ({
-  display: 'flex',
-  flexWrap: 'wrap',
-  alignItems: 'center',
-}));
+const CardsData = [
+    {
+        name: 'Active Users',
+        icon: <TrendingUpIcon/>,
+        color: 'success.main',
+        amount: 3500,
+        prevAmount: 3200,
+        unit: "",
+    },
+    {
+        name: 'Transactions',
+        icon: <PaidOutlinedIcon/>,
+        color: 'error.main',
+        amount: 45000,
+        prevAmount: 38000,
+        unit: '€',
+    }
+];
 
-const FabIcon = styled(Fab)(() => ({
-  width: '44px !important',
-  height: '44px !important',
-  boxShadow: 'none !important',
-}));
+const displayingNumbers = (number) => {
 
-const H3 = styled('h3')(({ textcolor }) => ({
-  margin: 0,
-  color: textcolor,
-  fontWeight: '500',
-  marginLeft: '12px',
-}));
+    if (number > 1000000) {
+        return (number / 1000000).toFixed(1) + 'M';
+    } else if (number > 1000) {
+        return (number / 1000).toFixed(1) + 'K';
+    } else {
+        return number;
+    }
+}
 
-const H1 = styled('h1')(({ theme }) => ({
-  margin: 0,
-  flexGrow: 1,
-  color: theme.palette.text.secondary,
-}));
+const calculatingPercentages = (amount, prevAmount) => {
+    if (prevAmount === 0) {
+        return 0;
+    } else {
+        return Math.round(((amount - prevAmount) / prevAmount) * 100);
+    }
+}
 
-const Span = styled('span')(({ textcolor }) => ({
-  fontSize: '13px',
-  color: textcolor,
-  marginLeft: '4px',
-}));
-
-const IconBox = styled('div')(() => ({
-  width: 16,
-  height: 16,
-  color: '#fff',
-  display: 'flex',
-  overflow: 'hidden',
-  borderRadius: '300px ',
-  justifyContent: 'center',
-  '& .icon': { fontSize: '14px' },
-}));
 
 const StatCards2 = () => {
-  const { palette } = useTheme();
-  const textError = palette.error.main;
-  const bgError = lighten(palette.error.main, 0.85);
+    const { palette } = useTheme();
+    const textError = palette.error.main;
 
-  return (
-    <Grid container spacing={3} sx={{ mb: 3 }}>
-      <Grid item xs={12} md={6}>
-        <Card elevation={3} sx={{ p: 2 }}>
-          <ContentBox>
-            <FabIcon size="medium" sx={{ background: 'rgba(9, 182, 109, 0.15)' }}>
-              <Icon sx={{ color: '#08ad6c' }}>trending_up</Icon>
-            </FabIcon>
-            <H3 textcolor={'#08ad6c'}>Active Users</H3>
-          </ContentBox>
+    return (
+        <Grid container spacing={3} sx={{ mb: '24px' }} >
+            {CardsData.map((item, index) => (
+                <Grid item xs={12} md={6} key={index}>
+                    <Card elevation={2} sx={{p:3}} onClick={() => {
+                        console.log(item.name, 'clicked');}
+                    }
+                    >
+                        <Grid container>
+                            <Grid item xs={3}>
+                                <Typography sx={{color: item.color}}>
+                                    {item.icon}
+                                </Typography>
+                            </Grid>
+                            <Grid item xs={9}>
+                                <Typography sx={{color: item.color}}>
+                                    {item.name}
+                                </Typography>
+                            </Grid>
+                            <Grid item xs={12}>
+                                <Typography variant={"caption"} sx={{color: item.color, fontSize: "2em"}}>
+                                    {displayingNumbers(item.amount) + " " + item.unit}
+                                </Typography>
+                                <Typography variant={"caption"} sx={{color: item.color, fontSize: "1em"}}>
+                                    {" (" + calculatingPercentages(item.amount, item.prevAmount) + "%)"}
+                                </Typography>
+                            </Grid>
+                        </Grid>
+                    </Card>
+                </Grid>
+            ))}
+        </Grid>
 
-          <ContentBox sx={{ pt: 2 }}>
-            <H1>10.8k</H1>
-            <IconBox sx={{ background: 'rgba(9, 182, 109, 0.15)' }}>
-              <Icon className="icon">expand_less</Icon>
-            </IconBox>
-            <Span textcolor={'#08ad6c'}>(+21%)</Span>
-          </ContentBox>
-        </Card>
-      </Grid>
-
-      <Grid item xs={12} md={6}>
-        <Card elevation={3} sx={{ p: 2 }}>
-          <ContentBox>
-            <FabIcon size="medium" sx={{ background: bgError, overflow: 'hidden' }}>
-              <Icon sx={{ color: textError }}>star_outline</Icon>
-            </FabIcon>
-            <H3 textcolor={textError}>Transactions</H3>
-          </ContentBox>
-
-          <ContentBox sx={{ pt: 2 }}>
-            <H1>$2.8M</H1>
-            <IconBox sx={{ background: bgError }}>
-              <Icon className="icon">expand_less</Icon>
-            </IconBox>
-            <Span textcolor={textError}>(+21%)</Span>
-          </ContentBox>
-        </Card>
-      </Grid>
-    </Grid>
-  );
+    );
 };
 
 export default StatCards2;

@@ -1,129 +1,102 @@
-import React, {useContext, useRef, useState} from 'react';
-import {
-    SDivider,
-    SLink,
-    SLinkContainer,
-    SLinkIcon,
-    SLinkLabel,
-    SLinkNotification,
-    SLogo,
-    SSearch,
-    SSearchIcon,
-    SSideBar, SSidebarButton, STheme, SThemeLabel, SThemeToggler, SToggleThumb
-} from "../../../Styles/Admin/SideBar/styles";
-import {AiOutlineDashboard, AiOutlineLeft, AiOutlineSearch, AiOutlineSetting} from "react-icons/ai";
-import {RiArticleLine, RiTruckLine} from "react-icons/ri";
-import {MdLogout, MdSupportAgent} from "react-icons/md";
-import {BsPeople} from "react-icons/bs";
+import React, {useContext, useState} from 'react';
+import List from '@mui/material/List';
+import Divider from '@mui/material/Divider';
+import IconButton from '@mui/material/IconButton';
+import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+import ListItemButton from '@mui/material/ListItemButton';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import ListItemText from '@mui/material/ListItemText';
+import SpeedOutlinedIcon from '@mui/icons-material/SpeedOutlined';
+import ArticleOutlinedIcon from '@mui/icons-material/ArticleOutlined';
+import LocalShippingOutlinedIcon from '@mui/icons-material/LocalShippingOutlined';
+import SupportAgentOutlinedIcon from '@mui/icons-material/SupportAgentOutlined';
+import PeopleAltOutlinedIcon from '@mui/icons-material/PeopleAltOutlined';
+import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined';
+import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
+import { useNavigate } from "react-router-dom";
+import {styled} from "@mui/material/styles";
+import MuiDrawer from '@mui/material/Drawer';
 import {MainContext} from "../../../Context/MainContext";
-import {useLocation} from "react-router-dom";
+import {Grid, Switch, Typography} from "@mui/material";
+import {DarkMode} from "@mui/icons-material";
 
+const DrawerHeader = styled('div')(({ theme }) => ({
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+    padding: theme.spacing(0, 1),
+    // necessary for content to be below app bar
+    ...theme.mixins.toolbar,
+}));
 
-const SideBar = () => {
-    const searchRef = useRef(null);
-    const {theme, setTheme} = useContext(MainContext);
-    const [sidebarOpen, setSidebarOpen] = useState(false);
-    const {pathname} = useLocation();
+const drawerWidth = 240;
 
-    const searchClickHandler = () => {
-        if(!sidebarOpen) {
-            setSidebarOpen(true);
-            searchRef.current.focus();
-        } else {
-            // searchRef.current.blur();
+const openedMixin = (theme) => ({
+    width: drawerWidth,
+    transition: theme.transitions.create('width', {
+        easing: theme.transitions.easing.sharp,
+        duration: theme.transitions.duration.enteringScreen,
+    }),
+    overflowX: 'hidden',
+});
 
-        }
+const closedMixin = (theme) => ({
+    transition: theme.transitions.create('width', {
+        easing: theme.transitions.easing.sharp,
+        duration: theme.transitions.duration.leavingScreen,
+    }),
+    overflowX: 'hidden',
+    width: `calc(${theme.spacing(7)} + 1px)`,
+    [theme.breakpoints.up('sm')]: {
+        width: `calc(${theme.spacing(8)} + 1px)`,
+    },
+});
 
-    }
-    return (
-        <SSideBar isOpen={sidebarOpen} className={sidebarOpen ? "Open" : "Close"}>
-            <>
-                <SSidebarButton isOpen={sidebarOpen} onClick={() => setSidebarOpen(!sidebarOpen)}>
-                    <AiOutlineLeft/>
-                </SSidebarButton>
-            </>
-            <SLogo>
-                <img src={"/assets/img/GuacaGnoleLogo.png"} alt={'logo'}/>
-            </SLogo>
-            <SSearch style={sidebarOpen ? {width: 'fit-content'} : {}} onClick={searchClickHandler}>
-                <SSearchIcon>
-                    <AiOutlineSearch/>
-                </SSearchIcon>
-                <input placeholder={"Search"} style={!sidebarOpen ? {width: 0, padding: 0} : {}}/>
-            </SSearch>
-            <SDivider/>
-            {linksArray.map(({icon, label, notification, to}) => (
-                <SLinkContainer key={label}>
-                    <SLink to={to} style={!sidebarOpen ? {width: 'fit-content'} : {}}>
-                        <SLinkIcon>{icon}</SLinkIcon>
-                        {sidebarOpen && (
-                            <>
-                                <SLinkLabel>{label}</SLinkLabel>
-                                {!!notification &&
-                                    <SLinkNotification>{notification}</SLinkNotification>
-                                }
-                            </>
-                        )}
-                    </SLink>
-                </SLinkContainer>
-            ))
-            }
-            <SDivider/>
-            {secondLinksArray.map(({icon, label, notification, to}) => (
-                <SLinkContainer key={label} isActive={pathname === to}>
-                    <SLink to={to} style={sidebarOpen ? {width: 'fit-content'} : {}}>
-                        <SLinkIcon>{icon}</SLinkIcon>
-                        {sidebarOpen && (
-                            <>
-                                <SLinkLabel>{label}</SLinkLabel>
-                                {!!notification &&
-                                    <SLinkNotification>{notification}</SLinkNotification>
-                                }
-                            </>
-                        )}
-                    </SLink>
-                </SLinkContainer>
-            ))
-            }
-            <SDivider/>
-            <STheme>
-                {sidebarOpen &&
-                <SThemeLabel>Dark mode</SThemeLabel> }
-                <SThemeToggler isActive={theme === "dark"}
-                               onClick={() => setTheme(p => p === 'light' ? "dark" : "light")}>
-                    <SToggleThumb style={theme === "dark" ? {right: "1px"} : {}}/>
-                </SThemeToggler>
-            </STheme>
-        </SSideBar>
-    );
-};
+const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' })(
+    ({ theme, open }) => ({
+        width: drawerWidth,
+        flexShrink: 0,
+        whiteSpace: 'nowrap',
+        boxSizing: 'border-box',
+        ...(open && {
+            ...openedMixin(theme),
+            '& .MuiDrawer-paper': openedMixin(theme),
+        }),
+        ...(!open && {
+            ...closedMixin(theme),
+            '& .MuiDrawer-paper': closedMixin(theme),
+        }),
+    }),
+);
+
 const linksArray = [
     {
         label: "DashBoard",
-        icon: <AiOutlineDashboard/>,
+        icon: <SpeedOutlinedIcon/>,
         to: "/admin/dashboard",
         notification: 0
     },
     {
         label: "Articles",
-        icon: <RiArticleLine/>,
+        icon: <ArticleOutlinedIcon/>,
         to: "/admin/articles",
         notification: 0
     },
     {
         label: "Suppliers",
-        icon: <RiTruckLine/>,
+        icon: <LocalShippingOutlinedIcon/>,
         to: "/admin/suppliers",
         notification: 0
     },
     {
         label: "Customers",
-        icon: <BsPeople/>,
+        icon: <PeopleAltOutlinedIcon/>,
         to: "/admin/customers",
         notification: 0
     }, {
         label: "Support",
-        icon: <MdSupportAgent/>,
+        icon: <SupportAgentOutlinedIcon/>,
         to: "/admin/Support",
         notification: 3
     }
@@ -132,13 +105,89 @@ const linksArray = [
 const secondLinksArray = [
     {
         label: "Settings",
-        icon: <AiOutlineSetting/>,
+        icon: <SettingsOutlinedIcon/>,
         to: "/admin/Settings",
         notification: 0
     }, {
         label: "Log out",
-        icon: <MdLogout/>,
+        icon: <LogoutOutlinedIcon/>,
         to: "/",
         notification: 0
     }]
+
+
+
+const SideBar = () => {
+    const navigate = useNavigate();
+    const [sideBarOpen, setSideBarOpen] = useState(true);
+    const {theme, setTheme} = useContext(MainContext);
+
+
+    const handleDrawerOpen = () => {
+        setSideBarOpen(true);
+    };
+
+    const handleDrawerClose = () => {
+        setSideBarOpen(false);
+    };
+    return (
+        <Drawer variant="permanent" open={sideBarOpen}>
+            <DrawerHeader>
+                {/*{logo centered in drawer header}*/}
+                <Grid container justifyContent="center" alignItems="center">
+                    <Grid item>
+                        <img src={"/assets/img/GuacaGnoleLogo.png"} alt="logo" style={{maxWidth: "100%", height: "75px"}} loading="lazy"/>
+                    </Grid>
+                </Grid>
+
+
+
+                <IconButton style={{position: "absolute"}} onClick={() => sideBarOpen ? handleDrawerClose() : handleDrawerOpen()}>
+                    {sideBarOpen ? <ChevronLeftIcon /> : <ChevronRightIcon />}
+                </IconButton>
+            </DrawerHeader>
+            <Divider />
+            <List>
+                {linksArray.map((item, index) => (
+                    <ListItemButton key={item.label} sx={{
+                        minHeight: "50px",
+                    }} onClick={
+                        () => {
+                            navigate(item.to);
+                        }
+                    }>
+                        <ListItemIcon color={"primary"}>{item.icon}</ListItemIcon>
+                        <ListItemText color={"primary"} primary={item.label} />
+                    </ListItemButton>
+                ))}
+            </List>
+            <Divider />
+            <List>
+                {secondLinksArray.map((item, index) => (
+                    <ListItemButton key={item.label} sx={{
+                        minHeight: "50px",
+                    }} onClick={
+                        () => {
+                            navigate(item.to);
+                        }
+                    }>
+                        <ListItemIcon>{item.icon}</ListItemIcon>
+                        <ListItemText primary={item.label} />
+                    </ListItemButton>
+                ))}
+            </List>
+            <Divider />
+            <Grid container justifyContent="center" alignItems="center" sx={{my: 2}}>
+                <Grid item>
+                    <Switch size={"small"} checkedIcon={<DarkMode/>} sx={{my: 2, mx: 1}} color={"primary"} value={theme === "dark"} onChange={() => setTheme(theme === "dark" ? "light" : "dark")} aria-label={"Dark theme"}/>
+                </Grid>
+                <Grid item>
+                    <Typography variant={"caption"}>Dark theme</Typography>
+                </Grid>
+            </Grid>
+
+        </Drawer>
+    );
+};
+
 export default SideBar;

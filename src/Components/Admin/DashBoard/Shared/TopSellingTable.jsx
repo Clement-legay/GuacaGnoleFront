@@ -2,7 +2,6 @@ import {
   Avatar,
   Box,
   Card,
-  Icon,
   IconButton,
   MenuItem,
   Select,
@@ -15,6 +14,7 @@ import {
   useTheme,
 } from '@mui/material';
 import { Paragraph } from '../../PagePart/Typography';
+import EditIcon from '@mui/icons-material/Edit';
 
 const CardHeader = styled(Box)(() => ({
   display: 'flex',
@@ -118,7 +118,7 @@ const TopSellingTable = () => {
 
                 <TableCell sx={{ px: 0 }} colSpan={1}>
                   <IconButton>
-                    <Icon color="primary">edit</Icon>
+                    <EditIcon />
                   </IconButton>
                 </TableCell>
               </TableRow>
@@ -132,31 +132,31 @@ const TopSellingTable = () => {
 
 const productList = [
   {
-    imgUrl: '/assets/images/products/headphone-2.jpg',
+    imgUrl: '/assets/img/products/guacaGnole.png',
     name: 'earphone',
     price: 100,
     available: 15,
   },
   {
-    imgUrl: '/assets/images/products/headphone-3.jpg',
+    imgUrl: '/assets/img/products/vinBlanc.png',
     name: 'earphone',
     price: 1500,
     available: 30,
   },
   {
-    imgUrl: '/assets/images/products/iphone-2.jpg',
+    imgUrl: '/assets/img/products/vinRouge.png',
     name: 'iPhone x',
     price: 1900,
     available: 35,
   },
   {
-    imgUrl: '/assets/images/products/iphone-1.jpg',
+    imgUrl: '/assets/img/products/guacaGnole.png',
     name: 'iPhone x',
     price: 100,
     available: 0,
   },
   {
-    imgUrl: '/assets/images/products/headphone-3.jpg',
+    imgUrl: '/assets/img/products/guacaGnole.png',
     name: 'Head phone',
     price: 1190,
     available: 5,
