@@ -1,7 +1,6 @@
-import {Card, Grid, styled, Typography, useTheme} from '@mui/material';
+import {Card, Grid, Typography} from '@mui/material';
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 import PaidOutlinedIcon from '@mui/icons-material/PaidOutlined';
-import ExpandLessOutlinedIcon from '@mui/icons-material/ExpandLessOutlined';
 
 const CardsData = [
     {
@@ -43,9 +42,6 @@ const calculatingPercentages = (amount, prevAmount) => {
 
 
 const StatCards2 = () => {
-    const { palette } = useTheme();
-    const textError = palette.error.main;
-
     return (
         <Grid container spacing={3} sx={{ mb: '24px' }} >
             {CardsData.map((item, index) => (
