@@ -1,4 +1,4 @@
-import {deleteAPI, fetchAPI, postAPI, putAPI} from "../../Utils/axios";
+import {deleteAPI, fetchAPI, postAPI} from "../../Utils/axios";
 import {useState} from "react";
 
 export const UserEntity = () => {
