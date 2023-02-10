@@ -1,38 +1,39 @@
 import {deleteAPI, fetchAPI, postAPI, putAPI} from "../../Utils/axios";
 import {useState} from "react";
 
-export const SupplierEntity = () => {
-    const [suppliers, setSuppliers] = useState([]);
+export const UserEntity = () => {
+    const [users, setUsers] = useState([]);
 
     return {
-        suppliers: suppliers,
-        fetchSuppliers: (store = false) => (
-            fetchAPI("Furnisher")
+        users: users,
+        fetchUsers: (store = false) => (
+            fetchAPI("api/Auth/GetAllUsers")
                 .then((res) => {
                     if (store) {
-                        console.log(res.data);
-                        setSuppliers(res.data);
+                        setUsers(res.data);
                     }
                     return res.data;
                 })
         ),
-        fetchSupplierById: (id) => (
-            fetchAPI(`Furnisher/${id}`)
+        fetchUserById: (id) => (
+            fetchAPI(`api/Auth/GetUserById/${id}`)
         ),
-        postSupplier: (data) => (
-            postAPI("Furnisher", data)
+        fetchUserByUsername: (username) => (
+            fetchAPI(`api/Auth/GetUserByUsername/${username}`)
         ),
-        putSupplier: (id, data) => (
-            putAPI(`Furnisher/${id}`, data)
+        fetchUserByEmail: (email) => (
+            fetchAPI(`api/Auth/GetUserByEmail/${email}`)
         ),
-        deleteSupplier: (id) => (
-            deleteAPI(`Furnisher/${id}`)
+        postRegister: (data) => (
+            postAPI("api/Auth/Register", data)
+                .then(res => res.data)
         ),
-        fetchSupplierProducts: (id) => (
-            fetchAPI(`Furnisher/getProducts/${id}`)
+        postLogin: (data) => (
+            postAPI("api/Auth/Login", data)
+                .then(res => res.data)
         ),
-        fetchSupplierByNames: (name) => (
-            fetchAPI(`Furnisher/ByName/${name}`)
-        )
+        deleteUser: (id) => (
+            deleteAPI(`api/Auth/delete/${id}`)
+        ),
     }
 };

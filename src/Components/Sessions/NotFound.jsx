@@ -1,28 +1,7 @@
-import { Box, Button, styled } from '@mui/material';
+import { Button } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import {IMG, JustifyBox, NotFoundRoot} from "../../Styles/Sessions/NotFound";
 
-const FlexBox = styled(Box)(() => ({
-  display: 'flex',
-  alignItems: 'center',
-}));
-
-const JustifyBox = styled(FlexBox)(() => ({
-  maxWidth: 320,
-  flexDirection: 'column',
-  justifyContent: 'center',
-}));
-
-const IMG = styled('img')(() => ({
-  width: '100%',
-  marginBottom: '32px',
-}));
-
-const NotFoundRoot = styled(FlexBox)(() => ({
-  width: '100%',
-  alignItems: 'center',
-  justifyContent: 'center',
-  height: '100vh !important',
-}));
 
 const NotFound = () => {
   const navigate = useNavigate();
@@ -30,7 +9,7 @@ const NotFound = () => {
   return (
     <NotFoundRoot>
       <JustifyBox>
-        <IMG src="/assets/images/illustrations/404.svg" alt="" />
+        <IMG src="/assets/img/illustrations/404.svg" alt="" />
 
         <Button
           color="primary"

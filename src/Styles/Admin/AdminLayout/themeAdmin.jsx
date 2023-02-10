@@ -1,6 +1,7 @@
 import { createTheme } from "@mui/material/styles";
 import {useContext} from "react";
 import {MainContext} from "../../../Context/MainContext";
+import Cookies from 'js-cookie';
 
 const getTheme = (mode) => ({
     palette: mode === "dark" ? {
@@ -26,7 +27,8 @@ const getTheme = (mode) => ({
         },
         text: {
             primary: '#ffffff',
-            secondary: '#ffffff',
+            secondary: '#c7c6c6',
+            altPrimary: '#85b0ff',
         }
     } : {
 
@@ -53,14 +55,24 @@ const getTheme = (mode) => ({
         text: {
             primary: '#1e1e1e',
             secondary: '#272727',
+            altPrimary: '#0e1f3b',
         }
     }
 
 });
 
 const ThemeAdmin = () => {
-    const { theme } = useContext(MainContext);
+    let { theme, setTheme } = useContext(MainContext);
 
+    if (theme === null) {
+        theme = Cookies.get('theme');
+        if (theme === null) {
+            theme = 'light';
+        }
+        setTheme(theme);
+    } else {
+        Cookies.set('theme', theme);
+    }
 
     return createTheme({
         ...getTheme(theme),

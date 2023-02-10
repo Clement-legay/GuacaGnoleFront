@@ -1,6 +1,6 @@
 import React from 'react';
 import SideBar from "../SideBar/SideBar";
-import {Main} from "../../../Styles/Admin/AdminLayout/styles";
+import {Main, HeaderDodger} from "../../../Styles/Admin/AdminLayout/styles";
 import ThemeAdmin from "../../../Styles/Admin/AdminLayout/themeAdmin";
 import { ThemeProvider } from '@mui/material/styles';
 import {CssBaseline} from "@mui/material";
@@ -13,7 +13,9 @@ const AdminLayout = ({children}) => {
             <Main>
                 <CssBaseline/>
                 <SideBar/>
-                {children}
+                <HeaderDodger>
+                    {children}
+                </HeaderDodger>
             </Main>
         </ThemeProvider>
     );

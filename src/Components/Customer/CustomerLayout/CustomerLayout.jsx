@@ -1,16 +1,14 @@
-import React, {useContext} from 'react';
-import {ThemeProvider} from "styled-components";
-import { lightTheme, darkTheme } from "../../../Styles/Customer/CustomerLayout/themeCustomer";
-import { MainContext } from "../../../Context/MainContext";
+import React from 'react';
+import {ThemeProvider} from "@mui/material/styles";
+import themeCustomer from "../../../Styles/Customer/CustomerLayout/themeCustomer";
 
 
 const CustomerLayout = ({children}) => {
-    const context = useContext(MainContext);
-    const themeStyle = context.isDark === 'light' ? lightTheme : darkTheme;
+
 
     return (
-        <ThemeProvider theme={themeStyle}>
-            <div>{children}</div>
+        <ThemeProvider theme={themeCustomer()}>
+            {children}
         </ThemeProvider>
     );
 };

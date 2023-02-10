@@ -1,39 +1,38 @@
 import {deleteAPI, fetchAPI, postAPI, putAPI} from "../../Utils/axios";
 import {useState} from "react";
 
-export const ProductEntity = () => {
-    const [products, setProducts] = useState([]);
+export const SupplierEntity = () => {
+    const [suppliers, setSuppliers] = useState([]);
 
     return {
-        products: products,
-        fetchProducts: (store = false) => (
-            fetchAPI("/Product")
+        suppliers: suppliers,
+        fetchSuppliers: (store = false) => (
+            fetchAPI("Furnisher")
                 .then((res) => {
                     if (store) {
-                        setProducts(res.data);
+                        console.log(res.data);
+                        setSuppliers(res.data);
                     }
                     return res.data;
                 })
         ),
-        fetchProductById: (id) => (
-            fetchAPI(`Product/${id}`)
-                .then(res => res.data)
+        fetchSupplierById: (id) => (
+            fetchAPI(`Furnisher/${id}`)
         ),
-        fetchProductStock: (id) => (
-            fetchAPI(`Product/Stock/${id}`)
-                .then(res => res.data)
+        postSupplier: (data) => (
+            postAPI("Furnisher", data)
         ),
-        postProduct: (data) => (
-            postAPI("Product", data)
-                .then(res => res.data)
+        putSupplier: (id, data) => (
+            putAPI(`Furnisher/${id}`, data)
         ),
-        putProduct: (id, data) => (
-            putAPI(`Product/${id}`, data)
-                .then(res => res.data)
+        deleteSupplier: (id) => (
+            deleteAPI(`Furnisher/${id}`)
         ),
-        deleteProduct: (id) => (
-            deleteAPI(`Product/${id}`)
-                .then(res => res.data)
+        fetchSupplierProducts: (id) => (
+            fetchAPI(`Furnisher/getProducts/${id}`)
+        ),
+        fetchSupplierByNames: (name) => (
+            fetchAPI(`Furnisher/ByName/${name}`)
         )
-    };
+    }
 };

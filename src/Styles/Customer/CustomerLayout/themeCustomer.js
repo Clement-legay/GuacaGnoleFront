@@ -1,54 +1,94 @@
 import { createTheme } from "@mui/material/styles";
+import {useContext} from "react";
+import {MainContext} from "../../../Context/MainContext";
+import Cookies from 'js-cookie';
 
-export const lightTheme = createTheme({
-            palette: {
-                mode: 'light',
-                primary: {
-                    main: '#1976d2',
-                },
-                bg: {
-                    main: "rgb(255,255,255)"
-                },
-                bgAlpha: {
-                    main: "rgba(250,250,250,.3)"
-                },
-                bg2: {
-                    main: "rgb(245,245,245)"
-                },
-                bg3: {
-                    main: "rgb(230,230,230)"
-                },
-                text: {
-                    primary: "rgb(45,45,45)",
-                    secondary: "rgb(45,45,45)"
-                },
-            },
-        });
+const getTheme = (mode) => ({
+    palette: mode === "dark" ? {
+        mode: 'dark',
+        primary: {
+            main: '#367af8',
+        },
+        secondary: {
+            main: '#8539fd',
+        },
+        warning: {
+            main: '#f8c02b',
+        },
+        error: {
+            main: '#f81537',
+        },
+        success: {
+            main: '#18fa7a',
+        },
+        background: {
+            default: '#1e1e1e',
+            paper: '#272727',
+        },
+        text: {
+            primary: '#ffffff',
+            secondary: '#c7c6c6',
+            altPrimary: '#85b0ff',
+        }
+    } : {
 
-export const darkTheme = createTheme({
-            palette: {
-                mode: 'dark',
-                primary: {
-                    main: '#1976d2',
-                },
-                secondary: {
-                    main: '#1976d2',
-                },
-                bg: {
-                    main: "rgb(15,15,15)"
-                },
-                bgAlpha: {
-                    main: "rgba(0,0,0,.3)"
-                },
-                bg2: {
-                    main: "rgb(30,30,30)"
-                },
-                bg3: {
-                    main: "rgb(50,50,50)"
-                },
-                text: {
-                    primary: "rgb(210,210,210)",
-                    secondary: "rgb(210,210,210)"
-                },
-            }
+        mode: 'light',
+        primary: {
+            main: '#3a86ff',
+        },
+        secondary: {
+            main: '#8338ec',
+        },
+        warning: {
+            main: '#ffbe0b',
+        },
+        error: {
+            main: '#ff006e',
+        },
+        success: {
+            main: '#06d6a0',
+        },
+        background: {
+            default: '#f4f6f8',
+            paper: '#ffffff',
+        },
+        text: {
+            primary: '#1e1e1e',
+            secondary: '#272727',
+            altPrimary: '#0e1f3b',
+        }
+    }
+
 });
+
+const ThemeCustomer = () => {
+    let { theme, setTheme } = useContext(MainContext);
+
+    if (theme === null) {
+        theme = Cookies.get('theme');
+        if (theme === null) {
+            theme = 'light';
+        }
+        setTheme(theme);
+    } else {
+        Cookies.set('theme', theme);
+    }
+
+    return createTheme({
+        ...getTheme(theme),
+        overrides: {
+            // change color of the body tag in the admin layout
+            MuiCssBaseline: {
+                styleOverrides: {
+                    body: {
+                        backgroundColor: theme === "dark" ? "#1e1e1e" : "#f4f6f8",
+                    }
+                }
+            }
+
+
+        }
+    });
+};
+
+export default ThemeCustomer;
