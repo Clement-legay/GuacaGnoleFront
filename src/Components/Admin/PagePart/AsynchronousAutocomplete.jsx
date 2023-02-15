@@ -3,7 +3,6 @@ import {Autocomplete, Box, Button, Card, Chip, CircularProgress, Grid, TextField
 import {MainContext} from "../../../Context/MainContext";
 import RemoveIcon from '@mui/icons-material/Remove';
 import AddIcon from "@mui/icons-material/Add";
-import products from "../Products/Products";
 
 export const AsynchronousAutocomplete = ({fetchString, props, onChangeQuantity}) => {
     const fetch = useContext(MainContext)[fetchString];

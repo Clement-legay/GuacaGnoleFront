@@ -1,6 +1,4 @@
 import { createTheme } from "@mui/material/styles";
-import {useContext} from "react";
-import {MainContext} from "../../../Context/MainContext";
 import Cookies from 'js-cookie';
 
 const getTheme = (mode) => ({

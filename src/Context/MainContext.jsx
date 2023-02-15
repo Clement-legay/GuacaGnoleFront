@@ -5,7 +5,6 @@ import {UserEntity} from "./Entity/UserEntity";
 import {AppellationEntity} from "./Entity/AppellationEntity";
 import {OfferEntity} from "./Entity/OfferEntity";
 import Cookies from "js-cookie";
-import {resolve} from "chart.js/helpers";
 
 export const MainContext = createContext({
     themeStyle: "dark",
