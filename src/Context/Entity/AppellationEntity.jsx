@@ -1,38 +1,45 @@
 import {deleteAPI, fetchAPI, postAPI, putAPI} from "../../Utils/axios";
 import {useState} from "react";
 
-export const ProductEntity = () => {
-    const [products, setProducts] = useState([]);
+export const AppellationEntity = () => {
+    const [appellations, setAppellations] = useState([]);
 
     return {
-        products: products,
-        fetchProducts: (store = false) => (
-            fetchAPI("/Product")
+        appellations: appellations,
+        fetchAppellations: (store = false) => (
+            fetchAPI("/Appellation")
                 .then((res) => {
+                    res.data = res.data.map(
+                        (appellation) => {
+                            appellation.id = appellation.appellationId;
+                            delete appellation.appellationId;
+                            return appellation
+                        }
+                    );
                     if (store) {
-                        setProducts(res.data);
+                        setAppellations(res.data);
                     }
                     return res.data;
                 })
         ),
-        fetchProductById: (id) => (
-            fetchAPI(`Product/${id}`)
+        fetchAppellationById: (id) => (
+            fetchAPI(`Appellation/${id}`)
                 .then(res => res.data)
         ),
-        fetchProductStock: (id) => (
-            fetchAPI(`Product/Stock/${id}`)
+        fetchAppellationByName: (name) => (
+            fetchAPI(`Appellation/GetByName/${name}`)
                 .then(res => res.data)
         ),
-        postProduct: (data) => (
-            postAPI("Product", data)
+        postAppellation: (data) => (
+            postAPI("Appellation", data)
                 .then(res => res.data)
         ),
-        putProduct: (id, data) => (
-            putAPI(`Product/${id}`, data)
+        putAppellation: (id, data) => (
+            putAPI(`Appellation/${id}`, data)
                 .then(res => res.data)
         ),
-        deleteProduct: (id) => (
-            deleteAPI(`Product/${id}`)
+        deleteAppellation: (id) => (
+            deleteAPI(`Appellation/${id}`)
                 .then(res => res.data)
         )
     };

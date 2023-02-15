@@ -7,12 +7,12 @@ import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import SpeedOutlinedIcon from '@mui/icons-material/SpeedOutlined';
-import ArticleOutlinedIcon from '@mui/icons-material/ArticleOutlined';
+import LiquorIcon from '@mui/icons-material/Liquor';
 import LocalShippingOutlinedIcon from '@mui/icons-material/LocalShippingOutlined';
-import SupportAgentOutlinedIcon from '@mui/icons-material/SupportAgentOutlined';
 import PeopleAltOutlinedIcon from '@mui/icons-material/PeopleAltOutlined';
 import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined';
 import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
+import LocalOfferIcon from '@mui/icons-material/LocalOffer';
 import { useNavigate } from "react-router-dom";
 import {styled} from "@mui/material/styles";
 import MuiDrawer from '@mui/material/Drawer';
@@ -102,8 +102,14 @@ const linksArray = [
     },
     {
         label: "Products",
-        icon: <ArticleOutlinedIcon/>,
+        icon: <LiquorIcon/>,
         to: "/admin/products",
+        notification: 0
+    },
+    {
+        label: "Offers",
+        icon: <LocalOfferIcon/>,
+        to: "/admin/offers",
         notification: 0
     },
     {
@@ -117,12 +123,8 @@ const linksArray = [
         icon: <PeopleAltOutlinedIcon/>,
         to: "/admin/users",
         notification: 0
-    }, {
-        label: "Support",
-        icon: <SupportAgentOutlinedIcon/>,
-        to: "/admin/Support",
-        notification: 3
-    }
+    },
+
 ]
 
 const secondLinksArray = [

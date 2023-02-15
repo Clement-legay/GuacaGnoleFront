@@ -2,6 +2,10 @@ import React, {createContext, useState} from 'react';
 import {ProductEntity} from "./Entity/ProductEntity";
 import {SupplierEntity} from "./Entity/SupplierEntity";
 import {UserEntity} from "./Entity/UserEntity";
+import {AppellationEntity} from "./Entity/AppellationEntity";
+import {OfferEntity} from "./Entity/OfferEntity";
+import Cookies from "js-cookie";
+import {resolve} from "chart.js/helpers";
 
 export const MainContext = createContext({
     themeStyle: "dark",
@@ -9,7 +13,6 @@ export const MainContext = createContext({
 
     routeName: null,
 
-    isAuth: false,
     token: null,
     user: null,
     role: null,
@@ -17,6 +20,7 @@ export const MainContext = createContext({
     products: [],
     suppliers: [],
     users: [],
+    appellations: [],
 
 
 
@@ -24,24 +28,54 @@ export const MainContext = createContext({
     // orders: [],
     ProductOffer: [],
     domains: [],
-    appellations: [],
     alcoholTypes: [],
 });
 
 export const MainProvider = ({ children }) => {
     const [themeStyle, setThemeStyle] = useState();
-    const [user, setUser] = useState(null);
     const [theme, setTheme] = useState(null);
     const [routeName, setRouteName] = useState(null);
-    const [token, setToken] = useState(null);
+
+    const [user, setUser] = useState(null);
+    const [token, setToken] = useState(undefined);
     const [role, setRole] = useState(null);
 
     const canAdmin = () => {
         return role === "admin";
     };
 
-    const isAuth = () => {
+    const hasToken = () => {
+        if (token === undefined) {
+            const cookedToken = Cookies.get("token");
+            if (cookedToken) {
+                setToken(cookedToken);
+            } else {
+                setToken(null);
+            }
+        }
+
         return token !== null;
+    };
+
+    const isAuth = () => {
+       return user !== null ? true : hasToken() ? undefined : false;
+    };
+
+    const setAuthUser = (item, remember) => {
+        setToken(item.jwtToken);
+        if (remember) {
+            Cookies.set("token", item.jwtToken, { expires: 14 });
+        }
+
+        setUser(item.username);
+        setRole(item.role ?? "admin");
+    };
+
+    const logUserOut = () => {
+        setToken(null);
+        setUser(null);
+        setRole(null);
+        Cookies.remove("token");
     };
 
     const state = {
@@ -52,9 +86,12 @@ export const MainProvider = ({ children }) => {
         token, setToken,
         role, setRole,
         isAuth, canAdmin,
+        setAuthUser, logUserOut,
         ...ProductEntity(),
         ...SupplierEntity(),
         ...UserEntity(),
+        ...AppellationEntity(),
+        ...OfferEntity(),
     };
 
     return (
@@ -143,27 +180,6 @@ export const MainProvider = ({ children }) => {
 //     ),
 //     deleteDomain: (id) => (
 //         deleteAPI(`Domain/${id}`)
-//     )
-// }
-//
-// const Appellation = {
-//     fetchAppellations: () => (
-//         fetchAPI("Appellation")
-//     ),
-//     fetchAppellationById: (id) => (
-//         fetchAPI(`Appellation/${id}`)
-//     ),
-//     fetchAppellationByName: (name) => (
-//         fetchAPI(`Appellation/GetByName/${name}`)
-//     ),
-//     postAppellation: (data) => (
-//         postAPI("Appellation", data)
-//     ),
-//     putAppellation: (id, data) => (
-//         putAPI(`Appellation/${id}`, data)
-//     ),
-//     deleteAppellation: (id) => (
-//         deleteAPI(`Appellation/${id}`)
 //     )
 // }
 //

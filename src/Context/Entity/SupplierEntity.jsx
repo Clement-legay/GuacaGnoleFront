@@ -9,8 +9,14 @@ export const SupplierEntity = () => {
         fetchSuppliers: (store = false) => (
             fetchAPI("Furnisher")
                 .then((res) => {
+                    res.data = res.data.length > 0 ? res.data.map(
+                        (supplier) => {
+                            supplier.id = supplier.furnisherId;
+                            delete supplier.furnisherId;
+                            return supplier;
+                        }
+                    ) : [];
                     if (store) {
-                        console.log(res.data);
                         setSuppliers(res.data);
                     }
                     return res.data;

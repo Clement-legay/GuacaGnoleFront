@@ -34,8 +34,9 @@ const JwtRegister = () => {
                 firstName: values.firstName, lastName: values.lastName,
                 phone: values.phone
             });
-            if (result.status === 200) {
-                navigate('/session/login', { replace: true });
+            if (result.message === 'Registration successful') {
+                console.log('Registration successful');
+                navigate('/session/signin');
             }
             setLoading(false);
         } catch (e) {
@@ -194,7 +195,7 @@ const JwtRegister = () => {
                                         <Typography>
                                             Already have an account?
                                             <NavLink
-                                                to="/session/login"
+                                                to="/session/signin"
                                                 style={{
                                                     color: "#fff",
                                                     marginLeft: 5

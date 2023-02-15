@@ -1,13 +1,17 @@
-import {Fragment, useContext} from "react";
+import {Fragment, useContext, useEffect, useState} from "react";
 import {MainContext} from "../../../Context/MainContext";
 import {Card, CardContent, Grid} from "@mui/material";
 import DataTable from "../PagePart/DataTable";
-import HorizontalBarGraph from "../PagePart/HorizontalBarGraph";
+import EchartGraph from "../PagePart/EchartGraph";
+import ManageProductDialog from "./Component/ManageProductDialog";
 
 const Products = () => {
-    const { products, fetchProducts, setRouteName } = useContext(MainContext);
+    const { products, fetchProducts, setRouteName, deleteProduct } = useContext(MainContext);
+    const [selected, setSelected] = useState([]);
 
-    setRouteName("Products");
+    useEffect(() => {
+        setRouteName("Products");
+    }, [setRouteName]);
 
     return (
         <Fragment>
@@ -15,13 +19,17 @@ const Products = () => {
                 <Grid container spacing={3}>
                     <Grid item xs={12} lg={10}>
                         <Card sx={{ px: 3, py: 2, mb: 3, borderRadius: "10px" }}>
-                            <HorizontalBarGraph data={products} height={300} />
+                            <EchartGraph data={products} selected={selected} chartOptions={chartOptions} height={300} />
 
                             <CardContent>
                                 <DataTable
                                     data={products}
                                     columns={columns}
                                     fetch={fetchProducts}
+                                    deleteRequest={deleteProduct}
+                                    selected={selected}
+                                    setSelected={setSelected}
+                                    dialogCreate={ManageProductDialog}
                                 />
                             </CardContent>
                         </Card>
@@ -37,11 +45,20 @@ export default Products;
 const columns = [
     {
         id: "id",
-        label: "Product",
+        label: "id",
         minWidth: 50,
         align: "center",
         disablePadding: false,
-        sortable: false,
+        sortable: true,
+        sortFunction: (data, order) => {
+            return data.sort((a, b) => {
+                if (order === "asc") {
+                    return a.id - b.id;
+                } else {
+                    return b.id - a.id;
+                }
+            });
+        },
     },
     {
         id: "name",
@@ -50,6 +67,15 @@ const columns = [
         align: "center",
         disablePadding: false,
         sortable: true,
+        sortFunction: (data, order) => {
+            return data.sort((a, b) => {
+                if (order === "asc") {
+                    return a.name.localeCompare(b.name);
+                } else {
+                    return b.name.localeCompare(a.name);
+                }
+            });
+        },
     },
     {
         id: "alcoholDegree",
@@ -58,6 +84,15 @@ const columns = [
         align: "center",
         disablePadding: false,
         sortable: true,
+        sortFunction: (data, order) => {
+            return data.sort((a, b) => {
+                if (order === "asc") {
+                    return a.alcoholDegree - b.alcoholDegree;
+                } else {
+                    return b.alcoholDegree - a.alcoholDegree;
+                }
+            });
+        },
     },
     {
         id: "millesime",
@@ -66,6 +101,15 @@ const columns = [
         align: "center",
         disablePadding: false,
         sortable: true,
+        sortFunction: (data, order) => {
+            return data.sort((a, b) => {
+                if (order === "asc") {
+                    return a.millesime - b.millesime;
+                } else {
+                    return b.millesime - a.millesime;
+                }
+            });
+        },
     },
     {
         id: "price",
@@ -74,6 +118,15 @@ const columns = [
         align: "center",
         disablePadding: false,
         sortable: true,
+        sortFunction: (data, order) => {
+            return data.sort((a, b) => {
+                if (order === "asc") {
+                    return a.price - b.price;
+                } else {
+                    return b.price - a.price;
+                }
+            });
+        },
     },
     {
         id: "stock",
@@ -82,6 +135,15 @@ const columns = [
         align: "center",
         disablePadding: false,
         sortable: true,
+        sortFunction: (data, order) => {
+            return data.sort((a, b) => {
+                if (order === "asc") {
+                    return a.stock - b.stock;
+                } else {
+                    return b.stock - a.stock;
+                }
+            });
+        },
     },
     {
         id: "alcoholTypeId",
@@ -90,6 +152,15 @@ const columns = [
         align: "center",
         disablePadding: false,
         sortable: true,
+        sortFunction: (data, order) => {
+            return data.sort((a, b) => {
+                if (order === "asc") {
+                    return a.alcoholTypeId - b.alcoholTypeId;
+                } else {
+                    return b.alcoholTypeId - a.alcoholTypeId;
+                }
+            });
+        },
     },
     // {
     //     id: "appellationId",
@@ -128,5 +199,12 @@ const columns = [
     //     align: "left",
     // },
 ];
+
+const chartOptions = {
+    title: "Offers",
+    type: "bar",
+    dataName: "name",
+    dataValue: "stock",
+};
 
 

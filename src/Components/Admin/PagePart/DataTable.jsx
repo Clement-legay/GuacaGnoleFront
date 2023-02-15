@@ -7,9 +7,16 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
-import {Box, Checkbox, Grid, TableSortLabel, Typography} from "@mui/material";
+import {Box, Button, Checkbox, Grid, TableSortLabel, Typography} from "@mui/material";
 import {visuallyHidden} from "@mui/utils";
-
+import RefreshIcon from '@mui/icons-material/Refresh';
+import AddIcon from '@mui/icons-material/Add';
+import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
+import {LoadingButton} from "@mui/lab";
+import ConfirmDeleteDialog from "./ConfirmDeleteDialog";
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import IconButton from "@mui/material/IconButton";
+import ManageOfferDialog from "../Offers/Component/ManageOfferDialog";
 
 const EnhancedTableHead = ({ onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort, columns }) => {
     const createSortHandler = (property) => (event) => {
@@ -53,19 +60,33 @@ const EnhancedTableHead = ({ onSelectAllClick, order, orderBy, numSelected, rowC
                         )}
                     </TableCell>
                 ))}
+                <TableCell align="right">Actions</TableCell>
             </TableRow>
         </TableHead>
     );
 }
 
-const DataTable = ({ data, columns, fetch }) => {
-    const [selected, setSelected] = useState([]);
-    const [order, setOrder] = useState('asc');
-    const [orderBy, setOrderBy] = useState(undefined);
+const DataTable = ({ data, columns, fetch, deleteRequest, selected, setSelected }) => {
     const [refresh, setRefresh] = useState(true);
-    const [loading, setLoading] = useState(true);
+
+    // table display
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(10);
+
+    // filter data
+    const [order, setOrder] = useState('asc');
+    const [orderBy, setOrderBy] = useState('id');
+    const [sortedData, setSortedData] = useState([]);
+
+    // delete dialog
+    const [deleteConfirm, setDeleteConfirm] = useState(false);
+    const [deleting, setDeleting] = useState(false);
+
+    // requests states
+    const [addRequest, setAddRequest] = useState(false);
+    const [editRequest, setEditRequest] = useState(null);
+
+    const loading = refresh && sortedData.length > 0;
 
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
@@ -113,19 +134,48 @@ const DataTable = ({ data, columns, fetch }) => {
 
     useEffect(() => {
         if (refresh) {
-            fetch(true);
-            setRefresh(false);
+            setTimeout(() => {
+                fetch(true);
+                setRefresh(false);
+            }, 500);
+        }
+    }, [refresh, fetch]);
+
+    useEffect(() => {
+        if (deleting && selected.length > 0) {
+            deleteRequest(selected);
+
+            setDeleting(false);
+            setDeleteConfirm(false);
+            setSelected([]);
+            setRefresh(true);
         }
 
-        if (data.length > 0) {
-            setLoading(false);
+    }, [deleting, selected, deleteRequest, setRefresh, setSelected, setDeleting, setDeleteConfirm]);
+
+
+    // handle sorting
+    useEffect(() => {
+        if (orderBy !== undefined) {
+            const propertyColumn = columns.find(column => column.id === orderBy);
+            // const dataFiltered = data = data.filter(row => row[orderBy] !== null);
+            const sortedData = propertyColumn.sortFunction(data, order);
+
+            setSortedData(sortedData);
+        } else {
+            setSortedData(data);
         }
-    }, [setRefresh, setLoading, data, fetch, refresh]);
+    }, [data, setSortedData, orderBy, order, columns]);
+
 
 
     return (
         <Box>
-            <Grid container alignItems="center" justifyContent="space-between">
+            <ManageOfferDialog addRequest={addRequest} setAddRequest={setAddRequest} setRefresh={setRefresh} item={editRequest} setEditRequest={setEditRequest} />
+            <Grid container alignItems="center" justifyContent="space-between" sx={{mb:2}}>
+
+                <ConfirmDeleteDialog deleteConfirm={deleteConfirm} selectedLength={selected.length} deleting={deleting} setDeleting={setDeleting}/>
+
                 <Grid item>
                     <Typography variant="caption" sx={{
                         fontSize: "1.5em",
@@ -143,13 +193,48 @@ const DataTable = ({ data, columns, fetch }) => {
                         {selected.length} selected
                     </Typography>
                 </Grid>
-            </Grid>
-            <Grid container alignItems="center" justifyContent="space-between" sx={{py:1}}>
                 <Grid item>
+                    <Button
+                        size="small"
+                        sx={{ml: 1}}
+                        onClick={() => setSelected([])}
+                        disabled={selected.length === 0}
+                        color={selected.length === 0 ? "inherit" : "secondary"}
+                    >
+                        Clear
+                    </Button>
+                    <LoadingButton
+                        variant="outlined"
+                        size="small"
+                        onClick={() => setRefresh(true)}
+                        loading={loading}
+                        color="primary"
+                    >
+                        <RefreshIcon/>
+                    </LoadingButton>
+                    <Button
+                        variant="outlined"
+                        size="small"
+                        sx={{ml: 1}}
+                        onClick={() => setDeleteConfirm(true)}
+                        disabled={selected.length === 0}
+                        color={selected.length === 0 ? "inherit" : "error"}
+                    >
+                        <DeleteOutlineIcon/>
+                    </Button>
+                    <Button
+                        variant="contained"
+                        size="small"
+                        sx={{ml: 1}}
+                        onClick={() => setAddRequest(true)}
+                    >
+                        <AddIcon/>
+                    </Button>
+
 
                 </Grid>
             </Grid>
-            <TableContainer sx={{ maxHeight: 440, borderRadius: "20px" }}>
+            <TableContainer sx={{ minHeight: '70vh', borderRadius: "20px" }}>
                 <Table stickyHeader aria-label="sticky table">
                     <EnhancedTableHead
                         columns={columns}
@@ -168,14 +253,15 @@ const DataTable = ({ data, columns, fetch }) => {
                                 </TableCell>
                             </TableRow>
                         ) : (
-                            data.map((row, index) => {
+                            sortedData
+                                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                                .map((row, index) => {
                                     const isItemSelected = selected.indexOf(row.id) !== -1;
                                     const labelId = `enhanced-table-checkbox-${index}`;
 
                                     return (
                                         <TableRow
                                             hover
-                                            onClick={(event) => handleSelectClick(event, row.id)}
                                             role="checkbox"
                                             aria-checked={isItemSelected}
                                             tabIndex={-1}
@@ -185,21 +271,30 @@ const DataTable = ({ data, columns, fetch }) => {
                                             <TableCell padding="checkbox">
                                                 <Checkbox
                                                     checked={isItemSelected}
+                                                    onClick={(event) => handleSelectClick(event, row.id)}
                                                     inputProps={{ 'aria-labelledby': labelId }}
                                                 />
                                             </TableCell>
                                             {columns.map((column, index) => {
-                                                const value = row[column.id];
+                                                const value = row[column.id] ? row[column.id] : "";
                                                 return (
                                                     <TableCell key={index} align={column.align}>
-                                                        {column.format && typeof value === 'number' ? column.format(value) : value}
+                                                        {column.format ? column.format(value) : value}
                                                     </TableCell>
                                                 );
                                             })}
+                                            <TableCell align="right">
+                                                <IconButton
+                                                    size="small"
+                                                    onClick={() => setEditRequest(row)}
+                                                >
+                                                    <VisibilityIcon/>
+                                                </IconButton>
+                                            </TableCell>
                                         </TableRow>
                                     );
-                                }
-                            ))}
+                                })
+                        )}
                     </TableBody>
                 </Table>
             </TableContainer>

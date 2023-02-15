@@ -2,12 +2,12 @@ import axios from 'axios';
 const API_URL = process.env.REACT_APP_DEV_API_LINK;
 // const API_KEY = process.env.REACT_APP_DEV_API_KEY;
 
-const requestAPI = (token) => {
+const requestAPI = (params=null) => {
     return axios.create({
         baseURL: API_URL,
         headers: {
-            'Content-Type': 'application/json',
-            'Authorization': token ? `Bearer ${token}` : ''
+            'Content-Type':  params ? params.file ? "multipart/form-data" : 'application/json' : "application/json",
+            'Authorization': params ? params.token ? `Bearer ${params.token}` : '' : ''
         }
     });
 };
@@ -22,9 +22,9 @@ export const fetchAPI = async (url, token=null) => {
     }
 };
 
-export const postAPI = (url, data, token=null) => {
+export const postAPI = (url, data, params={token:null, file:false}) => {
     try {
-        const response = requestAPI(token).post(url, data);
+        const response = requestAPI(params).post(url, data);
         return Promise.resolve(response);
     } catch (error) {
         console.log(error);
@@ -33,22 +33,22 @@ export const postAPI = (url, data, token=null) => {
 }
 
 export const putAPI = (url, data, token=null) => {
-    return requestAPI(token).put(url, data)
-        .then((response) => {
-            return response;
-        })
-        .catch((error) => {
-            console.log(error);
-        });
+    try {
+        const response = requestAPI(token).put(url, data);
+        return Promise.resolve(response);
+    } catch (error) {
+        console.log(error);
+        return [];
+    }
 }
 
 export const deleteAPI = (url, token=null) => {
-    return requestAPI(token).delete(url)
-        .then((response) => {
-            return response;
-        })
-        .catch((error) => {
-            console.log(error);
-        });
+    try {
+        const response = requestAPI(token).delete(url);
+        return Promise.resolve(response);
+    } catch (error) {
+        console.log(error);
+        return [];
+    }
 }
 

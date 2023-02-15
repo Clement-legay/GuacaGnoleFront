@@ -1,4 +1,4 @@
-import React, {useContext} from 'react';
+import React, {useContext, useEffect} from 'react';
 import {Route, Routes} from 'react-router-dom';
 
 import AdminLayout from '../Components/Admin/AdminLayout/AdminLayout';
@@ -12,63 +12,81 @@ import {MainContext} from "../Context/MainContext";
 import NotFound from "../Components/Sessions/NotFound";
 import LoginForm from "../Components/Sessions/LoginForm";
 import RegisterForm from "../Components/Sessions/RegisterForm";
-import {CssBaseline} from "@mui/material";
+import {CircularProgress, CssBaseline} from "@mui/material";
 import SessionLayout from "../Components/Sessions/SessionLayout";
 import ForgotPassword from "../Components/Sessions/ForgotPassword";
+import Home from "../Components/Customer/Home/Home";
+import Offers from "../Components/Admin/Offers/Offers";
+import {Box} from "@mui/system";
 
 const PathRoutes = () => {
-    const { isAuth, canAdmin } = useContext(MainContext)
+    const { isAuth, canAdmin, postToken, token, setAuthUser, user } = useContext(MainContext)
+    const loading = token === undefined || (token && !user)
+
+    useEffect(() => {
+        if (isAuth() === undefined && token) {
+            try {
+                const result = postToken(token)
+                setAuthUser(result);
+            } catch (e) {
+                console.log(e)
+            }
+        }
+    }, [isAuth, token, postToken, setAuthUser])
 
     const adminRoutes = () => {
-        if (!isAuth()) {
-            if (!canAdmin()) {
+        if (isAuth()) {
+            if (canAdmin()) {
                 return (
                     <AdminLayout>
                         <Routes>
-                            <Route path="/" element={<DashBoard />} />
-                            <Route path="/suppliers" element={<Suppliers />} />
-                            <Route path="/products" element={<Products />} />
-                            <Route path="/users" element={<Users />} />
-                            <Route path="*" element={<NotFound />}/>
+                            <Route path="/" element={<DashBoard/>}/>
+                            <Route path="/suppliers" element={<Suppliers/>}/>
+                            <Route path="/products" element={<Products/>}/>
+                            <Route path="/users" element={<Users/>}/>
+                            <Route path="/offers" element={<Offers/>}/>
+                            <Route path="*" element={<NotFound/>}/>
                         </Routes>
                     </AdminLayout>
                 )
-            } else {
-                return null
             }
-        } else {
-            return null
         }
+        return <NotFound/>
     };
 
     const userRoutes = () => (
         <CustomerLayout>
+            <CssBaseline/>
             <Routes>
-                <Route path="/" component={DashBoard} />
-                <Route path="*" element={<NotFound />}/>
+                <Route path="/" element={<Home />} />
+                <Route path="*" element={<NotFound/>}/>
             </Routes>
         </CustomerLayout>
     )
 
     const sessionRoutes = () => (
         <SessionLayout>
-            <CssBaseline />
             <Routes>
-                <Route path="/login" element={<LoginForm />} />
-                <Route path="/register" element={<RegisterForm />} />
+                <Route path="/signin" element={<LoginForm />} />
+                <Route path="/signup" element={<RegisterForm />} />
                 <Route path="/forgot-password" element={<ForgotPassword />} />
                 <Route path="*" element={<NotFound />}/>
             </Routes>
         </SessionLayout>
     )
 
-
-    return (
-        <Routes>
-            <Route path="/session/*" element={sessionRoutes()} />
-            <Route path="/admin/*" element={adminRoutes()}/>
-            <Route path="/*" element={userRoutes()}/>
-        </Routes>
-    )};
+    return loading ?
+        (
+            <Box sx={{ width: '100%', height: '98vh', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                <CircularProgress />
+            </Box>
+        ) : (
+            <Routes>
+                <Route path="/session/*" element={sessionRoutes()} />
+                <Route path="/admin/*" element={adminRoutes()}/>
+                <Route path="/*" element={userRoutes()} />
+            </Routes>
+        )
+};
 
 export default PathRoutes;

@@ -1,7 +1,7 @@
 import { LoadingButton } from '@mui/lab';
 import {Card, Checkbox, Grid, TextField, Typography} from '@mui/material';
 import {useContext, useState} from 'react';
-import { NavLink } from 'react-router-dom';
+import {NavLink, useNavigate} from 'react-router-dom';
 import {MainContext} from "../../Context/MainContext";
 import { Formik } from 'formik';
 import * as Yup from 'yup';
@@ -20,21 +20,21 @@ const validationSchema = Yup.object().shape({
 });
 
 const LoginForm = () => {
-    // const navigate = useNavigate();
+    const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
     const  [errorMsg, setErrorMsg]  = useState('');
-    const { postLogin } = useContext(MainContext)
+    const { postLogin, setAuthUser } = useContext(MainContext)
 
     const handleFormSubmit = async (values) => {
         setLoading(true);
         try {
-            const result = await postLogin(values.email, values.password);
-            if (result.status === "failed") {
-                setLoading(false);
-                setErrorMsg("Invalid email or password");
-                console.log(errorMsg);
+            const result = await postLogin({username: values.username, password: values.password});
+            if (result.status === 200) {
+                setAuthUser(result.data, values.remember);
+                navigate('/');
             }
         } catch (e) {
+            setErrorMsg("Invalid username or password");
             setLoading(false);
         }
     };
@@ -56,6 +56,7 @@ const LoginForm = () => {
                                 initialValues={{
                                     username: '',
                                     password: '',
+                                    remember: false,
                                 }}
                                 validationSchema={validationSchema}
                             >
@@ -116,7 +117,7 @@ const LoginForm = () => {
                                             </NavLink>
                                         </FlexBox>
 
-                                        <Grid container spacing={2} sx={{ mt: 2 }} alignContent={'center'} justifyContent={'start'}>
+                                        <Grid container spacing={2} sx={{ my: 2 }} alignContent={'center'} justifyContent={'start'}>
                                             <Grid item xs={12} lg={4}>
                                                 <LoadingButton
                                                     fullWidth
@@ -129,7 +130,7 @@ const LoginForm = () => {
                                                 </LoadingButton>
                                             </Grid>
 
-                                            <Grid item xs={12} lg={4}>
+                                            <Grid item xs={12} lg={8}>
                                                 <Typography variant="body2" color="red" sx={{ mt: 1 }}>
                                                     {errorMsg}
                                                 </Typography>
@@ -139,7 +140,7 @@ const LoginForm = () => {
                                         <Typography>
                                             Don't have an account?
                                             <NavLink
-                                                to="/session/register"
+                                                to="/session/signup"
                                                 style={{
                                                     color: "#dedede",
                                                     marginLeft: 5

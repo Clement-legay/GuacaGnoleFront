@@ -3,14 +3,14 @@ import {MainContext} from "../../../Context/MainContext";
 import {Card, CardContent, Grid} from "@mui/material";
 import DataTable from "../PagePart/DataTable";
 import EchartGraph from "../PagePart/EchartGraph";
-import ManageUserDialog from "./Component/ManageUserDialog";
+import ManageOfferDialog from "./Component/ManageOfferDialog";
 
 const Offers = () => {
-    const { users, fetchUsers, setRouteName, deleteUser } = useContext(MainContext);
+    const { offers, fetchOffers, setRouteName, deleteOffer } = useContext(MainContext);
     const [selected, setSelected] = useState([]);
 
     useEffect(() => {
-        setRouteName("Users");
+        setRouteName("Offers");
     }, [setRouteName]);
 
     return (
@@ -19,17 +19,17 @@ const Offers = () => {
                 <Grid container spacing={3}>
                     <Grid item xs={12} lg={10}>
                         <Card sx={{ px: 3, py: 2, mb: 3, borderRadius: "10px" }}>
-                            <EchartGraph data={users} selected={selected} chartOptions={chartOptions} height={300} />
+                            <EchartGraph data={offers} selected={selected} chartOptions={chartOptions} height={300} />
 
                             <CardContent>
                                 <DataTable
-                                    data={users}
+                                    data={offers}
                                     columns={columns}
-                                    fetch={fetchUsers}
-                                    deleteRequest={deleteUser}
+                                    fetch={fetchOffers}
+                                    deleteRequest={deleteOffer}
                                     selected={selected}
                                     setSelected={setSelected}
-                                    dialogCreate={ManageUserDialog}
+                                    dialogCreate={ManageOfferDialog}
                                 />
                             </CardContent>
                         </Card>
@@ -61,8 +61,8 @@ const columns = [
         },
     },
     {
-        id: "username",
-        label: "Username",
+        id: "name",
+        label: "Name",
         minWidth: 50,
         align: "center",
         disablePadding: false,
@@ -70,94 +70,133 @@ const columns = [
         sortFunction: (data, order) => {
             return data.sort((a, b) => {
                 if (order === "asc") {
-                    return a.username.localeCompare(b.username);
+                    return a.name.localeCompare(b.name);
                 } else {
-                    return b.username.localeCompare(a.username);
+                    return b.name.localeCompare(a.name);
                 }
             });
         },
     },
     {
-        id: "firstName",
-        label: "First Name",
+        id: "description",
+        label: "Description",
         minWidth: 50,
         align: "center",
         disablePadding: false,
         sortable: true,
+        format: (text) => {
+            return text.length > 50 ? text.substring(0, 50) + "..." : text;
+        },
         sortFunction: (data, order) => {
             return data.sort((a, b) => {
                 if (order === "asc") {
-                    return a.firstName.localeCompare(b.firstName);
+                    return a.description.localeCompare(b.description);
                 } else {
-                    return b.firstName.localeCompare(a.firstName);
+                    return b.description.localeCompare(a.description);
                 }
             });
         },
     },
     {
-        id: "lastName",
-        label: "Last Name",
+        id: "price",
+        label: "Price",
         minWidth: 50,
         align: "center",
         disablePadding: false,
         sortable: true,
+        format: (text) => {
+            return text + " €";
+        },
         sortFunction: (data, order) => {
             return data.sort((a, b) => {
                 if (order === "asc") {
-                    return a.lastName.localeCompare(b.lastName);
+                    return a.price - b.price;
                 } else {
-                    return b.lastName.localeCompare(a.lastName);
+                    return b.price - a.price;
                 }
             });
         },
     },
     {
-        id: "email",
-        label: "Email",
+        id: "imageUrl",
+        label: "Image",
+        minWidth: 50,
+        align: "center",
+        disablePadding: false,
+        sortable: false,
+        format: (url) => {
+            return <img src={url} alt="offer" style={{width: "50px", height: "50px"}}/>
+        }
+    },
+    {
+        id: "productOffers",
+        label: "Products",
+        minWidth: 70,
+        align: "center",
+        disablePadding: false,
+        sortable: false,
+        format: (text) => {
+            return text.length > 0 ? text.map((product, index) => {
+                return <div key={index}>{product.product.name}</div>
+            }) : "No products";
+        }
+    },
+    {
+        id: "deadline",
+        label: "Deadline",
         minWidth: 50,
         align: "center",
         disablePadding: false,
         sortable: true,
+        format: (text) => {
+            return new Date(text).toLocaleDateString();
+        },
         sortFunction: (data, order) => {
             return data.sort((a, b) => {
                 if (order === "asc") {
-                    return a.email.localeCompare(b.email);
+                    return new Date(a.deadline) - new Date(b.deadline);
                 } else {
-                    return b.email.localeCompare(a.email);
+                    return new Date(b.deadline) - new Date(a.deadline);
                 }
             });
         },
     },
     {
-        id: "phone",
-        label: "Phone",
+        id: "isB2B",
+        label: "B2B",
         minWidth: 50,
         align: "center",
         disablePadding: false,
         sortable: true,
+        format: (text) => {
+            return text ? "Yes" : "No";
+        },
         sortFunction: (data, order) => {
             return data.sort((a, b) => {
                 if (order === "asc") {
-                    return a.phone.localeCompare(b.phone);
+                    return a.isB2B - b.isB2B;
                 } else {
-                    return b.phone.localeCompare(a.phone);
+                    return b.isB2B - a.isB2B;
                 }
             });
         },
     },
     {
-        id: "role",
-        label: "Role",
+        id: "isDraft",
+        label: "Draft",
         minWidth: 50,
         align: "center",
         disablePadding: false,
         sortable: true,
+        format: (text) => {
+            return text ? "Yes" : "No";
+        },
         sortFunction: (data, order) => {
             return data.sort((a, b) => {
                 if (order === "asc") {
-                    return a.role.localeCompare(b.role);
+                    return a.isDraft - b.isDraft;
                 } else {
-                    return b.role.localeCompare(a.role);
+                    return b.isDraft - a.isDraft;
                 }
             });
         },
@@ -165,8 +204,9 @@ const columns = [
 ];
 
 const chartOptions = {
-    title: "Users",
+    title: "Offers",
     type: "bar",
-    dataName: "username",
-    dataValue: "phone",
+    dataName: "name",
+    dataValue: "price",
 };
+

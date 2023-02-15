@@ -61,18 +61,16 @@ const getTheme = (mode) => ({
 
 });
 
-const ThemeAdmin = () => {
-    let { theme, setTheme } = useContext(MainContext);
+const ThemeAdmin = (theme, setTheme) => {
 
     if (theme === null) {
-        theme = Cookies.get('theme');
-        if (theme === null) {
-            theme = 'light';
+        if (Cookies.get('theme') === 'dark') {
+            setTheme('dark');
+        } else {
+            setTheme('light');
         }
-        setTheme(theme);
-    } else {
-        Cookies.set('theme', theme);
     }
+    Cookies.set('theme', theme);
 
     return createTheme({
         ...getTheme(theme),
