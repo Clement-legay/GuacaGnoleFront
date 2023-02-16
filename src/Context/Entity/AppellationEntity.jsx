@@ -1,8 +1,10 @@
 import {deleteAPI, fetchAPI, postAPI, putAPI} from "../../Utils/axios";
-import {useState} from "react";
+import {useContext, useState} from "react";
+import {MainContext} from "../MainContext";
 
 export const AppellationEntity = () => {
     const [appellations, setAppellations] = useState([]);
+    const { token } = useContext(MainContext);
 
     return {
         appellations: appellations,
@@ -31,15 +33,15 @@ export const AppellationEntity = () => {
                 .then(res => res.data)
         ),
         postAppellation: (data) => (
-            postAPI("Appellation", data)
+            postAPI("Appellation", data, {token: token})
                 .then(res => res.data)
         ),
         putAppellation: (id, data) => (
-            putAPI(`Appellation/${id}`, data)
+            putAPI(`Appellation/${id}`, data, {token: token})
                 .then(res => res.data)
         ),
         deleteAppellation: (id) => (
-            deleteAPI(`Appellation/${id}`)
+            deleteAPI(`Appellation/${id}`, {token: token})
                 .then(res => res.data)
         )
     };

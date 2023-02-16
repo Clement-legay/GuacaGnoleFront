@@ -1,10 +1,13 @@
 import {deleteAPI, fetchAPI, postAPI} from "../../Utils/axios";
-import {useState} from "react";
+import {useContext, useState} from "react";
+import {MainContext} from "../MainContext";
 
-const userLinkPrefix = "/api/Auth";
+
+const userLinkPrefix = "/Auth";
 
 export const UserEntity = () => {
     const [users, setUsers] = useState([]);
+    const { token } = useContext(MainContext);
 
     return {
         users: users,
@@ -51,7 +54,8 @@ export const UserEntity = () => {
             }
         },
         deleteUser: (id) => (
-            deleteAPI(`${userLinkPrefix}/delete/${id}`)
+            deleteAPI(`${userLinkPrefix}/DeleteUser/${id}`)
+                .then(res => res.data)
         ),
     }
 };

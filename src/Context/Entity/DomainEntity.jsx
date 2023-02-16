@@ -1,38 +1,40 @@
 import {deleteAPI, fetchAPI, postAPI, putAPI} from "../../Utils/axios";
-import {useState} from "react";
+import {useContext, useState} from "react";
+import {MainContext} from "../MainContext";
 
-export const ProductEntity = () => {
-    const [products, setProducts] = useState([]);
+export const DomainEntity = () => {
+    const [domains, setDomains] = useState([]);
+    const { token } = useContext(MainContext);
 
     return {
-        products: products,
-        fetchProducts: (store = false) => (
-            fetchAPI("/Product")
+        domains: domains,
+        fetchDomains: (store = false) => (
+            fetchAPI("/Domain")
                 .then((res) => {
                     if (store) {
-                        setProducts(res.data);
+                        setDomains(res.data);
                     }
                     return res.data;
                 })
         ),
-        fetchProductById: (id) => (
-            fetchAPI(`Product/${id}`)
+        fetchDomainById: (id) => (
+            fetchAPI(`Domain/${id}`)
                 .then(res => res.data)
         ),
-        fetchProductStock: (id) => (
-            fetchAPI(`Product/Stock/${id}`)
+        fetchDomainByName: (name) => (
+            fetchAPI(`Domain/ByName/${name}`)
                 .then(res => res.data)
         ),
-        postProduct: (data) => (
-            postAPI("Product", data)
+        postDomain: (data) => (
+            postAPI("Domain", data, {token: token})
                 .then(res => res.data)
         ),
-        putProduct: (id, data) => (
-            putAPI(`Product/${id}`, data)
+        putDomain: (id, data) => (
+            putAPI(`Domain/${id}`, data, {token: token})
                 .then(res => res.data)
         ),
-        deleteProduct: (id) => (
-            deleteAPI(`Product/${id}`)
+        deleteDomain: (id) => (
+            deleteAPI(`Domain/${id}`, {token: token})
                 .then(res => res.data)
         )
     };

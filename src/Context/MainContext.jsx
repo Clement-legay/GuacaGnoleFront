@@ -5,6 +5,13 @@ import {UserEntity} from "./Entity/UserEntity";
 import {AppellationEntity} from "./Entity/AppellationEntity";
 import {OfferEntity} from "./Entity/OfferEntity";
 import Cookies from "js-cookie";
+import {CommentEntity} from "./Entity/CommentEntity";
+import {DomainEntity} from "./Entity/DomainEntity";
+import {RegionEntity} from "./Entity/RegionEntity";
+import {ProductOfferEntity} from "./Entity/ProductOfferEntity";
+import {AlcoholTypeEntity} from "./Entity/AlcoholTypeEntity";
+import {OrderEntity} from "./Entity/OrderEntity";
+import {InvoiceEntity} from "./Entity/InvoiceEntity";
 
 export const MainContext = createContext({
     themeStyle: "dark",
@@ -16,18 +23,18 @@ export const MainContext = createContext({
     user: null,
     role: null,
 
+    alcoholTypes: [],
+    appellations: [],
+    comments: [],
+    domains: [],
+    invoices: [],
+    offers: [],
+    orders: [],
     products: [],
+    productOffers: [],
+    regions: [],
     suppliers: [],
     users: [],
-    appellations: [],
-
-
-
-    regions: [],
-    // orders: [],
-    ProductOffer: [],
-    domains: [],
-    alcoholTypes: [],
 });
 
 export const MainProvider = ({ children }) => {
@@ -91,6 +98,13 @@ export const MainProvider = ({ children }) => {
         ...UserEntity(),
         ...AppellationEntity(),
         ...OfferEntity(),
+        ...CommentEntity(),
+        ...DomainEntity(),
+        ...RegionEntity(),
+        ...ProductOfferEntity(),
+        ...AlcoholTypeEntity(),
+        ...OrderEntity(),
+        ...InvoiceEntity()
     };
 
     return (

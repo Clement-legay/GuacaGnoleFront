@@ -1,8 +1,10 @@
 import {deleteAPI, fetchAPI, postAPI, putAPI} from "../../Utils/axios";
-import {useState} from "react";
+import {useContext, useState} from "react";
+import {MainContext} from "../MainContext";
 
 export const ProductEntity = () => {
     const [products, setProducts] = useState([]);
+    const { token } = useContext(MainContext);
 
     return {
         products: products,
@@ -31,15 +33,15 @@ export const ProductEntity = () => {
                 .then(res => res.data)
         ),
         postProduct: (data) => (
-            postAPI("Product", data)
+            postAPI("Product", data, {token: token})
                 .then(res => res.data)
         ),
         putProduct: (id, data) => (
-            putAPI(`Product/${id}`, data)
+            putAPI(`Product/${id}`, data, {token: token})
                 .then(res => res.data)
         ),
         deleteProduct: (id) => (
-            deleteAPI(`Product/${id}`)
+            deleteAPI(`Product/${id}`, {token: token})
                 .then(res => res.data)
         )
     };

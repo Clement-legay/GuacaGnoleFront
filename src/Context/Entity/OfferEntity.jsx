@@ -1,11 +1,13 @@
 import {deleteAPI, fetchAPI, postAPI, putAPI} from "../../Utils/axios";
-import {useState} from "react";
+import {useContext, useState} from "react";
+import {MainContext} from "../MainContext";
 const API_URL = process.env.REACT_APP_DEV_API_LINK;
 
 export const OfferEntity = () => {
     const [offers, setOffers] = useState([]);
     const [availableOffers, setAvailableOffers] = useState([]);
     const [unavailableOffers, setUnavailableOffers] = useState([]);
+    const { token } = useContext(MainContext);
 
 
     return {
@@ -49,10 +51,10 @@ export const OfferEntity = () => {
             fetchAPI("/Offer/unavailable")
                 .then((res) => {
                     res.data = res.data.length > 0 ? res.data.map(
-                        (offer) => {
-                            offer.id = offer.offerId;
-                            delete offer.offerId;
-                            return offer
+                        (item) => {
+                            item.id = item.offerId;
+                            delete item.offerId;
+                            return item
                         }
                     ) : [];
                     if (store) {
@@ -65,12 +67,16 @@ export const OfferEntity = () => {
             fetchAPI(`Offer/${id}`)
                 .then(res => res.data)
         ),
-        postOffer: (data) => (
-            postAPI("Offer", data)
+        fetchAvailability: (id) => (
+            fetchAPI(`Offer/CheckOfferIsAvailable/${id}`)
                 .then(res => res.data)
         ),
-        postOfferImage: (data) => (
-            postAPI("Offer/UploadFile", data, {file:true})
+        postOffer: (data) => (
+            postAPI("Offer", data, {token: token})
+                .then(res => res.data)
+        ),
+        postImage: (data) => (
+            postAPI("Offer/UploadFile", data, {file:true, token:token})
                 .then(res => `${API_URL}/${res.data}`)
         ),
         putOffer: (id, data) => (
@@ -78,15 +84,8 @@ export const OfferEntity = () => {
                 .then(res => res.data)
         ),
         deleteOffer: (id) => (
-            Array.isArray(id) ? id.forEach(
-                (id) => deleteAPI(`Offer/${id}`)
-                    .then(res => res.data)
-            ) : deleteAPI(`Offer/${id}`)
+            deleteAPI(`Offer/${id}`)
                 .then(res => res.data)
-        ),
-        fetchAvailability: (id) => (
-            fetchAPI(`Offer/CheckOfferIsAvailable/${id}`)
-                .then(res => res.data)
-        ),
+        )
     };
 };

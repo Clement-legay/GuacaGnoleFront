@@ -34,11 +34,11 @@ const JwtRegister = () => {
                 firstName: values.firstName, lastName: values.lastName,
                 phone: values.phone
             });
-            if (result.message === 'Registration successful') {
-                console.log('Registration successful');
+            console.log(result);
+            if (result.status === 201) {
                 navigate('/session/signin');
+                setLoading(false);
             }
-            setLoading(false);
         } catch (e) {
             console.log(e);
             setLoading(false);

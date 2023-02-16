@@ -1,5 +1,5 @@
 import {Card, Grid, Typography} from '@mui/material';
-import {Fragment, useContext} from 'react';
+import {Fragment, useContext, useEffect} from 'react';
 import Campaigns from './Shared/Campaigns';
 import DoughnutChart from './Shared/Doughnut';
 import StatCards from './Shared/StatCards';
@@ -12,8 +12,9 @@ const DashBoard = () => {
     const { palette } = useTheme();
     const { setRouteName } = useContext(MainContext);
 
-    setRouteName("DashBoard");
-
+    useEffect(() => {
+        setRouteName('Dashboard');
+    }, [setRouteName]);
 
     return (
         <Fragment>

@@ -1,38 +1,47 @@
 import {deleteAPI, fetchAPI, postAPI, putAPI} from "../../Utils/axios";
-import {useState} from "react";
+import {useContext, useState} from "react";
+import {MainContext} from "../MainContext";
 
-export const ProductEntity = () => {
-    const [products, setProducts] = useState([]);
+export const AlcoholTypeEntity = () => {
+    const [alcoholTypes, setAlcoholTypes] = useState([]);
+    const { token } = useContext(MainContext)
 
     return {
-        products: products,
-        fetchProducts: (store = false) => (
-            fetchAPI("/Product")
+        alcoholTypes: alcoholTypes,
+        fetchAlcoholTypes: (store = false) => (
+            fetchAPI("/AlcoholControllerType")
                 .then((res) => {
+                    res.data = res.data.length > 0 ? res.data.map(
+                        (item) => {
+                            item.id = item.alcoholTypeId;
+                            delete item.alcoholTypeId;
+                            return item
+                        }
+                    ) : [];
                     if (store) {
-                        setProducts(res.data);
+                        setAlcoholTypes(res.data);
                     }
                     return res.data;
                 })
         ),
-        fetchProductById: (id) => (
-            fetchAPI(`Product/${id}`)
+        fetchAlcoholTypeById: (id) => (
+            fetchAPI(`AlcoholControllerType/${id}`)
                 .then(res => res.data)
         ),
-        fetchProductStock: (id) => (
-            fetchAPI(`Product/Stock/${id}`)
+        fetchAlcoholTypeStock: (id) => (
+            fetchAPI(`AlcoholControllerType/Stock/${id}`)
                 .then(res => res.data)
         ),
-        postProduct: (data) => (
-            postAPI("Product", data)
+        postAlcoholType: (data) => (
+            postAPI("AlcoholControllerType", data, {token: token})
                 .then(res => res.data)
         ),
-        putProduct: (id, data) => (
-            putAPI(`Product/${id}`, data)
+        putAlcoholType: (id, data) => (
+            putAPI(`AlcoholControllerType/${id}`, data, {token: token})
                 .then(res => res.data)
         ),
-        deleteProduct: (id) => (
-            deleteAPI(`Product/${id}`)
+        deleteAlcoholType: (id) => (
+            deleteAPI(`AlcoholControllerType/${id}`, {token: token})
                 .then(res => res.data)
         )
     };

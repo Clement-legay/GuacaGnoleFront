@@ -3,7 +3,7 @@ import {
     Dialog,
     DialogContent,
     DialogTitle, FormControlLabel, FormLabel,
-    Grid, Input,
+    Grid,
     TextField,
 } from "@mui/material";
 import {Formik} from "formik";
@@ -12,7 +12,7 @@ import {AsynchronousAutocomplete} from "../../PagePart/AsynchronousAutocomplete"
 import {LoadingButton} from "@mui/lab";
 import {useContext, useEffect, useState} from "react";
 import {MainContext} from "../../../../Context/MainContext";
-import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+import ImageField from "../../PagePart/ImageField";
 
 
 const validationSchema = Yup.object().shape({
@@ -26,7 +26,7 @@ const validationSchema = Yup.object().shape({
 });
 
 const ManageOfferDialog = ({setRefresh, addRequest, setAddRequest, setEditRequest, item}) => {
-    const { postOffer, postOfferImage, putOffer } = useContext(MainContext)
+    const { postOffer, putOffer } = useContext(MainContext)
     const [open, setOpen] = useState(false);
     const [type, setType] = useState(undefined);
     const [loading, setLoading] = useState(false);
@@ -40,19 +40,6 @@ const ManageOfferDialog = ({setRefresh, addRequest, setAddRequest, setEditReques
         isDraft: false,
         productOffers: []
     });
-
-    const handleImageUpload = async (setFieldValue) => {
-        const file = document.getElementById("image").files[0];
-
-        const imgRender = document.getElementById("imageRender");
-        imgRender.src = URL.createObjectURL(file);
-
-        const formData = new FormData();
-        formData.append("image", file);
-        const response = await postOfferImage(formData);
-        setFieldValue("imageUrl", response);
-
-    };
 
     const handleFormSubmit = async (values) => {
         setLoading(true);
@@ -231,42 +218,7 @@ const ManageOfferDialog = ({setRefresh, addRequest, setAddRequest, setEditReques
                                     />
                                 </Grid>
                                 <Grid item xs={12}>
-                                    <Grid container={true} spacing={2} p={1} alignItems="center" justifyContent="center">
-                                        <Grid item>
-                                            <img
-                                                id="imageRender"
-                                                src={values.imageUrl !== "" ? values.imageUrl : "https://via.placeholder.com/150"}
-                                                width="150"
-                                                height="150"
-                                                alt={values.name}
-                                            />
-                                        </Grid>
-                                    </Grid>
-                                </Grid>
-
-                                <Grid item xs={12}>
-                                    <Input
-                                        fullWidth
-                                        id="image"
-                                        name="imageUrl"
-                                        label="Image"
-                                        type="file"
-                                        sx={{display: "none"}}
-                                        inputProps={{ accept: 'image/*' }}
-                                        onChange={() => handleImageUpload(setFieldValue)}
-                                    />
-                                    <label htmlFor="image">
-                                        <LoadingButton
-                                            fullWidth
-                                            component="span"
-                                            variant="contained"
-                                            loading={loading}
-                                            loadingPosition="start"
-                                            startIcon={<CloudUploadIcon />}
-                                        >
-                                            Upload Image
-                                        </LoadingButton>
-                                    </label>
+                                    <ImageField FieldValue={"imageUrl"} setFieldValue={setFieldValue} alt={values.name} initialValue={values.imageUrl}/>
                                 </Grid>
                                 <Grid item xs={12}>
                                     <AsynchronousAutocomplete

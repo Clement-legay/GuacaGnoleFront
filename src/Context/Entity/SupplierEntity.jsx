@@ -1,8 +1,10 @@
 import {deleteAPI, fetchAPI, postAPI, putAPI} from "../../Utils/axios";
-import {useState} from "react";
+import {useContext, useState} from "react";
+import {MainContext} from "../MainContext";
 
 export const SupplierEntity = () => {
     const [suppliers, setSuppliers] = useState([]);
+    const { token } = useContext(MainContext);
 
     return {
         suppliers: suppliers,
@@ -24,21 +26,53 @@ export const SupplierEntity = () => {
         ),
         fetchSupplierById: (id) => (
             fetchAPI(`Furnisher/${id}`)
-        ),
-        postSupplier: (data) => (
-            postAPI("Furnisher", data)
-        ),
-        putSupplier: (id, data) => (
-            putAPI(`Furnisher/${id}`, data)
-        ),
-        deleteSupplier: (id) => (
-            deleteAPI(`Furnisher/${id}`)
+                .then((res) => {
+                    res.data.id = res.data.furnisherId;
+                    delete res.data.furnisherId;
+                    return res.data;
+                })
         ),
         fetchSupplierProducts: (id) => (
             fetchAPI(`Furnisher/getProducts/${id}`)
+                .then((res) => {
+                    res.data = res.data.length > 0 ? res.data.map(
+                        (product) => {
+                            product.id = product.productId;
+                            delete product.productId;
+                            return product;
+                        }
+                    ) : [];
+                    return res.data;
+                })
         ),
         fetchSupplierByNames: (name) => (
             fetchAPI(`Furnisher/ByName/${name}`)
+                .then((res) => {
+                    res.data = res.data.length > 0 ? res.data.map(
+                        (supplier) => {
+                            supplier.id = supplier.furnisherId;
+                            delete supplier.furnisherId;
+                            return supplier;
+                        }
+                    ) : [];
+                    return res.data;
+                })
+        ),
+        postSupplier: (data) => (
+            postAPI("Furnisher", data, {token:token})
+                .then((res) => res)
+        ),
+        putSupplier: (id, data) => (
+            putAPI(`Furnisher/${id}`, data, {token:token})
+                .then((res) => res)
+
+        ),
+        deleteSupplier: (id) => (
+            Array.isArray(id) ? id.forEach(
+                (id) => deleteAPI(`Offer/${id}`, {token: token})
+                    .then(res => res.data)
+            ) : deleteAPI(`Offer/${id}`)
+                .then(res => res)
         )
     }
 };

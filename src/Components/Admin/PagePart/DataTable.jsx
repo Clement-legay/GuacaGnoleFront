@@ -143,12 +143,15 @@ const DataTable = ({ data, columns, fetch, deleteRequest, selected, setSelected 
 
     useEffect(() => {
         if (deleting && selected.length > 0) {
-            deleteRequest(selected);
+            deleteRequest(selected[0]);
+            setSelected(selected.slice(1));
+        }
+
+        if (selected.length === 0 && deleting) {
+            setRefresh(true);
 
             setDeleting(false);
             setDeleteConfirm(false);
-            setSelected([]);
-            setRefresh(true);
         }
 
     }, [deleting, selected, deleteRequest, setRefresh, setSelected, setDeleting, setDeleteConfirm]);
@@ -158,7 +161,6 @@ const DataTable = ({ data, columns, fetch, deleteRequest, selected, setSelected 
     useEffect(() => {
         if (orderBy !== undefined) {
             const propertyColumn = columns.find(column => column.id === orderBy);
-            // const dataFiltered = data = data.filter(row => row[orderBy] !== null);
             const sortedData = propertyColumn.sortFunction(data, order);
 
             setSortedData(sortedData);

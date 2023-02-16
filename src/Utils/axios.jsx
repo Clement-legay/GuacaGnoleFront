@@ -1,20 +1,19 @@
 import axios from 'axios';
 const API_URL = process.env.REACT_APP_DEV_API_LINK;
-// const API_KEY = process.env.REACT_APP_DEV_API_KEY;
 
-const requestAPI = (params=null) => {
+const RequestAPI = (params={token:null, file:false}) => {
     return axios.create({
         baseURL: API_URL,
         headers: {
-            'Content-Type':  params ? params.file ? "multipart/form-data" : 'application/json' : "application/json",
-            'Authorization': params ? params.token ? `Bearer ${params.token}` : '' : ''
+            'Content-Type':  params.file ? "multipart/form-data" : 'application/json',
+            'Authorization': params.token ? `Bearer ${params.token}` : ''
         }
     });
 };
 
-export const fetchAPI = async (url, token=null) => {
+export const fetchAPI = async (url, params={token:null, file:false}) => {
     try {
-        const response = await requestAPI(token).get(url);
+        const response = await RequestAPI(params).get(url);
         return Promise.resolve(response);
     } catch (error) {
         console.log(error);
@@ -24,7 +23,7 @@ export const fetchAPI = async (url, token=null) => {
 
 export const postAPI = (url, data, params={token:null, file:false}) => {
     try {
-        const response = requestAPI(params).post(url, data);
+        const response = RequestAPI(params).post(url, data);
         return Promise.resolve(response);
     } catch (error) {
         console.log(error);
@@ -32,9 +31,9 @@ export const postAPI = (url, data, params={token:null, file:false}) => {
     }
 }
 
-export const putAPI = (url, data, token=null) => {
+export const putAPI = (url, data, params={token:null, file:false}) => {
     try {
-        const response = requestAPI(token).put(url, data);
+        const response = RequestAPI(params).put(url, data);
         return Promise.resolve(response);
     } catch (error) {
         console.log(error);
@@ -42,9 +41,9 @@ export const putAPI = (url, data, token=null) => {
     }
 }
 
-export const deleteAPI = (url, token=null) => {
+export const deleteAPI = (url, params={token:null, file:false}) => {
     try {
-        const response = requestAPI(token).delete(url);
+        const response = RequestAPI(params).delete(url);
         return Promise.resolve(response);
     } catch (error) {
         console.log(error);
