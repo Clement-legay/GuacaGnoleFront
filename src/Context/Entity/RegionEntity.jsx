@@ -1,10 +1,8 @@
 import {deleteAPI, fetchAPI, postAPI, putAPI} from "../../Utils/axios";
-import {useContext, useState} from "react";
-import {MainContext} from "../MainContext";
+import {useState} from "react";
 
-export const RegionEntity = () => {
+export const RegionEntity = (token) => {
     const [regions, setRegions] = useState([]);
-    const { token } = useContext(MainContext);
 
     return {
         regions: regions,
@@ -26,7 +24,11 @@ export const RegionEntity = () => {
         ),
         fetchRegionById: (id) => (
             fetchAPI(`Region/${id}`)
-                .then(res => res.data)
+                .then((res) => {
+                    res.data.id = res.data.regionID;
+                    delete res.data.regionID;
+                    return res.data;
+                })
         ),
         fetchRegionByName: (name) => (
             fetchAPI(`Region/ByName/${name}`)

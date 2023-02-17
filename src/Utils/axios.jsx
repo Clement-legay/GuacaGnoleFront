@@ -1,17 +1,17 @@
 import axios from 'axios';
 const API_URL = process.env.REACT_APP_DEV_API_LINK;
 
-const RequestAPI = (params={token:null, file:false}) => {
+const RequestAPI = (params={file:false, token:false}) => {
     return axios.create({
         baseURL: API_URL,
         headers: {
             'Content-Type':  params.file ? "multipart/form-data" : 'application/json',
-            'Authorization': params.token ? `Bearer ${params.token}` : ''
+            'Authorization': params.token ? `bearer ${params.token}` : ''
         }
     });
 };
 
-export const fetchAPI = async (url, params={token:null, file:false}) => {
+export const fetchAPI = async (url, params) => {
     try {
         const response = await RequestAPI(params).get(url);
         return Promise.resolve(response);
@@ -21,7 +21,7 @@ export const fetchAPI = async (url, params={token:null, file:false}) => {
     }
 };
 
-export const postAPI = (url, data, params={token:null, file:false}) => {
+export const postAPI = (url, data, params) => {
     try {
         const response = RequestAPI(params).post(url, data);
         return Promise.resolve(response);
@@ -31,7 +31,7 @@ export const postAPI = (url, data, params={token:null, file:false}) => {
     }
 }
 
-export const putAPI = (url, data, params={token:null, file:false}) => {
+export const putAPI = (url, data, params) => {
     try {
         const response = RequestAPI(params).put(url, data);
         return Promise.resolve(response);
@@ -41,7 +41,7 @@ export const putAPI = (url, data, params={token:null, file:false}) => {
     }
 }
 
-export const deleteAPI = (url, params={token:null, file:false}) => {
+export const deleteAPI = (url, params) => {
     try {
         const response = RequestAPI(params).delete(url);
         return Promise.resolve(response);

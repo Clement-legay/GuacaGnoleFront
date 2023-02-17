@@ -1,83 +1,59 @@
 import {
-    Checkbox,
     Dialog,
     DialogContent,
-    DialogTitle, FormControlLabel, FormLabel,
-    Grid, Input,
+    DialogTitle,
+    Grid,
     TextField,
 } from "@mui/material";
 import {Formik} from "formik";
 import * as Yup from "yup";
-import {AsynchronousAutocomplete} from "../../PagePart/AsynchronousAutocomplete";
 import {LoadingButton} from "@mui/lab";
 import {useContext, useEffect, useState} from "react";
 import {MainContext} from "../../../../Context/MainContext";
-import CloudUploadIcon from '@mui/icons-material/CloudUpload';
-
 
 const validationSchema = Yup.object().shape({
     name: Yup.string().required("Name is required"),
-    description: Yup.string().required("Description is required"),
-    price: Yup.number().required("Price is required"),
-    imageUrl: Yup.string().required("Image is required"),
-    deadline: Yup.date().required("Deadline is required"),
-    isB2B: Yup.boolean().required("Is B2B is required"),
-    isDraft: Yup.boolean().required("Is Draft is required"),
+    city: Yup.string().required("City is required"),
+    street: Yup.string().required("Street is required"),
+    postalCode: Yup.string().required("Postal code is required"),
+    siret: Yup.string().required("Siret is required"),
 });
 
 const ManageSupplierDialog = ({setRefresh, addRequest, setAddRequest, setEditRequest, item}) => {
-    const { postOffer, postOfferImage, putOffer } = useContext(MainContext)
+    const { postSupplier, putSupplier } = useContext(MainContext)
     const [open, setOpen] = useState(false);
     const [type, setType] = useState(undefined);
     const [loading, setLoading] = useState(false);
     const [initialValues, setInitialValues] = useState({
         name: "",
-        description: "",
-        price: "",
-        imageUrl: "",
-        deadline: "",
-        isB2B: false,
-        isDraft: false,
-        productOffers: []
+        city: "",
+        street: "",
+        postalCode: "",
+        siret: ""
     });
-
-    const handleImageUpload = async (setFieldValue) => {
-        const file = document.getElementById("image").files[0];
-
-        const imgRender = document.getElementById("imageRender");
-        imgRender.src = URL.createObjectURL(file);
-
-        const formData = new FormData();
-        formData.append("image", file);
-        const response = await postOfferImage(formData);
-        setFieldValue("imageUrl", response);
-
-    };
 
     const handleFormSubmit = async (values) => {
         setLoading(true);
         const newItem = {
             name: values.name,
-            description: values.description,
-            price: values.price,
-            imageUrl: values.imageUrl,
-            deadline: values.deadline,
-            isB2B: values.isB2B,
-            isDraft: values.isDraft,
-            productOffersRegister: values.productOffers
+            city: values.city,
+            street: values.street,
+            postalCode: values.postalCode,
+            siret: values.siret
         };
 
         try {
             if (type === "create") {
-                await postOffer(newItem);
+                await postSupplier(newItem);
             } else {
-                await putOffer(item.id, newItem);
+                await putSupplier(item.id, newItem);
             }
 
             setRefresh(true);
             setLoading(false);
             handleClose();
         } catch (e) {
+            setLoading(false);
             console.log(e);
         }
     };
@@ -103,25 +79,19 @@ const ManageSupplierDialog = ({setRefresh, addRequest, setAddRequest, setEditReq
     useEffect(() => {
         if (item) {
             setInitialValues({
-                name: item.name || "",
-                description: item.description || "",
-                price: item.price || "",
-                imageUrl: item.imageUrl || "",
-                deadline: item.deadline ? item.deadline.split("T")[0] : "",
-                isB2B: item.isB2B || false,
-                isDraft: item.isDraft || false,
-                productOffers: item.productOffersRegister || []
+                name: item.name,
+                city: item.city,
+                street: item.street,
+                postalCode: item.postalCode,
+                siret: item.siret
             });
         } else {
             setInitialValues({
                 name: "",
-                description: "",
-                price: "",
-                imageUrl: "",
-                deadline: "",
-                isB2B: false,
-                isDraft: false,
-                productOffers: []
+                city: "",
+                street: "",
+                postalCode: "",
+                siret: ""
             });
         }
     }, [item]);
@@ -129,7 +99,7 @@ const ManageSupplierDialog = ({setRefresh, addRequest, setAddRequest, setEditReq
     return (
         <Dialog open={open} onClose={handleClose}>
             <DialogTitle>
-                {type === "create" ? "Create Offer" : "Edit Offer"}
+                {type === "create" ? "Create Supplier" : "Edit Supplier"}
             </DialogTitle>
 
             <DialogContent>
@@ -138,15 +108,14 @@ const ManageSupplierDialog = ({setRefresh, addRequest, setAddRequest, setEditReq
                     initialValues={initialValues}
                     validationSchema={validationSchema}
                 >
-                    {({ values, errors, touched, handleChange, handleBlur, handleSubmit, setFieldValue}) => (
+                    {({ values, errors, touched, handleChange, handleBlur, handleSubmit}) => (
                         <form onSubmit={handleSubmit}>
                             <Grid container spacing={2} p={1} alignItems="center" justifyContent="center">
-                                <Grid item xs={12} lg={6}>
+                                <Grid item xs={12}>
                                     <TextField
                                         fullWidth
-                                        id="name"
-                                        name="name"
                                         label="Name"
+                                        name="name"
                                         value={values.name}
                                         onChange={handleChange}
                                         onBlur={handleBlur}
@@ -154,152 +123,52 @@ const ManageSupplierDialog = ({setRefresh, addRequest, setAddRequest, setEditReq
                                         helperText={touched.name && errors.name}
                                     />
                                 </Grid>
-                                <Grid item xs={12} lg={6}>
-                                    <TextField
-                                        fullWidth
-                                        id="price"
-                                        name="price"
-                                        label="Price"
-                                        value={values.price}
-                                        onChange={handleChange}
-                                        onBlur={handleBlur}
-                                        error={touched.price && Boolean(errors.price)}
-                                        helperText={touched.price && errors.price}
-                                    />
-                                </Grid>
                                 <Grid item xs={12}>
                                     <TextField
                                         fullWidth
-                                        id="description"
-                                        name="description"
-                                        label="Description"
-                                        type="text"
-                                        value={values.description}
+                                        label="City"
+                                        name="city"
+                                        value={values.city}
                                         onChange={handleChange}
                                         onBlur={handleBlur}
-                                        error={touched.description && Boolean(errors.description)}
-                                        helperText={touched.description && errors.description}
-                                        rows={4}
-                                        multiline
+                                        error={touched.city && Boolean(errors.city)}
+                                        helperText={touched.city && errors.city}
                                     />
                                 </Grid>
                                 <Grid item xs={12}>
                                     <TextField
                                         fullWidth
-                                        id="deadline"
-                                        name="deadline"
-                                        label="Deadline"
-                                        type="date"
-                                        value={values.deadline}
+                                        label="Street"
+                                        name="street"
+                                        value={values.street}
                                         onChange={handleChange}
                                         onBlur={handleBlur}
-                                        error={touched.deadline && Boolean(errors.deadline)}
-                                        helperText={touched.deadline && errors.deadline}
-                                        InputLabelProps={{
-                                            shrink: true,
-                                        }}
-                                    />
-                                </Grid>
-                                <Grid item xs={4}>
-                                    <FormControlLabel
-                                        control={
-                                            <Checkbox
-                                                checked={values.isB2B}
-                                                onChange={handleChange}
-                                                name="isB2B"
-                                                color="primary"
-                                            />
-                                        }
-                                        label={
-                                            <FormLabel component="legend">Is B2B</FormLabel>
-                                        }
-                                    />
-                                </Grid>
-                                <Grid item xs={4}>
-                                    <FormControlLabel
-                                        control={
-                                            <Checkbox
-                                                checked={values.isDraft}
-                                                onChange={handleChange}
-                                                name="isDraft"
-                                                color="primary"
-                                            />
-                                        }
-                                        label={
-                                            <FormLabel component="legend">Is Draft</FormLabel>
-                                        }
+                                        error={touched.street && Boolean(errors.street)}
+                                        helperText={touched.street && errors.street}
                                     />
                                 </Grid>
                                 <Grid item xs={12}>
-                                    <Grid container={true} spacing={2} p={1} alignItems="center" justifyContent="center">
-                                        <Grid item>
-                                            <img
-                                                id="imageRender"
-                                                src={values.imageUrl !== "" ? values.imageUrl : "https://via.placeholder.com/150"}
-                                                width="150"
-                                                height="150"
-                                                alt={values.name}
-                                            />
-                                        </Grid>
-                                    </Grid>
-                                </Grid>
-
-                                <Grid item xs={12}>
-                                    <Input
+                                    <TextField
                                         fullWidth
-                                        id="image"
-                                        name="imageUrl"
-                                        label="Image"
-                                        type="file"
-                                        sx={{display: "none"}}
-                                        inputProps={{ accept: 'image/*' }}
-                                        onChange={() => handleImageUpload(setFieldValue)}
+                                        label="Postal Code"
+                                        name="postalCode"
+                                        value={values.postalCode}
+                                        onChange={handleChange}
+                                        onBlur={handleBlur}
+                                        error={touched.postalCode && Boolean(errors.postalCode)}
+                                        helperText={touched.postalCode && errors.postalCode}
                                     />
-                                    <label htmlFor="image">
-                                        <LoadingButton
-                                            fullWidth
-                                            component="span"
-                                            variant="contained"
-                                            loading={loading}
-                                            loadingPosition="start"
-                                            startIcon={<CloudUploadIcon />}
-                                        >
-                                            Upload Image
-                                        </LoadingButton>
-                                    </label>
                                 </Grid>
                                 <Grid item xs={12}>
-                                    <AsynchronousAutocomplete
-                                        props={{
-                                            multiple: true,
-                                            label: "Products",
-                                            name: "products",
-
-                                            value: values.productOffers,
-
-                                            onChange: (e, value) => {
-                                                setFieldValue("productOffers", value.map(
-                                                    (product) => {
-                                                        return {
-                                                            product: product,
-                                                            productId: product.id,
-                                                            quantityProduct: 1,
-                                                        }
-                                                    }
-                                                ))
-                                            },
-
-                                        }}
-                                        fetchString={"fetchProducts"}
-                                        onChangeQuantity={(e, item) => {
-                                            if (e === "add") {
-                                                item.quantityProduct++;
-                                            } else {
-                                                item.quantityProduct--;
-                                            }
-
-                                            setFieldValue("productOffers", values.productOffers);
-                                        }}
+                                    <TextField
+                                        fullWidth
+                                        label="Siret"
+                                        name="siret"
+                                        value={values.siret}
+                                        onChange={handleChange}
+                                        onBlur={handleBlur}
+                                        error={touched.siret && Boolean(errors.siret)}
+                                        helperText={touched.siret && errors.siret}
                                     />
                                 </Grid>
                                 <Grid item xs={12}>

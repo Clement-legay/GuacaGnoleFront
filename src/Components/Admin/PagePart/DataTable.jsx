@@ -16,7 +16,6 @@ import {LoadingButton} from "@mui/lab";
 import ConfirmDeleteDialog from "./ConfirmDeleteDialog";
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import IconButton from "@mui/material/IconButton";
-import ManageOfferDialog from "../Offers/Component/ManageOfferDialog";
 
 const EnhancedTableHead = ({ onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort, columns }) => {
     const createSortHandler = (property) => (event) => {
@@ -66,7 +65,7 @@ const EnhancedTableHead = ({ onSelectAllClick, order, orderBy, numSelected, rowC
     );
 }
 
-const DataTable = ({ data, columns, fetch, deleteRequest, selected, setSelected }) => {
+const DataTable = ({ data, columns, fetch, deleteRequest, selected, setSelected, DialogManage }) => {
     const [refresh, setRefresh] = useState(true);
 
     // table display
@@ -173,7 +172,7 @@ const DataTable = ({ data, columns, fetch, deleteRequest, selected, setSelected 
 
     return (
         <Box>
-            <ManageOfferDialog addRequest={addRequest} setAddRequest={setAddRequest} setRefresh={setRefresh} item={editRequest} setEditRequest={setEditRequest} />
+            <DialogManage addRequest={addRequest} setAddRequest={setAddRequest} setRefresh={setRefresh} item={editRequest} setEditRequest={setEditRequest} />
             <Grid container alignItems="center" justifyContent="space-between" sx={{mb:2}}>
 
                 <ConfirmDeleteDialog deleteConfirm={deleteConfirm} selectedLength={selected.length} deleting={deleting} setDeleting={setDeleting}/>

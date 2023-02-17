@@ -1,14 +1,11 @@
 import {deleteAPI, fetchAPI, postAPI, putAPI} from "../../Utils/axios";
-import {useContext, useState} from "react";
-import {MainContext} from "../MainContext";
+import {useState} from "react";
 const API_URL = process.env.REACT_APP_DEV_API_LINK;
 
-export const OfferEntity = () => {
+export const OfferEntity = (token) => {
     const [offers, setOffers] = useState([]);
     const [availableOffers, setAvailableOffers] = useState([]);
     const [unavailableOffers, setUnavailableOffers] = useState([]);
-    const { token } = useContext(MainContext);
-
 
     return {
         offers: offers,

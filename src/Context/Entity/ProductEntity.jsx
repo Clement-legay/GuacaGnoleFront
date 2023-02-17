@@ -1,10 +1,8 @@
 import {deleteAPI, fetchAPI, postAPI, putAPI} from "../../Utils/axios";
-import {useContext, useState} from "react";
-import {MainContext} from "../MainContext";
+import {useState} from "react";
 
-export const ProductEntity = () => {
+export const ProductEntity = (token) => {
     const [products, setProducts] = useState([]);
-    const { token } = useContext(MainContext);
 
     return {
         products: products,

@@ -5,7 +5,7 @@ import DataTable from "../PagePart/DataTable";
 import EchartGraph from "../PagePart/EchartGraph";
 import ManageSupplierDialog from "./Component/ManageSupplierDialog";
 
-const Offers = () => {
+const Suppliers = () => {
     const { suppliers, fetchSuppliers, setRouteName, deleteSupplier } = useContext(MainContext);
     const [selected, setSelected] = useState([]);
 
@@ -29,7 +29,7 @@ const Offers = () => {
                                     deleteRequest={deleteSupplier}
                                     selected={selected}
                                     setSelected={setSelected}
-                                    dialogCreate={ManageSupplierDialog}
+                                    DialogManage={ManageSupplierDialog}
                                 />
                             </CardContent>
                         </Card>
@@ -40,7 +40,7 @@ const Offers = () => {
     )
 }
 
-export default Offers;
+export default Suppliers;
 
 const columns = [
     {

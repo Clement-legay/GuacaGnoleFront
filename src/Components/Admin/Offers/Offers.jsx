@@ -29,7 +29,7 @@ const Offers = () => {
                                     deleteRequest={deleteOffer}
                                     selected={selected}
                                     setSelected={setSelected}
-                                    dialogCreate={ManageOfferDialog}
+                                    DialogManage={ManageOfferDialog}
                                 />
                             </CardContent>
                         </Card>

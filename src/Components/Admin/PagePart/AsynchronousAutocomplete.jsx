@@ -1,33 +1,34 @@
 import {useEffect, useState, Fragment, useContext} from "react";
-import {Autocomplete, Box, Button, Card, Chip, CircularProgress, Grid, TextField, Typography} from "@mui/material";
+import {Autocomplete, CircularProgress, TextField} from "@mui/material";
 import {MainContext} from "../../../Context/MainContext";
-import RemoveIcon from '@mui/icons-material/Remove';
-import AddIcon from "@mui/icons-material/Add";
 
-export const AsynchronousAutocomplete = ({fetchString, props, onChangeQuantity}) => {
+export const AsynchronousAutocomplete = ({setValue, value, optionLabel, inputLabel, name, fetchString, fetchStringById}) => {
     const fetch = useContext(MainContext)[fetchString];
+    const fetchById = useContext(MainContext)[fetchStringById];
     const [open, setOpen] = useState(false);
     const [options, setOptions] = useState([]);
-    const loading = open && options.length === 0;
+    const [loaded, setLoaded] = useState(false);
+    const loadingPanel = open && options.length === 0;
 
     useEffect(() => {
         let active = true;
 
-        if (!loading) {
+        if (!loadingPanel) {
             return undefined;
         }
 
         (async () => {
-            const response = await fetch();
+            const result = await fetch()
+
             if (active) {
-                setOptions(response);
+                setOptions(result);
             }
         })();
 
         return () => {
             active = false;
         };
-    }, [loading, setOptions, fetch]);
+    }, [loadingPanel, fetch]);
 
     useEffect(() => {
         if (!open) {
@@ -35,74 +36,49 @@ export const AsynchronousAutocomplete = ({fetchString, props, onChangeQuantity})
         }
     }, [open]);
 
-    return (
-        <Autocomplete
-            {...props}
+    useEffect(() => {
+        if (!loaded) {
+            if (value) {
+                (async () => {
+                    const result = await fetchById(value.id)
+                    setValue(name, result)
+                    setLoaded(true)
+                })()
+            } else {
+                setLoaded(true);
+            }
+        }
+    }, [loaded, fetchById, setValue, value, name])
 
+    return loaded ? (
+        <Autocomplete
             open={open}
-            onOpen={() => setOpen(true)}
-            onClose={() => setOpen(false)}
+            onOpen={() => {
+                setOpen(true);
+            }}
+            onClose={() => {
+                setOpen(false);
+            }}
+
+            value={value}
+            onChange={(event, newValue) => {
+                setValue(name, newValue);
+            }}
 
             options={options}
-            getOptionLabel={(option) => option.name}
             isOptionEqualToValue={(option, value) => option.id === value.id}
+            getOptionLabel={(option) => option[optionLabel]}
 
-            loading={loading}
+            loading={loadingPanel}
             renderInput={(params) => (
                 <TextField
                     {...params}
-                    label="Products"
-                    placeholder="Products"
+                    label={inputLabel}
                     InputProps={{
                         ...params.InputProps,
-                        startAdornment: (
-                            props.value.map((option) => (
-                                    <Box key={option.productId} sx={{ width: 150, minHeight: 100, alignItems: 'center', justifyContent: 'center' }}>
-                                        <Chip
-                                            label={option.product.name}
-                                            sx={{
-                                                width: '100%',
-                                            }}
-                                            onDelete={() => props.onChange('delete', props.value.filter((v) => v.id !== option.productId))}
-                                        />
-
-                                        <Card
-                                            label={option.product.name}
-                                            sx={{
-                                                width: '100%',
-                                                borderRadius: 5,
-                                                mt: 1,
-                                                height: 125,
-                                            }}
-                                        >
-                                            <Grid container alignItems="center" justifyContent="center">
-                                                <Grid item>
-                                                    <img src={option.product.image} alt={option.product.name} width="100%" />
-                                                </Grid>
-                                            </Grid>
-                                            <Grid container alignItems="center" justifyContent="center">
-                                                <Grid item>
-                                                    <Button onClick={() => onChangeQuantity('remove', option)} disabled={option.quantityProduct === 1}>
-                                                        <RemoveIcon />
-                                                    </Button>
-                                                </Grid>
-                                                <Grid item>
-                                                    <Typography variant="body1">{option.quantityProduct}</Typography>
-                                                </Grid>
-                                                <Grid item>
-                                                    <Button onClick={() => onChangeQuantity('add', option)}>
-                                                        <AddIcon />
-                                                    </Button>
-                                                </Grid>
-                                            </Grid>
-                                        </Card>
-                                    </Box>
-                                ))
-                        ),
-
                         endAdornment: (
                             <Fragment>
-                                {loading ? <CircularProgress color="inherit" size={20} /> : null}
+                                {loadingPanel ? <CircularProgress color="inherit" size={20} /> : null}
                                 {params.InputProps.endAdornment}
                             </Fragment>
                         ),
@@ -110,5 +86,5 @@ export const AsynchronousAutocomplete = ({fetchString, props, onChangeQuantity})
                 />
             )}
         />
-    );
-};
+    ) : <TextField label={inputLabel} disabled/>
+}

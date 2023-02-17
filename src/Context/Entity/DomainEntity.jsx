@@ -1,16 +1,21 @@
 import {deleteAPI, fetchAPI, postAPI, putAPI} from "../../Utils/axios";
-import {useContext, useState} from "react";
-import {MainContext} from "../MainContext";
+import {useState} from "react";
 
-export const DomainEntity = () => {
+export const DomainEntity = (token) => {
     const [domains, setDomains] = useState([]);
-    const { token } = useContext(MainContext);
 
     return {
         domains: domains,
         fetchDomains: (store = false) => (
             fetchAPI("/Domain")
                 .then((res) => {
+                    res.data = res.data.map(
+                        (item) => {
+                            item.id = item.domainId;
+                            delete item.domainId;
+                            return item
+                        }
+                    );
                     if (store) {
                         setDomains(res.data);
                     }
@@ -19,7 +24,11 @@ export const DomainEntity = () => {
         ),
         fetchDomainById: (id) => (
             fetchAPI(`Domain/${id}`)
-                .then(res => res.data)
+                .then((res) => {
+                    res.data.id = res.data.domainId;
+                    delete res.data.domainId;
+                    return res.data;
+                })
         ),
         fetchDomainByName: (name) => (
             fetchAPI(`Domain/ByName/${name}`)

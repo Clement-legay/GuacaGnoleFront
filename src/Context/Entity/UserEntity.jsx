@@ -1,13 +1,10 @@
 import {deleteAPI, fetchAPI, postAPI} from "../../Utils/axios";
-import {useContext, useState} from "react";
-import {MainContext} from "../MainContext";
-
+import {useState} from "react";
 
 const userLinkPrefix = "/Auth";
 
-export const UserEntity = () => {
+export const UserEntity = (token) => {
     const [users, setUsers] = useState([]);
-    const { token } = useContext(MainContext);
 
     return {
         users: users,
@@ -44,15 +41,19 @@ export const UserEntity = () => {
             postAPI(`${userLinkPrefix}/Login`, data)
                 .then(res => res)
         ),
-        postToken: (token) => {
+        postToken: (jwtToken) => {
             // return postAPI(`${userLinkPrefix}/Token`, token)
             //     .then(res => res.data)
             return {
                 id: 1,
-                jwtToken: token,
+                jwtToken: jwtToken,
                 username: "fakeConnection",
             }
         },
+        putUser: (id, data) => (
+            postAPI(`${userLinkPrefix}/UpdateUser/${id}`, data)
+                .then(res => res)
+        ),
         deleteUser: (id) => (
             deleteAPI(`${userLinkPrefix}/DeleteUser/${id}`)
                 .then(res => res.data)

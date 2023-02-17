@@ -8,7 +8,7 @@ import {
 } from "@mui/material";
 import {Formik} from "formik";
 import * as Yup from "yup";
-import {AsynchronousAutocomplete} from "../../PagePart/AsynchronousAutocomplete";
+import {AsynchronousAutocomplete} from "./AsynchronousAutocomplete";
 import {LoadingButton} from "@mui/lab";
 import {useContext, useEffect, useState} from "react";
 import {MainContext} from "../../../../Context/MainContext";
@@ -51,8 +51,14 @@ const ManageOfferDialog = ({setRefresh, addRequest, setAddRequest, setEditReques
             deadline: values.deadline,
             isB2B: values.isB2B,
             isDraft: values.isDraft,
-            productOffersRegister: values.productOffers
+            productOffersRegister: values.productOffers.map((item) => {
+                return {
+                    productId: item.productId,
+                    quantityProduct: item.quantityProduct
+                }
+            })
         };
+        console.log(newItem);
 
         try {
             if (type === "create") {
@@ -65,6 +71,7 @@ const ManageOfferDialog = ({setRefresh, addRequest, setAddRequest, setEditReques
             setLoading(false);
             handleClose();
         } catch (e) {
+            setLoading(false);
             console.log(e);
         }
     };
@@ -90,15 +97,23 @@ const ManageOfferDialog = ({setRefresh, addRequest, setAddRequest, setEditReques
     useEffect(() => {
         if (item) {
             setInitialValues({
-                name: item.name || "",
-                description: item.description || "",
-                price: item.price || "",
-                imageUrl: item.imageUrl || "",
-                deadline: item.deadline ? item.deadline.split("T")[0] : "",
-                isB2B: item.isB2B || false,
-                isDraft: item.isDraft || false,
-                productOffers: item.productOffersRegister || []
-            });
+                    name: item.name || "",
+                    description: item.description || "",
+                    price: item.price || "",
+                    imageUrl: item.imageUrl || "",
+                    deadline: item.deadline ? item.deadline.split("T")[0] : "",
+                    isB2B: item.isB2B || false,
+                    isDraft: item.isDraft || false,
+                    productOffers: [
+                        ...item.productOffers.map(
+                            (item) => ({
+                                product: item.product,
+                                productId: item.productId,
+                                quantityProduct: item.quantityProduct,
+                            })),
+                    ]
+                }
+            );
         } else {
             setInitialValues({
                 name: "",
@@ -230,17 +245,17 @@ const ManageOfferDialog = ({setRefresh, addRequest, setAddRequest, setEditReques
                                             value: values.productOffers,
 
                                             onChange: (e, value) => {
-                                                setFieldValue("productOffers", value.map(
-                                                    (product) => {
-                                                        return {
-                                                            product: product,
-                                                            productId: product.id,
-                                                            quantityProduct: 1,
-                                                        }
-                                                    }
-                                                ))
+                                                if (e === 'delete') {
+                                                    setFieldValue('productOffers', value)
+                                                } else {
+                                                    const newValue = value.pop();
+                                                    setFieldValue("productOffers", [...values.productOffers, {
+                                                        product: newValue,
+                                                        productId: newValue.id,
+                                                        quantityProduct: 1
+                                                    }]);
+                                                }
                                             },
-
                                         }}
                                         fetchString={"fetchProducts"}
                                         onChangeQuantity={(e, item) => {

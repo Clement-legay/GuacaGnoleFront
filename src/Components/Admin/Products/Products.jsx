@@ -29,7 +29,7 @@ const Products = () => {
                                     deleteRequest={deleteProduct}
                                     selected={selected}
                                     setSelected={setSelected}
-                                    dialogCreate={ManageProductDialog}
+                                    DialogManage={ManageProductDialog}
                                 />
                             </CardContent>
                         </Card>
@@ -61,6 +61,17 @@ const columns = [
         },
     },
     {
+        id: "imageUrl",
+        label: "Image",
+        minWidth: 50,
+        align: "center",
+        disablePadding: false,
+        sortable: false,
+        format: (url) => {
+            return <img src={url} alt="offer" style={{width: "50px", height: "50px"}}/>
+        }
+    },
+    {
         id: "name",
         label: "Name",
         minWidth: 50,
@@ -83,6 +94,9 @@ const columns = [
         minWidth: 50,
         align: "center",
         disablePadding: false,
+        format: (value) => {
+            return value + "%";
+        },
         sortable: true,
         sortFunction: (data, order) => {
             return data.sort((a, b) => {
@@ -118,6 +132,9 @@ const columns = [
         align: "center",
         disablePadding: false,
         sortable: true,
+        format: (value) => {
+            return value + "€";
+        },
         sortFunction: (data, order) => {
             return data.sort((a, b) => {
                 if (order === "asc") {
@@ -201,7 +218,7 @@ const columns = [
 ];
 
 const chartOptions = {
-    title: "Offers",
+    title: "Products",
     type: "bar",
     dataName: "name",
     dataValue: "stock",

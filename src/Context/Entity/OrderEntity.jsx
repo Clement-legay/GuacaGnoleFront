@@ -1,11 +1,8 @@
 import {deleteAPI, fetchAPI, postAPI, putAPI} from "../../Utils/axios";
-import {useContext, useState} from "react";
-import {MainContext} from "../MainContext";
+import {useState} from "react";
 
-export const OrderEntity = () => {
+export const OrderEntity = (token) => {
     const [orders, setOrders] = useState([]);
-    const { token } = useContext(MainContext);
-
 
     return {
         orders: orders,

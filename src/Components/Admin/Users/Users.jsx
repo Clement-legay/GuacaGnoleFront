@@ -5,7 +5,7 @@ import DataTable from "../PagePart/DataTable";
 import EchartGraph from "../PagePart/EchartGraph";
 import ManageUserDialog from "./Component/ManageUserDialog";
 
-const Offers = () => {
+const Users = () => {
     const { users, fetchUsers, setRouteName, deleteUser } = useContext(MainContext);
     const [selected, setSelected] = useState([]);
 
@@ -29,7 +29,7 @@ const Offers = () => {
                                     deleteRequest={deleteUser}
                                     selected={selected}
                                     setSelected={setSelected}
-                                    dialogCreate={ManageUserDialog}
+                                    DialogManage={ManageUserDialog}
                                 />
                             </CardContent>
                         </Card>
@@ -40,7 +40,7 @@ const Offers = () => {
     )
 }
 
-export default Offers;
+export default Users;
 
 const columns = [
     {

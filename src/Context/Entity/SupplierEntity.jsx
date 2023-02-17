@@ -1,10 +1,8 @@
 import {deleteAPI, fetchAPI, postAPI, putAPI} from "../../Utils/axios";
-import {useContext, useState} from "react";
-import {MainContext} from "../MainContext";
+import {useState} from "react";
 
-export const SupplierEntity = () => {
+export const SupplierEntity = (token) => {
     const [suppliers, setSuppliers] = useState([]);
-    const { token } = useContext(MainContext);
 
     return {
         suppliers: suppliers,
@@ -68,11 +66,8 @@ export const SupplierEntity = () => {
 
         ),
         deleteSupplier: (id) => (
-            Array.isArray(id) ? id.forEach(
-                (id) => deleteAPI(`Offer/${id}`, {token: token})
-                    .then(res => res.data)
-            ) : deleteAPI(`Offer/${id}`)
-                .then(res => res)
+            deleteAPI(`Furnisher/${id}`, {token:token})
+                .then((res) => res)
         )
     }
 };

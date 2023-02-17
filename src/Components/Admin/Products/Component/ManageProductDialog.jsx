@@ -1,9 +1,8 @@
 import {
-    Checkbox,
     Dialog,
     DialogContent,
-    DialogTitle, FormControlLabel, FormLabel,
-    Grid, Input,
+    DialogTitle,
+    Grid,
     TextField,
 } from "@mui/material";
 import {Formik} from "formik";
@@ -12,73 +11,65 @@ import {AsynchronousAutocomplete} from "../../PagePart/AsynchronousAutocomplete"
 import {LoadingButton} from "@mui/lab";
 import {useContext, useEffect, useState} from "react";
 import {MainContext} from "../../../../Context/MainContext";
-import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+import ImageField from "../../PagePart/ImageField";
 
 
 const validationSchema = Yup.object().shape({
     name: Yup.string().required("Name is required"),
-    description: Yup.string().required("Description is required"),
-    price: Yup.number().required("Price is required"),
     imageUrl: Yup.string().required("Image is required"),
-    deadline: Yup.date().required("Deadline is required"),
-    isB2B: Yup.boolean().required("Is B2B is required"),
-    isDraft: Yup.boolean().required("Is Draft is required"),
+    price: Yup.number().required("Price is required"),
+    stock: Yup.number().required("Stock is required"),
+    millesime: Yup.number().required("Millesime is required"),
+    alcoholDegree: Yup.number().required("Alcohol degree is required"),
+    reference: Yup.string().required("Reference is required"),
 });
 
 const ManageProductDialog = ({setRefresh, addRequest, setAddRequest, setEditRequest, item}) => {
-    const { postOffer, postOfferImage, putOffer } = useContext(MainContext)
+    const { postProduct, putProduct } = useContext(MainContext)
     const [open, setOpen] = useState(false);
     const [type, setType] = useState(undefined);
     const [loading, setLoading] = useState(false);
     const [initialValues, setInitialValues] = useState({
         name: "",
-        description: "",
-        price: "",
         imageUrl: "",
-        deadline: "",
-        isB2B: false,
-        isDraft: false,
-        productOffers: []
+        price: "",
+        stock: "",
+        millesime: "",
+        alcoholDegree: "",
+        reference: "",
     });
 
-    const handleImageUpload = async (setFieldValue) => {
-        const file = document.getElementById("image").files[0];
-
-        const imgRender = document.getElementById("imageRender");
-        imgRender.src = URL.createObjectURL(file);
-
-        const formData = new FormData();
-        formData.append("image", file);
-        const response = await postOfferImage(formData);
-        setFieldValue("imageUrl", response);
-
-    };
-
     const handleFormSubmit = async (values) => {
-        setLoading(true);
+        setLoading(true)
+        console.log(values)
+
         const newItem = {
             name: values.name,
-            description: values.description,
-            price: values.price,
             imageUrl: values.imageUrl,
-            deadline: values.deadline,
-            isB2B: values.isB2B,
-            isDraft: values.isDraft,
-            productOffersRegister: values.productOffers
+            price: values.price,
+            stock: values.stock,
+            millesime: values.millesime,
+            alcoholDegree: values.alcoholDegree,
+            reference: values.reference,
+            furnisherId: values.supplier.id,
+            domainId: values.domain.id,
+            alcoholTypeId: values.alcoholType.id,
+            appellationId: values.appellation.id,
+            regionId: values.region.id,
         };
-
+        console.log(newItem);
         try {
             if (type === "create") {
-                await postOffer(newItem);
+                await postProduct(newItem);
             } else {
-                await putOffer(item.id, newItem);
+                await putProduct(item.id, newItem);
             }
 
             setRefresh(true);
             setLoading(false);
             handleClose();
         } catch (e) {
-            console.log(e);
+            setLoading(false);
         }
     };
 
@@ -104,24 +95,37 @@ const ManageProductDialog = ({setRefresh, addRequest, setAddRequest, setEditRequ
         if (item) {
             setInitialValues({
                 name: item.name || "",
-                description: item.description || "",
-                price: item.price || "",
                 imageUrl: item.imageUrl || "",
-                deadline: item.deadline ? item.deadline.split("T")[0] : "",
-                isB2B: item.isB2B || false,
-                isDraft: item.isDraft || false,
-                productOffers: item.productOffersRegister || []
+                price: item.price || "",
+                stock: item.stock || "",
+                millesime: item.millesime || "",
+                alcoholDegree: item.alcoholDegree || "",
+                reference: item.reference || "",
+                supplier: {
+                    id: item.furnisherId,
+                },
+                domain: {
+                    id: item.domainId,
+                },
+                alcoholType: {
+                    id: item.alcoholTypeId,
+                },
+                appellation: {
+                    id: item.appellationId,
+                },
+                region: {
+                    id: item.regionId,
+                },
             });
         } else {
             setInitialValues({
                 name: "",
-                description: "",
-                price: "",
                 imageUrl: "",
-                deadline: "",
-                isB2B: false,
-                isDraft: false,
-                productOffers: []
+                price: "",
+                stock: "",
+                millesime: "",
+                alcoholDegree: "",
+                reference: "",
             });
         }
     }, [item]);
@@ -129,7 +133,7 @@ const ManageProductDialog = ({setRefresh, addRequest, setAddRequest, setEditRequ
     return (
         <Dialog open={open} onClose={handleClose}>
             <DialogTitle>
-                {type === "create" ? "Create Offer" : "Edit Offer"}
+                {type === "create" ? "Create Product" : "Edit Product"}
             </DialogTitle>
 
             <DialogContent>
@@ -141,12 +145,11 @@ const ManageProductDialog = ({setRefresh, addRequest, setAddRequest, setEditRequ
                     {({ values, errors, touched, handleChange, handleBlur, handleSubmit, setFieldValue}) => (
                         <form onSubmit={handleSubmit}>
                             <Grid container spacing={2} p={1} alignItems="center" justifyContent="center">
-                                <Grid item xs={12} lg={6}>
+                                <Grid item xs={12}>
                                     <TextField
                                         fullWidth
-                                        id="name"
-                                        name="name"
                                         label="Name"
+                                        name="name"
                                         value={values.name}
                                         onChange={handleChange}
                                         onBlur={handleBlur}
@@ -154,12 +157,14 @@ const ManageProductDialog = ({setRefresh, addRequest, setAddRequest, setEditRequ
                                         helperText={touched.name && errors.name}
                                     />
                                 </Grid>
-                                <Grid item xs={12} lg={6}>
+                                <Grid item xs={12}>
+                                    <ImageField setFieldValue={setFieldValue} FieldValue={"imageUrl"} initialValue={values.imageUrl} alt={values.name} />
+                                </Grid>
+                                <Grid item xs={6}>
                                     <TextField
                                         fullWidth
-                                        id="price"
-                                        name="price"
                                         label="Price"
+                                        name="price"
                                         value={values.price}
                                         onChange={handleChange}
                                         onBlur={handleBlur}
@@ -167,139 +172,107 @@ const ManageProductDialog = ({setRefresh, addRequest, setAddRequest, setEditRequ
                                         helperText={touched.price && errors.price}
                                     />
                                 </Grid>
-                                <Grid item xs={12}>
+                                <Grid item xs={6}>
                                     <TextField
                                         fullWidth
-                                        id="description"
-                                        name="description"
-                                        label="Description"
-                                        type="text"
-                                        value={values.description}
+                                        label="Stock"
+                                        name="stock"
+                                        value={values.stock}
                                         onChange={handleChange}
                                         onBlur={handleBlur}
-                                        error={touched.description && Boolean(errors.description)}
-                                        helperText={touched.description && errors.description}
-                                        rows={4}
-                                        multiline
+                                        error={touched.stock && Boolean(errors.stock)}
+                                        helperText={touched.stock && errors.stock}
                                     />
                                 </Grid>
-                                <Grid item xs={12}>
+                                <Grid item xs={8} lg={6}>
                                     <TextField
                                         fullWidth
-                                        id="deadline"
-                                        name="deadline"
-                                        label="Deadline"
-                                        type="date"
-                                        value={values.deadline}
+                                        label="Millesime"
+                                        name="millesime"
+                                        value={values.millesime}
                                         onChange={handleChange}
                                         onBlur={handleBlur}
-                                        error={touched.deadline && Boolean(errors.deadline)}
-                                        helperText={touched.deadline && errors.deadline}
-                                        InputLabelProps={{
-                                            shrink: true,
-                                        }}
+                                        error={touched.millesime && Boolean(errors.millesime)}
+                                        helperText={touched.millesime && errors.millesime}
                                     />
                                 </Grid>
-                                <Grid item xs={4}>
-                                    <FormControlLabel
-                                        control={
-                                            <Checkbox
-                                                checked={values.isB2B}
-                                                onChange={handleChange}
-                                                name="isB2B"
-                                                color="primary"
-                                            />
-                                        }
-                                        label={
-                                            <FormLabel component="legend">Is B2B</FormLabel>
-                                        }
-                                    />
-                                </Grid>
-                                <Grid item xs={4}>
-                                    <FormControlLabel
-                                        control={
-                                            <Checkbox
-                                                checked={values.isDraft}
-                                                onChange={handleChange}
-                                                name="isDraft"
-                                                color="primary"
-                                            />
-                                        }
-                                        label={
-                                            <FormLabel component="legend">Is Draft</FormLabel>
-                                        }
-                                    />
-                                </Grid>
-                                <Grid item xs={12}>
-                                    <Grid container={true} spacing={2} p={1} alignItems="center" justifyContent="center">
-                                        <Grid item>
-                                            <img
-                                                id="imageRender"
-                                                src={values.imageUrl !== "" ? values.imageUrl : "https://via.placeholder.com/150"}
-                                                width="150"
-                                                height="150"
-                                                alt={values.name}
-                                            />
-                                        </Grid>
-                                    </Grid>
-                                </Grid>
-
-                                <Grid item xs={12}>
-                                    <Input
+                                <Grid item xs={4} lg={6}>
+                                    <TextField
                                         fullWidth
-                                        id="image"
-                                        name="imageUrl"
-                                        label="Image"
-                                        type="file"
-                                        sx={{display: "none"}}
-                                        inputProps={{ accept: 'image/*' }}
-                                        onChange={() => handleImageUpload(setFieldValue)}
+                                        label="Alcohol degree"
+                                        name="alcoholDegree"
+                                        value={values.alcoholDegree}
+                                        onChange={handleChange}
+                                        onBlur={handleBlur}
+                                        error={touched.alcoholDegree && Boolean(errors.alcoholDegree)}
+                                        helperText={touched.alcoholDegree && errors.alcoholDegree}
                                     />
-                                    <label htmlFor="image">
-                                        <LoadingButton
-                                            fullWidth
-                                            component="span"
-                                            variant="contained"
-                                            loading={loading}
-                                            loadingPosition="start"
-                                            startIcon={<CloudUploadIcon />}
-                                        >
-                                            Upload Image
-                                        </LoadingButton>
-                                    </label>
                                 </Grid>
-                                <Grid item xs={12}>
+                                <Grid item xs={12} lg={6}>
+                                    <TextField
+                                        fullWidth
+                                        label="Reference"
+                                        name="reference"
+                                        value={values.reference}
+                                        onChange={handleChange}
+                                        onBlur={handleBlur}
+                                        error={touched.reference && Boolean(errors.reference)}
+                                        helperText={touched.reference && errors.reference}
+                                    />
+                                </Grid>
+                                <Grid item xs={12} lg={6}>
                                     <AsynchronousAutocomplete
-                                        props={{
-                                            multiple: true,
-                                            label: "Products",
-                                            name: "products",
-
-                                            value: values.productOffers,
-
-                                            onChange: (e, value) => {
-                                                setFieldValue("productOffers", value.map(
-                                                    (product) => {
-                                                        return {
-                                                            product: product,
-                                                            productId: product.id,
-                                                            quantityProduct: 1,
-                                                        }
-                                                    }
-                                                ))
-                                            },
-
-                                        }}
-                                        fetchString={"fetchProducts"}
-                                        onChangeQuantity={(e, item) => {
-                                            if (e === "add") {
-                                                item.quantityProduct++;
-                                            } else {
-                                                item.quantityProduct--;
-                                            }
-
-                                            setFieldValue("productOffers", values.productOffers);
-                                        }}
+                                        value={values.supplier}
+                                        setValue={setFieldValue}
+                                        name="supplier"
+                                        fetchString={"fetchSuppliers"}
+                                        fetchStringById={"fetchSupplierById"}
+                                        inputLabel={"Supplier"}
+                                        optionLabel={"name"}
+                                    />
+                                </Grid>
+                                <Grid item xs={12} lg={6}>
+                                    <AsynchronousAutocomplete
+                                        value={values.region}
+                                        setValue={setFieldValue}
+                                        name="region"
+                                        fetchString={"fetchRegions"}
+                                        fetchStringById={"fetchRegionById"}
+                                        inputLabel={"Region"}
+                                        optionLabel={"name"}
+                                    />
+                                </Grid>
+                                <Grid item xs={12} lg={6}>
+                                    <AsynchronousAutocomplete
+                                        value={values.domain}
+                                        setValue={setFieldValue}
+                                        name="domain"
+                                        fetchString={"fetchDomains"}
+                                        fetchStringById={"fetchDomainById"}
+                                        inputLabel={"Domain"}
+                                        optionLabel={"name"}
+                                    />
+                                </Grid>
+                                <Grid item xs={12} lg={6}>
+                                    <AsynchronousAutocomplete
+                                        value={values.alcoholType}
+                                        setValue={setFieldValue}
+                                        name="alcoholType"
+                                        fetchString={"fetchAlcoholTypes"}
+                                        fetchStringById={"fetchAlcoholTypeById"}
+                                        inputLabel={"Alcohol type"}
+                                        optionLabel={"label"}
+                                    />
+                                </Grid>
+                                <Grid item xs={12} lg={6}>
+                                    <AsynchronousAutocomplete
+                                        value={values.appellation}
+                                        setValue={setFieldValue}
+                                        name="appellation"
+                                        fetchString={"fetchAppellations"}
+                                        fetchStringById={"fetchAppellationById"}
+                                        inputLabel={"Appellation"}
+                                        optionLabel={"name"}
                                     />
                                 </Grid>
                                 <Grid item xs={12}>

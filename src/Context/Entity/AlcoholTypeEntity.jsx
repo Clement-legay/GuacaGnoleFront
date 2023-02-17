@@ -1,10 +1,8 @@
 import {deleteAPI, fetchAPI, postAPI, putAPI} from "../../Utils/axios";
-import {useContext, useState} from "react";
-import {MainContext} from "../MainContext";
+import {useState} from "react";
 
-export const AlcoholTypeEntity = () => {
+export const AlcoholTypeEntity = (token) => {
     const [alcoholTypes, setAlcoholTypes] = useState([]);
-    const { token } = useContext(MainContext)
 
     return {
         alcoholTypes: alcoholTypes,
@@ -26,7 +24,11 @@ export const AlcoholTypeEntity = () => {
         ),
         fetchAlcoholTypeById: (id) => (
             fetchAPI(`AlcoholControllerType/${id}`)
-                .then(res => res.data)
+                .then((res) => {
+                    res.data.id = res.data.alcoholTypeId;
+                    delete res.data.alcoholTypeId;
+                    return res.data;
+                })
         ),
         fetchAlcoholTypeStock: (id) => (
             fetchAPI(`AlcoholControllerType/Stock/${id}`)
