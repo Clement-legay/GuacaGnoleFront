@@ -249,8 +249,16 @@ const DataTable = ({ data, columns, fetch, deleteRequest, selected, setSelected,
                     <TableBody>
                         {loading ? (
                             <TableRow>
-                                <TableCell colSpan={columns.length} align="center">
+                                <TableCell colSpan={columns.length + 2} align="center">
                                     Loading...
+                                </TableCell>
+                            </TableRow>
+                        ) : (!loading && data.length === 0) ? (
+                            <TableRow>
+                                <TableCell colSpan={columns.length + 2} align="center">
+                                    <Button onClick={() => setRefresh(true)}>
+                                        No data found, click to refresh
+                                    </Button>
                                 </TableCell>
                             </TableRow>
                         ) : (
@@ -268,6 +276,7 @@ const DataTable = ({ data, columns, fetch, deleteRequest, selected, setSelected,
                                             tabIndex={-1}
                                             key={index}
                                             selected={isItemSelected}
+                                            onClick={(event) => handleSelectClick(event, row.id)}
                                         >
                                             <TableCell padding="checkbox">
                                                 <Checkbox
@@ -287,7 +296,10 @@ const DataTable = ({ data, columns, fetch, deleteRequest, selected, setSelected,
                                             <TableCell align="right">
                                                 <IconButton
                                                     size="small"
-                                                    onClick={() => setEditRequest(row)}
+                                                    onClick={(event) => {
+                                                        event.stopPropagation();
+                                                        setEditRequest(row)
+                                                    }}
                                                 >
                                                     <VisibilityIcon/>
                                                 </IconButton>

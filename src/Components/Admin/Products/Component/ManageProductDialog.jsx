@@ -1,10 +1,4 @@
-import {
-    Dialog,
-    DialogContent,
-    DialogTitle,
-    Grid,
-    TextField,
-} from "@mui/material";
+import {Checkbox, Dialog, DialogContent, DialogTitle, FormControlLabel, Grid, TextField,} from "@mui/material";
 import {Formik} from "formik";
 import * as Yup from "yup";
 import {AsynchronousAutocomplete} from "../../PagePart/AsynchronousAutocomplete";
@@ -12,7 +6,6 @@ import {LoadingButton} from "@mui/lab";
 import {useContext, useEffect, useState} from "react";
 import {MainContext} from "../../../../Context/MainContext";
 import ImageField from "../../PagePart/ImageField";
-
 
 const validationSchema = Yup.object().shape({
     name: Yup.string().required("Name is required"),
@@ -22,10 +15,16 @@ const validationSchema = Yup.object().shape({
     millesime: Yup.number().required("Millesime is required"),
     alcoholDegree: Yup.number().required("Alcohol degree is required"),
     reference: Yup.string().required("Reference is required"),
+    restockOption: Yup.boolean().required("Restock option is required"),
+    // supplier: Yup.object().required("Supplier is required"),
+    // domain: Yup.object().required("Domain is required"),
+    // alcoholType: Yup.object().required("Alcohol type is required"),
+    // region: Yup.object().required("Region is required"),
+    // appellation: Yup.array().required("Appellation is required"),
 });
 
 const ManageProductDialog = ({setRefresh, addRequest, setAddRequest, setEditRequest, item}) => {
-    const { postProduct, putProduct } = useContext(MainContext)
+    const { postProduct, putProduct, postDomain, postAlcoholType, postRegion, postAppellation } = useContext(MainContext)
     const [open, setOpen] = useState(false);
     const [type, setType] = useState(undefined);
     const [loading, setLoading] = useState(false);
@@ -37,27 +36,64 @@ const ManageProductDialog = ({setRefresh, addRequest, setAddRequest, setEditRequ
         millesime: "",
         alcoholDegree: "",
         reference: "",
+        restockOption: false,
+        supplier: null,
+        domain: null,
+        alcoholType: null,
+        region: null,
+        appellation: null,
     });
 
     const handleFormSubmit = async (values) => {
-        setLoading(true)
-        console.log(values)
+        setLoading(true);
 
-        const newItem = {
-            name: values.name,
-            imageUrl: values.imageUrl,
-            price: values.price,
-            stock: values.stock,
-            millesime: values.millesime,
-            alcoholDegree: values.alcoholDegree,
-            reference: values.reference,
-            furnisherId: values.supplier.id,
-            domainId: values.domain.id,
-            alcoholTypeId: values.alcoholType.id,
-            appellationId: values.appellation.id,
-            regionId: values.region.id,
+        const isSet = async (object, postFunction) => {
+            if (object.id === 0) {
+                try {
+                    const response = await postFunction(object);
+                    return response.data.id;
+                } catch (e) {
+                    console.log(e);
+                }
+            } else {
+                return object.id;
+            }
         };
+
+        const promises = [
+            await isSet(values.domain, postDomain),
+            await isSet(values.alcoholType, postAlcoholType),
+            await isSet(values.region, postRegion),
+            await isSet(values.appellation, postAppellation)
+        ];
+
+        let newItem;
+
+        try {
+            const [domainId, alcoholTypeId, regionId, appellationId] = await Promise.all(promises);
+            newItem = {
+                name: values.name,
+                imageUrl: values.imageUrl,
+                price: values.price,
+                stock: values.stock,
+                millesime: values.millesime,
+                alcoholDegree: values.alcoholDegree,
+                reference: values.reference,
+                restockOption: values.restockOption,
+                furnisherId: values.supplier.id,
+                domainId: domainId,
+                alcoholTypeId: alcoholTypeId,
+                regionId: regionId,
+                appellationId: appellationId,
+            };
+
+        } catch (e) {
+            console.log('Error while waiting for promises to resolve', e);
+            return;
+        }
+
         console.log(newItem);
+
         try {
             if (type === "create") {
                 await postProduct(newItem);
@@ -70,6 +106,7 @@ const ManageProductDialog = ({setRefresh, addRequest, setAddRequest, setEditRequ
             handleClose();
         } catch (e) {
             setLoading(false);
+            console.log(e);
         }
     };
 
@@ -101,6 +138,7 @@ const ManageProductDialog = ({setRefresh, addRequest, setAddRequest, setEditRequ
                 millesime: item.millesime || "",
                 alcoholDegree: item.alcoholDegree || "",
                 reference: item.reference || "",
+                restockOption: item.restockOption || false,
                 supplier: {
                     id: item.furnisherId,
                 },
@@ -126,6 +164,12 @@ const ManageProductDialog = ({setRefresh, addRequest, setAddRequest, setEditRequ
                 millesime: "",
                 alcoholDegree: "",
                 reference: "",
+                restockOption: false,
+                supplier: null,
+                domain: null,
+                alcoholType: null,
+                appellation: null,
+                region: null,
             });
         }
     }, [item]);
@@ -160,7 +204,7 @@ const ManageProductDialog = ({setRefresh, addRequest, setAddRequest, setEditRequ
                                 <Grid item xs={12}>
                                     <ImageField setFieldValue={setFieldValue} FieldValue={"imageUrl"} initialValue={values.imageUrl} alt={values.name} />
                                 </Grid>
-                                <Grid item xs={6}>
+                                <Grid item xs={12} lg={6}>
                                     <TextField
                                         fullWidth
                                         label="Price"
@@ -172,7 +216,7 @@ const ManageProductDialog = ({setRefresh, addRequest, setAddRequest, setEditRequ
                                         helperText={touched.price && errors.price}
                                     />
                                 </Grid>
-                                <Grid item xs={6}>
+                                <Grid item xs={8} lg={4}>
                                     <TextField
                                         fullWidth
                                         label="Stock"
@@ -182,6 +226,19 @@ const ManageProductDialog = ({setRefresh, addRequest, setAddRequest, setEditRequ
                                         onBlur={handleBlur}
                                         error={touched.stock && Boolean(errors.stock)}
                                         helperText={touched.stock && errors.stock}
+                                    />
+                                </Grid>
+                                <Grid item xs={4} lg={2}>
+                                    <FormControlLabel
+                                        control={
+                                            <Checkbox
+                                                checked={values.restockOption}
+                                                onChange={handleChange}
+                                                name="restockOption"
+                                                color="primary"
+                                            />
+                                        }
+                                        label="Auto"
                                     />
                                 </Grid>
                                 <Grid item xs={8} lg={6}>
@@ -229,6 +286,7 @@ const ManageProductDialog = ({setRefresh, addRequest, setAddRequest, setEditRequ
                                         fetchStringById={"fetchSupplierById"}
                                         inputLabel={"Supplier"}
                                         optionLabel={"name"}
+
                                     />
                                 </Grid>
                                 <Grid item xs={12} lg={6}>
@@ -238,6 +296,7 @@ const ManageProductDialog = ({setRefresh, addRequest, setAddRequest, setEditRequ
                                         name="region"
                                         fetchString={"fetchRegions"}
                                         fetchStringById={"fetchRegionById"}
+                                        updatable={true}
                                         inputLabel={"Region"}
                                         optionLabel={"name"}
                                     />
@@ -249,6 +308,7 @@ const ManageProductDialog = ({setRefresh, addRequest, setAddRequest, setEditRequ
                                         name="domain"
                                         fetchString={"fetchDomains"}
                                         fetchStringById={"fetchDomainById"}
+                                        updatable={true}
                                         inputLabel={"Domain"}
                                         optionLabel={"name"}
                                     />
@@ -260,6 +320,7 @@ const ManageProductDialog = ({setRefresh, addRequest, setAddRequest, setEditRequ
                                         name="alcoholType"
                                         fetchString={"fetchAlcoholTypes"}
                                         fetchStringById={"fetchAlcoholTypeById"}
+                                        updatable={true}
                                         inputLabel={"Alcohol type"}
                                         optionLabel={"label"}
                                     />
@@ -271,6 +332,7 @@ const ManageProductDialog = ({setRefresh, addRequest, setAddRequest, setEditRequ
                                         name="appellation"
                                         fetchString={"fetchAppellations"}
                                         fetchStringById={"fetchAppellationById"}
+                                        updatable={true}
                                         inputLabel={"Appellation"}
                                         optionLabel={"name"}
                                     />

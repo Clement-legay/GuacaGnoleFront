@@ -2,13 +2,20 @@ import {useEffect, useState, Fragment, useContext} from "react";
 import {Autocomplete, CircularProgress, TextField} from "@mui/material";
 import {MainContext} from "../../../Context/MainContext";
 
-export const AsynchronousAutocomplete = ({setValue, value, optionLabel, inputLabel, name, fetchString, fetchStringById}) => {
+export const AsynchronousAutocomplete = ({setValue, value, optionLabel, inputLabel, name, fetchString, fetchStringById, updatable=false}) => {
     const fetch = useContext(MainContext)[fetchString];
     const fetchById = useContext(MainContext)[fetchStringById];
     const [open, setOpen] = useState(false);
     const [options, setOptions] = useState([]);
     const [loaded, setLoaded] = useState(false);
+    const [input, setInput] = useState('');
     const loadingPanel = open && options.length === 0;
+
+    const handleCheckAvailability = (input) =>{
+        if (input.length > 0) {
+            return options.filter((option) => option[optionLabel].toLowerCase().includes(input.toLowerCase())).length === 0;
+        }
+    }
 
     useEffect(() => {
         let active = true;
@@ -62,12 +69,21 @@ export const AsynchronousAutocomplete = ({setValue, value, optionLabel, inputLab
 
             value={value}
             onChange={(event, newValue) => {
-                setValue(name, newValue);
+                setValue(name, newValue)
+            }}
+            onInputChange={(event, newInputValue) => {
+                setInput(newInputValue);
             }}
 
-            options={options}
+            options={
+                (updatable && input !== "" && handleCheckAvailability(input)) ?
+                    [
+                        ...options,
+                        {id:0, [optionLabel]: `${input}`}
+                    ] : options
+            }
             isOptionEqualToValue={(option, value) => option.id === value.id}
-            getOptionLabel={(option) => option[optionLabel]}
+            getOptionLabel={(option) => option ? option[optionLabel] : ""}
 
             loading={loadingPanel}
             renderInput={(params) => (

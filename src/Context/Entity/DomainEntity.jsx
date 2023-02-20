@@ -32,19 +32,35 @@ export const DomainEntity = (token) => {
         ),
         fetchDomainByName: (name) => (
             fetchAPI(`Domain/ByName/${name}`)
-                .then(res => res.data)
+                .then((res) => {
+                    res.data.id = res.data.domainId;
+                    delete res.data.domainId;
+                    return res.data;
+                })
         ),
         postDomain: (data) => (
             postAPI("Domain", data, {token: token})
-                .then(res => res.data)
+                .then((res) => {
+                    res.data.id = res.data.domainId;
+                    delete res.data.domainId;
+                    return res;
+                })
         ),
         putDomain: (id, data) => (
             putAPI(`Domain/${id}`, data, {token: token})
-                .then(res => res.data)
+                .then((res) => {
+                    res.data.id = res.data.domainId;
+                    delete res.data.domainId;
+                    return res;
+                })
         ),
         deleteDomain: (id) => (
             deleteAPI(`Domain/${id}`, {token: token})
-                .then(res => res.data)
+                .then((res) => {
+                    res.data.id = res.data.domainId;
+                    delete res.data.domainId;
+                    return res;
+                })
         )
     };
 };

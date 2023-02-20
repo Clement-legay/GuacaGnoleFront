@@ -32,19 +32,35 @@ export const AlcoholTypeEntity = (token) => {
         ),
         fetchAlcoholTypeStock: (id) => (
             fetchAPI(`AlcoholControllerType/Stock/${id}`)
-                .then(res => res.data)
+                .then((res) => {
+                    res.data.id = res.data.alcoholTypeId;
+                    delete res.data.alcoholTypeId;
+                    return res.data;
+                })
         ),
         postAlcoholType: (data) => (
             postAPI("AlcoholControllerType", data, {token: token})
-                .then(res => res.data)
+                .then((res) => {
+                    res.data.id = res.data.alcoholTypeId;
+                    delete res.data.alcoholTypeId;
+                    return res;
+                })
         ),
         putAlcoholType: (id, data) => (
             putAPI(`AlcoholControllerType/${id}`, data, {token: token})
-                .then(res => res.data)
+                .then((res) => {
+                    res.data.id = res.data.alcoholTypeId;
+                    delete res.data.alcoholTypeId;
+                    return res;
+                })
         ),
         deleteAlcoholType: (id) => (
             deleteAPI(`AlcoholControllerType/${id}`, {token: token})
-                .then(res => res.data)
+                .then((res) => {
+                    res.data.id = res.data.alcoholTypeId;
+                    delete res.data.alcoholTypeId;
+                    return res;
+                })
         )
     };
 };

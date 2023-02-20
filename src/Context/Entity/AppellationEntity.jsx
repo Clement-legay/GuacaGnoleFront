@@ -9,13 +9,13 @@ export const AppellationEntity = (token) => {
         fetchAppellations: (store = false) => (
             fetchAPI("/Appellation")
                 .then((res) => {
-                    res.data = res.data.map(
+                    res.data = res.data.length > 0 ? res.data.map(
                         (appellation) => {
                             appellation.id = appellation.appellationId;
                             delete appellation.appellationId;
                             return appellation
                         }
-                    );
+                    ) : [];
                     if (store) {
                         setAppellations(res.data);
                     }
@@ -32,19 +32,35 @@ export const AppellationEntity = (token) => {
         ),
         fetchAppellationByName: (name) => (
             fetchAPI(`Appellation/GetByName/${name}`)
-                .then(res => res.data)
+                .then((res) => {
+                    res.data.id = res.data.appellationId;
+                    delete res.data.appellationId;
+                    return res.data;
+                })
         ),
         postAppellation: (data) => (
             postAPI("Appellation", data, {token: token})
-                .then(res => res.data)
+                .then((res) => {
+                    res.data.id = res.data.appellationId;
+                    delete res.data.appellationId;
+                    return res;
+                })
         ),
         putAppellation: (id, data) => (
             putAPI(`Appellation/${id}`, data, {token: token})
-                .then(res => res.data)
+                .then((res) => {
+                    res.data.id = res.data.appellationId;
+                    delete res.data.appellationId;
+                    return res;
+                })
         ),
         deleteAppellation: (id) => (
             deleteAPI(`Appellation/${id}`, {token: token})
-                .then(res => res.data)
+                .then((res) => {
+                    res.data.id = res.data.appellationId;
+                    delete res.data.appellationId;
+                    return res;
+                })
         )
     };
 };

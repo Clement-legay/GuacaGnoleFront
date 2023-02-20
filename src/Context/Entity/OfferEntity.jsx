@@ -74,7 +74,7 @@ export const OfferEntity = (token) => {
         ),
         postImage: (data) => (
             postAPI("Offer/UploadFile", data, {file:true, token:token})
-                .then(res => `${API_URL}/${res.data}`)
+                .then(res => `${API_URL}${res.data}`)
         ),
         putOffer: (id, data) => (
             putAPI(`Offer/${id}`, data)

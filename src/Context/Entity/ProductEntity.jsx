@@ -9,13 +9,13 @@ export const ProductEntity = (token) => {
         fetchProducts: (store = false) => (
             fetchAPI("/Product")
                 .then((res) => {
-                    res.data = res.data.map(
+                    res.data = res.data.length > 0 ? res.data.map(
                         (product) => {
                             product.id = product.productId;
                             delete product.productId;
                             return product;
                         }
-                    );
+                    ) : [];
                     if (store) {
                         setProducts(res.data);
                     }
