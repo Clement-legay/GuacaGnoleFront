@@ -1,5 +1,5 @@
 import React, {useContext, useEffect} from 'react';
-import {Route, Routes, useNavigate, useNavigation} from 'react-router-dom';
+import {Route, Routes} from 'react-router-dom';
 
 import AdminLayout from '../Components/Admin/AdminLayout/AdminLayout';
 import CustomerLayout from "../Components/Customer/CustomerLayout/CustomerLayout";
@@ -23,7 +23,7 @@ import Search from "../Components/Customer/Search/Search";
 const PathRoutes = () => {
     const { isAuth, canAdmin, postToken, token, setAuthUser, user } = useContext(MainContext)
     const loading = token === undefined || (token && !user)
-    const navigate = useNavigate();
+    // const navigate = useNavigate();
 
     useEffect(() => {
         if (isAuth() === undefined && token) {

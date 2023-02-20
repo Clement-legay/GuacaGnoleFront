@@ -1,10 +1,6 @@
-import { styled } from '@mui/material/styles';
 import {
-    InputBase,
     Button,
-    Card,
     CardContent,
-    CardMedia,
     Typography,
     Grid,
     CardActionArea,
