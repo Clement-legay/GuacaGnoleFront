@@ -1,27 +1,33 @@
-import React, {useContext, useEffect, useState} from 'react';
+import React, {useContext} from 'react';
 import { ThemeProvider } from '@mui/material/styles';
-import {CircularProgress, CssBaseline} from "@mui/material";
+import {CssBaseline} from "@mui/material";
 import {MainContext} from "../../../Context/MainContext";
-import {Box} from "@mui/system";
-import themeCustomer from "../../../Styles/Customer/CustomerLayout/themeCustomer";
+import ThemeCustomer from "../../../Styles/Customer/CustomerLayout/themeCustomer";
+import Navbar from "../NavBar/NavBar";
+import {Main} from "../../../Styles/Customer/CustomerLayout/styles";
 
 const CustomerLayout = ({children}) => {
-    const { theme, setTheme } = useContext(MainContext);
-    const [finalTheme, setFinalTheme] = useState(null);
+    const { routeName } = useContext(MainContext);
+    // const [finalTheme, setFinalTheme] = useState(null);
 
-    useEffect(() => {
-        setFinalTheme(themeCustomer(theme, setTheme));
-    }, [theme, setTheme]);
+    // useEffect(() => {
+    //     setFinalTheme(themeCustomer(theme, setTheme));
+    // }, [theme, setTheme]);
 
-    return finalTheme === null ? (
-        // loading screen
-        <Box sx={{ width: '100%', height: '98vh', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-            <CircularProgress />
-        </Box>
-    ) : (
-        <ThemeProvider theme={finalTheme}>
+    // return finalTheme === null ? (
+    //     // loading screen
+    //     <Box sx={{ width: '100%', height: '98vh', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+    //         <CircularProgress />
+    //     </Box>
+    // ) : (
+
+    return (
+        <ThemeProvider theme={ThemeCustomer()}>
             <CssBaseline/>
-            {children}
+            <Main ispath={routeName === "404" || routeName === 'Home'}>
+                <Navbar/>
+                {children}
+            </Main>
         </ThemeProvider>
     );
 };

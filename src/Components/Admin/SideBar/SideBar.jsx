@@ -232,7 +232,7 @@ const SideBar = () => {
                     {/*{logo centered in drawer header}*/}
                     <Grid container justifyContent="center" alignItems="center">
                         <Grid item>
-                            <img src={"/assets/img/GuacaGnoleLogo.png"} alt="logo" style={{maxWidth: "100%", height: "75px"}} loading="lazy"/>
+                            <img src={"/assets/img/GuacaGnoleLogo.png"} alt="logo" style={{maxWidth: "100%", height: "60px"}} loading="lazy"/>
                         </Grid>
                     </Grid>
 

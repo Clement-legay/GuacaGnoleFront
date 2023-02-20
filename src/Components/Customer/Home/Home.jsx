@@ -1,22 +1,68 @@
-import {Fragment, useContext} from "react";
+import {Fragment, useContext, useEffect} from "react";
 import {MainContext} from "../../../Context/MainContext";
-import {Button} from "@mui/material";
-import {NavLink} from "react-router-dom";
+import {
+    StyledBigCard,
+    StyledContainer,
+    StyledImage,
+    StyledImageBox,
+    StyledTextCard
+} from "../../../Styles/Customer/Home/Home";
+import {Typography} from "@mui/material";
+const background = require("../../../Assets/img/backgrounds/background_2.png");
 
 const Home = () => {
-    const { user, token, role, logUserOut } = useContext(MainContext)
+    const { setRouteName } = useContext(MainContext)
+    // user, token, role, logUserOut,
+
+    useEffect(() => {
+        setRouteName("Home")
+    }, [setRouteName])
 
     return (
         <Fragment>
-            <h1>Home</h1>
-            <p>Token: {token}</p>
-            <p>User: {user}</p>
-            <p>Role: {role}</p>
-            <Button variant="contained" component={NavLink} to="/session/signin">Login</Button>
-            <Button variant="contained" onClick={() => {
-                logUserOut()
-            }}>Logout</Button>
-            <Button variant="contained" component={NavLink} to="/admin/">Admin</Button>
+            <StyledContainer>
+                <StyledTextCard>
+                    <Typography
+                        sx={{
+                            fontSize: "2.5em",
+                            mb: 1.5,
+                            lineHeight: 0.9,
+                            fontFamily: "Eloque",
+                            display: 'flex',
+                            alignItems: 'center',
+                            color: "text.title",
+                            '& .MuiSvgIcon-root': {
+                                mr: 0.5,
+                                fontSize: 16,
+                            }}}
+                        gutterBottom
+                    >
+                        Welcome to the Customer Portal
+                    </Typography>
+                    <Typography sx={{
+                        fontSize: "1.3em",
+                        mb: 1.5,
+                        display: 'flex',
+                        alignItems: 'center',
+                        color: "text.subtitle",
+                        '& .MuiSvgIcon-root': {
+                            mr: 0.5,
+                            fontSize: 16,
+                        },
+                    }} gutterBottom>
+                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed euismod, nisl nec
+                        tincidunt luctus, nunc odio lacinia nisl, vitae aliquet nunc nunc vel nisl. Sed
+                        euismod, nisl nec tincidunt luctus, nunc odio lacinia nisl, vitae aliquet nunc
+                        nunc vel nisl.
+                    </Typography>
+                </StyledTextCard>
+                <StyledImageBox>
+                    <StyledImage src={background} alt="illustration"/>
+                </StyledImageBox>
+            </StyledContainer>
+            <StyledBigCard>
+
+            </StyledBigCard>
         </Fragment>
     )
 };

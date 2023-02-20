@@ -19,7 +19,7 @@ export const SessionTheme = createTheme({
             main: '#18fa7a',
         },
         background: {
-            default: '#1e1e1e',
+            default: '#ffffff',
             paper: '#272727',
         },
         text: {

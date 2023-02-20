@@ -1,5 +1,5 @@
 import React, {useContext, useEffect} from 'react';
-import {Route, Routes} from 'react-router-dom';
+import {Route, Routes, useNavigate, useNavigation} from 'react-router-dom';
 
 import AdminLayout from '../Components/Admin/AdminLayout/AdminLayout';
 import CustomerLayout from "../Components/Customer/CustomerLayout/CustomerLayout";
@@ -18,10 +18,12 @@ import ForgotPassword from "../Components/Sessions/ForgotPassword";
 import Home from "../Components/Customer/Home/Home";
 import Offers from "../Components/Admin/Offers/Offers";
 import {Box} from "@mui/system";
+import Search from "../Components/Customer/Search/Search";
 
 const PathRoutes = () => {
     const { isAuth, canAdmin, postToken, token, setAuthUser, user } = useContext(MainContext)
     const loading = token === undefined || (token && !user)
+    const navigate = useNavigate();
 
     useEffect(() => {
         if (isAuth() === undefined && token) {
@@ -59,6 +61,7 @@ const PathRoutes = () => {
             <CssBaseline/>
             <Routes>
                 <Route path="/" element={<Home />} />
+                <Route path="/search" element={<Search />} />
                 <Route path="*" element={<NotFound/>}/>
             </Routes>
         </CustomerLayout>
@@ -70,6 +73,7 @@ const PathRoutes = () => {
                 <Route path="/signin" element={<LoginForm />} />
                 <Route path="/signup" element={<RegisterForm />} />
                 <Route path="/forgot-password" element={<ForgotPassword />} />
+                <Route path="/account" element={<Home />} />
                 <Route path="*" element={<NotFound />}/>
             </Routes>
         </SessionLayout>
