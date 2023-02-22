@@ -39,7 +39,9 @@ export const RegionEntity = (token) => {
                 })
         ),
         postRegion: (data) => (
-            postAPI("Region", data, {token: token})
+            postAPI("Region", data
+                // , {token: token}
+            )
                 .then((res) => {
                     res.data.id = res.data.regionID;
                     delete res.data.regionID;

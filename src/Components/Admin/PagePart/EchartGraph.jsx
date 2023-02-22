@@ -133,14 +133,14 @@ const EchartGraph = ({ data, selected, chartOptions }) => {
     };
 
     useEffect(() => {
-        if (selected.length !== 0) {
+        if (selected.length !== 0 && selected.length <= 10) {
             setFinalArray(
                 data.filter(item => {
                     return selected.includes(item.id)
                 })
             )
         } else {
-            setFinalArray(data)
+            setFinalArray(data.slice(0, 10))
         }
 
 

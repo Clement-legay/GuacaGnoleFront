@@ -44,61 +44,47 @@ const ManageProductDialog = ({setRefresh, addRequest, setAddRequest, setEditRequ
         appellation: null,
     });
 
-    const handleFormSubmit = async (values) => {
-        setLoading(true);
+    const isSet = async (object, postFunction) => {
+        if (object.id === 0) {
+            const result = await postFunction(object)
+            return await result.data.id
+        } else {
+            return object.id;
+        }
+    };
 
-        const isSet = async (object, postFunction) => {
-            if (object.id === 0) {
-                try {
-                    const response = await postFunction(object);
-                    return response.data.id;
-                } catch (e) {
-                    console.log(e);
-                }
-            } else {
-                return object.id;
-            }
+    const handleFormSubmit = async (values) => {
+        const newItem = {
+            name: values.name,
+            imageUrl: values.imageUrl,
+            price: values.price,
+            stock: values.stock,
+            millesime: values.millesime,
+            alcoholDegree: values.alcoholDegree,
+            reference: values.reference,
+            restockOption: values.restockOption,
+            furnisherId: values.supplier.id,
+            domainId: undefined,
+            alcoholTypeId: undefined,
+            regionId: undefined,
+            appellationId: undefined,
         };
 
-        const promises = [
-            await isSet(values.domain, postDomain),
-            await isSet(values.alcoholType, postAlcoholType),
-            await isSet(values.region, postRegion),
-            await isSet(values.appellation, postAppellation)
-        ];
+        newItem.domainId = await isSet(values.domain, postDomain);
+        newItem.alcoholTypeId = await isSet(values.alcoholType, postAlcoholType);
+        newItem.regionId = await isSet(values.region, postRegion);
+        newItem.appellationId = await isSet(values.appellation, postAppellation);
 
-        let newItem;
+        sendData(newItem);
+    };
 
-        try {
-            const [domainId, alcoholTypeId, regionId, appellationId] = await Promise.all(promises);
-            newItem = {
-                name: values.name,
-                imageUrl: values.imageUrl,
-                price: values.price,
-                stock: values.stock,
-                millesime: values.millesime,
-                alcoholDegree: values.alcoholDegree,
-                reference: values.reference,
-                restockOption: values.restockOption,
-                furnisherId: values.supplier.id,
-                domainId: domainId,
-                alcoholTypeId: alcoholTypeId,
-                regionId: regionId,
-                appellationId: appellationId,
-            };
-
-        } catch (e) {
-            console.log('Error while waiting for promises to resolve', e);
-            return;
-        }
-
+    const sendData = (newItem) => {
         console.log(newItem);
-
         try {
             if (type === "create") {
-                await postProduct(newItem);
+                postProduct(newItem);
             } else {
-                await putProduct(item.id, newItem);
+                putProduct(item.id, newItem);
             }
 
             setRefresh(true);
@@ -108,7 +94,8 @@ const ManageProductDialog = ({setRefresh, addRequest, setAddRequest, setEditRequ
             setLoading(false);
             console.log(e);
         }
-    };
+    }
+
 
     const handleClose = () => {
         setEditRequest(null);

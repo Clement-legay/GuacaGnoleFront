@@ -26,9 +26,10 @@ const Navbar = () => {
     const [scroll, setScroll] = React.useState(0);
     const { routeName, isAuth } = useContext(MainContext);
     const navigate = useNavigate();
+    const routes = ["Home", "Search"]
 
-    const isRoute = (route) => {
-        return routeName === route;
+    const isRoute = () => {
+        return routes.includes(routeName);
     }
 
     const isScrolled = () => {
@@ -64,8 +65,8 @@ const Navbar = () => {
                             <img src="/assets/img/GuacaGnoleLogo.png" alt="logo" style={{ width: "auto", height: 60, marginRight:6 }} />
                             <Typography sx={{
                                 fontSize: 20,
-                                fontWeight: 600,
-                                color: isRoute("Home") ? (theme) => theme.palette.text.title : (theme) => theme.palette.text.primary,
+                                fontWeight: 400,
+                                color: isRoute() ? (theme) => theme.palette.text.title : (theme) => theme.palette.text.primary,
                             }}>
                                 GuacaGnole
                             </Typography>
@@ -76,8 +77,8 @@ const Navbar = () => {
                     <StyledButton key={index} color="inherit" onClick={() => navigate(link.link)}>
                         <Typography sx={{
                             fontSize: 20,
-                            fontWeight: 600,
-                            color: isRoute("Home") ? (theme) => theme.palette.text.title : (theme) => theme.palette.text.primary,
+                            fontWeight: 400,
+                            color: isRoute() ? (theme) => theme.palette.text.title : (theme) => theme.palette.text.primary,
                         }}>
                             {link.label}
                         </Typography>
@@ -86,7 +87,7 @@ const Navbar = () => {
                 <StyledButton color="inherit" onClick={() => isAuth() ? navigate("/session/account") : navigate("/session/signin")}>
                     <AccountCircle sx={{
                             fontSize: 30,
-                            color: isRoute("Home") ? (theme) => theme.palette.text.title : (theme) => theme.palette.text.primary,
+                            color: isRoute() ? (theme) => theme.palette.text.title : (theme) => theme.palette.text.primary,
                         }}
                     />
 

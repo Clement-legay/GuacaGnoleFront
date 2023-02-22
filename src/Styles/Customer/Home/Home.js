@@ -63,7 +63,7 @@ export const StyledTextCard = styled(Box)(({theme}) => (
 export const StyledBigCard = styled(Box)(({theme}) => (
     {
         width: "100%",
-        height: "100vh",
+        minHeight: "100vh",
         position: "relative",
         backgroundColor:  "#eae8e8",
         "& h1": {

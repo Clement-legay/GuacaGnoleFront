@@ -1,6 +1,5 @@
-import { createTheme } from "@mui/material/styles";;
+import { createTheme } from "@mui/material/styles";
 const Neuee = require('../../../Assets/fonts/neue-haas-grotesk-display-pro-cufonfonts/NeueHaasDisplayRoman.ttf');
-const Poppins = require('../../../Assets/fonts/Poppins/Poppins-Regular.ttf');
 
 // const getTheme = (mode) => ({
 //     palette: mode === "dark" ? {
@@ -119,9 +118,10 @@ const ThemeCustomer = () => (
             },
             typography: {
                 fontFamily: [
-                    'Neuee',
-                    'Poppins',
-                ]
+                    "Neuee",
+                    "Poppins",
+                    "sans-serif",
+                ].join(","),
             },
             overrides: {
                 // change color of the body tag in the admin layout
@@ -129,14 +129,18 @@ const ThemeCustomer = () => (
                     styleOverrides: {
                         body: {
                             backgroundColor: "#f4f6f8",
+                            fontFamily: [
+                                'Neuee',
+                                'Poppins',
+                            ].join(','),
                         },
-                        fontFamily: [
-                            'Neuee',
-                            'Poppins',
-                        ].join(','),
+
                     },
                     '@global': {
-                        '@font-face': [Neuee, Poppins],
+                        '@font-face': {
+                            fontFamily: 'Neuee',
+                            src: `url(${Neuee})`,
+                        },
                     },
                 }
             }

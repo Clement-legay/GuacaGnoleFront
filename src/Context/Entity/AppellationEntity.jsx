@@ -39,7 +39,9 @@ export const AppellationEntity = (token) => {
                 })
         ),
         postAppellation: (data) => (
-            postAPI("Appellation", data, {token: token})
+            postAPI("Appellation", data
+                // , {token: token}
+            )
                 .then((res) => {
                     res.data.id = res.data.appellationId;
                     delete res.data.appellationId;

@@ -1,4 +1,5 @@
 import axios from 'axios';
+
 const API_URL = process.env.REACT_APP_DEV_API_LINK;
 
 const RequestAPI = (params={file:false, token:false}) => {
@@ -14,37 +15,38 @@ const RequestAPI = (params={file:false, token:false}) => {
 export const fetchAPI = async (url, params) => {
     try {
         const response = await RequestAPI(params).get(url);
-        return Promise.resolve(response);
+        return await response
+
     } catch (error) {
         console.log(error);
         return [];
     }
 };
 
-export const postAPI = (url, data, params) => {
+export const postAPI = async (url, data, params) => {
     try {
-        const response = RequestAPI(params).post(url, data);
-        return Promise.resolve(response);
+        const response = await RequestAPI(params).post(url, data);
+        return await response;
     } catch (error) {
         console.log(error);
         return [];
     }
 }
 
-export const putAPI = (url, data, params) => {
+export const putAPI = async (url, data, params) => {
     try {
-        const response = RequestAPI(params).put(url, data);
-        return Promise.resolve(response);
+        const response = await RequestAPI(params).put(url, data);
+        return await response;
     } catch (error) {
         console.log(error);
         return [];
     }
 }
 
-export const deleteAPI = (url, params) => {
+export const deleteAPI = async (url, params) => {
     try {
-        const response = RequestAPI(params).delete(url);
-        return Promise.resolve(response);
+        const response = await RequestAPI(params).delete(url);
+        return await response;
     } catch (error) {
         console.log(error);
         return [];

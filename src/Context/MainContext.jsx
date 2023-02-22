@@ -84,6 +84,20 @@ export const MainProvider = ({ children }) => {
         Cookies.remove("token");
     };
 
+    const manageFilters = (filters=null) => {
+        if (filters) {
+            const json = JSON.stringify(filters);
+            Cookies.set('filters', btoa(json), { expires: 1 / 48 });
+        } else {
+            const filters = Cookies.get('filters');
+            if (filters) {
+                return JSON.parse(atob(filters));
+            } else {
+                return null;
+            }
+        }
+    };
+
     const state = {
         theme, setTheme,
         user, setUser,
@@ -93,6 +107,7 @@ export const MainProvider = ({ children }) => {
         role, setRole,
         isAuth, canAdmin,
         setAuthUser, logUserOut,
+        manageFilters,
         ...ProductEntity(token),
         ...SupplierEntity(token),
         ...UserEntity(token),

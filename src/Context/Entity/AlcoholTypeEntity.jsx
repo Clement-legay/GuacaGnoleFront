@@ -39,7 +39,9 @@ export const AlcoholTypeEntity = (token) => {
                 })
         ),
         postAlcoholType: (data) => (
-            postAPI("AlcoholControllerType", data, {token: token})
+            postAPI("AlcoholControllerType", data
+                // , {token: token}
+            )
                 .then((res) => {
                     res.data.id = res.data.alcoholTypeId;
                     delete res.data.alcoholTypeId;
