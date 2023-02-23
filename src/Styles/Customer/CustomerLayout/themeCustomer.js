@@ -129,10 +129,15 @@ const ThemeCustomer = () => (
                     styleOverrides: {
                         body: {
                             backgroundColor: "#f4f6f8",
+                            userSelect: "none",
                             fontFamily: [
                                 'Neuee',
                                 'Poppins',
                             ].join(','),
+                            // disable user select on the body tag
+                            "*": {
+                                userSelect: "none",
+                            },
                         },
 
                     },
@@ -140,6 +145,9 @@ const ThemeCustomer = () => (
                         '@font-face': {
                             fontFamily: 'Neuee',
                             src: `url(${Neuee})`,
+                        },
+                        '*': {
+                            userSelect: 'none',
                         },
                     },
                 }

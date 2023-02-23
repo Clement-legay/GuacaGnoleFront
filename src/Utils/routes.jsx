@@ -21,20 +21,23 @@ import {Box} from "@mui/system";
 import Search from "../Components/Customer/Search/Search";
 
 const PathRoutes = () => {
-    const { isAuth, canAdmin, postToken, token, setAuthUser, user } = useContext(MainContext)
+    const { isAuth, canAdmin, postToken, token, setAuthUser, user, refreshCart } = useContext(MainContext)
     const loading = token === undefined || (token && !user)
     // const navigate = useNavigate();
 
     useEffect(() => {
-        if (isAuth() === undefined && token) {
-            try {
-                const result = postToken(token)
-                setAuthUser(result);
-            } catch (e) {
-                console.log(e)
+        if (isAuth() === undefined) {
+            refreshCart()
+            if (token) {
+                try {
+                    const result = postToken(token)
+                    setAuthUser(result);
+                } catch (e) {
+                    console.log(e)
+                }
             }
         }
-    }, [isAuth, token, postToken, setAuthUser])
+    }, [isAuth, token, postToken, setAuthUser, refreshCart])
 
     const adminRoutes = () => {
         if (isAuth()) {

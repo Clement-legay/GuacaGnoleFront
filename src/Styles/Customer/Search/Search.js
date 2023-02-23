@@ -47,6 +47,19 @@ export const FilterContainer = styled(Box)({
     backgroundColor: "linear-gradient(90deg, rgba(255,255,255,1) 0%, rgba(255,255,255,0) 100%)",
 });
 
+export const ProductImage = styled(CardMedia)({
+    height: 'auto',
+    width: '30%',
+    aspectRatio: '1/4',
+    transition: 'transform 0.2s',
+    transform: 'scale(1) rotate(20deg)',
+    '&:hover': {
+        transform: 'scale(1.02) rotate(19deg)',
+        cursor: 'pointer',
+    },
+
+});
+
 export const ProductCard = styled(Card)({
     maxWidth: '345px',
     backgroundColor: "transparent",
@@ -57,24 +70,15 @@ export const ProductCard = styled(Card)({
     flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
-    ":hover": {
-        background: "none",
-        boxShadow: "none",
-        border: "none",
-    },
-});
-
-export const ProductImage = styled(CardMedia)({
-    height: 'auto',
-    width: '30%',
-    aspectRatio: '1/4',
-    transition: 'transform 0.2s',
-    transform: 'scale(1) rotate(20deg)',
+    // when productCard is hovered, transform the image
     '&:hover': {
-        transform: 'scale(1.02) rotate(19deg)',
+        cursor: 'pointer',
+        "& $ProductImage": {
+            transform: 'scale(1.02) rotate(19deg)',
+        },
     },
-
 });
+
 
 export const IconContainer = styled(Box, {shouldForwardProp: (prop) => prop !== 'text'})(
     ({text}) => ({

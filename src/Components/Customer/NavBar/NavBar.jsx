@@ -1,9 +1,10 @@
-import React, {useContext, useEffect} from "react";
-import { Typography } from "@mui/material";
+import React, {useContext, useEffect, useState} from "react";
+import {Typography} from "@mui/material";
 import {Link, useNavigate} from "react-router-dom";
 import {MainContext} from "../../../Context/MainContext";
 import { StyledAppBar, StyledButton, StyledToolbar, StyledTitle, StyledBoxTitle} from "../../../Styles/Customer/NavBar/NavBar";
-import {AccountCircle} from "@mui/icons-material";
+import {ShoppingCart} from "@mui/icons-material";
+import BasicMenu from "./Component/ProfileMenu";
 
 const navbarSize = 80;
 
@@ -23,28 +24,33 @@ const linksArray = [
 ];
 
 const Navbar = () => {
-    const [scroll, setScroll] = React.useState(0);
-    const { routeName, isAuth } = useContext(MainContext);
+    const [scroll, setScroll] = useState(0);
+    const { routeName, isAuth, logUserOut } = useContext(MainContext);
+    const [isRoute, setIsRoute] = useState(false);
+    const [isScrolled, setIsScrolled] = useState(false);
+
     const navigate = useNavigate();
-    const routes = ["Home", "Search"]
 
-    const isRoute = () => {
-        return routes.includes(routeName);
-    }
+    useEffect(() => {
+        setIsRoute(["Home", "Search"].includes(routeName));
+    }, [setIsRoute, routeName]);
 
-    const isScrolled = () => {
-        if (isRoute("Home")) {
+    useEffect(() => {
+        if (isRoute) {
             const height = window.innerHeight * 0.6;
             if (scroll > height) {
-                return true;
+                setIsScrolled(true);
+            } else {
+                setIsScrolled(false);
             }
         } else {
             if (scroll > navbarSize) {
-                return true;
+                setIsScrolled(true);
+            } else {
+                setIsScrolled(false);
             }
         }
-        return false;
-    }
+    }, [scroll, isRoute]);
 
     useEffect(() => {
         const handleScroll = () => {
@@ -57,7 +63,7 @@ const Navbar = () => {
     }, [setScroll, scroll]);
 
     return (
-        <StyledAppBar position="fixed" scrolled={isScrolled()} height={navbarSize}>
+        <StyledAppBar position="fixed" scrolled={isScrolled} height={navbarSize}>
             <StyledToolbar>
                 <StyledTitle component="div" sx={{ flexGrow: 1 }}>
                     <Link to="/" style={{ textDecoration: "none" }}>
@@ -66,7 +72,7 @@ const Navbar = () => {
                             <Typography sx={{
                                 fontSize: 20,
                                 fontWeight: 400,
-                                color: isRoute() ? (theme) => theme.palette.text.title : (theme) => theme.palette.text.primary,
+                                color: isRoute ? (theme) => theme.palette.text.title : (theme) => theme.palette.text.primary,
                             }}>
                                 GuacaGnole
                             </Typography>
@@ -78,20 +84,21 @@ const Navbar = () => {
                         <Typography sx={{
                             fontSize: 20,
                             fontWeight: 400,
-                            color: isRoute() ? (theme) => theme.palette.text.title : (theme) => theme.palette.text.primary,
+                            color: isRoute ? (theme) => theme.palette.text.title : (theme) => theme.palette.text.primary,
                         }}>
                             {link.label}
                         </Typography>
                     </StyledButton>
                 ))}
-                <StyledButton color="inherit" onClick={() => isAuth() ? navigate("/session/account") : navigate("/session/signin")}>
-                    <AccountCircle sx={{
+                <BasicMenu isAuth={isAuth} logUserOut={logUserOut} navigate={navigate} />
+                {isAuth() && (
+                    <StyledButton color="inherit" onClick={() => navigate("/session/cart")}>
+                        <ShoppingCart sx={{
                             fontSize: 30,
-                            color: isRoute() ? (theme) => theme.palette.text.title : (theme) => theme.palette.text.primary,
-                        }}
-                    />
-
-                </StyledButton>
+                            color: isRoute ? (theme) => theme.palette.text.title : (theme) => theme.palette.text.primary,
+                        }}/>
+                    </StyledButton>
+                )}
             </StyledToolbar>
         </StyledAppBar>
     );

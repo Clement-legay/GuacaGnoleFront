@@ -62,7 +62,11 @@ export const OfferEntity = (token) => {
         ),
         fetchOfferById: (id) => (
             fetchAPI(`Offer/${id}`)
-                .then(res => res.data)
+                .then((res) => {
+                    res.data.id = res.data.offerId;
+                    delete res.data.offerId;
+                    return res.data;
+                })
         ),
         fetchAvailability: (id) => (
             fetchAPI(`Offer/CheckOfferIsAvailable/${id}`)

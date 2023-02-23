@@ -23,7 +23,7 @@ const CustomerLayout = ({children}) => {
 
     return (
         <ThemeProvider theme={ThemeCustomer()}>
-            <CssBaseline/>
+            <CssBaseline />
             <Main ispath={routeName === "404" || routeName === 'Home' || routeName === "Search"}>
                 <Navbar/>
                 {children}

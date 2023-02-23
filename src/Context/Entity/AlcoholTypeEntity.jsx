@@ -7,7 +7,7 @@ export const AlcoholTypeEntity = (token) => {
     return {
         alcoholTypes: alcoholTypes,
         fetchAlcoholTypes: (store = false) => (
-            fetchAPI("/AlcoholControllerType")
+            fetchAPI("/AlcoholControllerType", {token: token})
                 .then((res) => {
                     res.data = res.data.length > 0 ? res.data.map(
                         (item) => {

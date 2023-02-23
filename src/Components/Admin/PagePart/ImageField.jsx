@@ -29,13 +29,24 @@ const ImageField = ({initialValue, setFieldValue, FieldValue, alt}) => {
             <Grid item xs={12}>
                 <Grid container={true} spacing={2} p={1} alignItems="center" justifyContent="center">
                     <Grid item>
-                        <img
-                            id="imageRender"
-                            src={initialValue !== "" ? initialValue : "https://via.placeholder.com/150"}
-                            width="150"
-                            height="150"
-                            alt={alt}
-                        />
+                        <div style={{
+                            width: "150px",
+                            height: "150px",
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: 'center'
+                        }}>
+                            <img
+                                id="imageRender"
+                                src={initialValue !== "" ? initialValue : "https://via.placeholder.com/150"}
+                                alt={alt}
+                                style={{
+                                    width: "auto",
+                                    height: "100%",
+                                    borderRadius: "5px",
+                                }}
+                            />
+                        </div>
                     </Grid>
                 </Grid>
             </Grid>

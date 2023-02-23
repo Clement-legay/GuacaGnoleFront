@@ -12,7 +12,6 @@ const background = require("../../../Assets/img/backgrounds/background_2.png");
 
 const Home = () => {
     const { setRouteName } = useContext(MainContext)
-    // user, token, role, logUserOut,
 
     useEffect(() => {
         setRouteName("Home")

@@ -23,14 +23,19 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import {StyledBigCard} from "../../../Styles/Customer/Home/Home";
+import ProductDialog from "../ProductDialog/ProductDialog";
+import {useLocation} from "react-router-dom";
 const background = require("../../../Assets/img/backgrounds/searchBar.jpg");
 
 // get the background image
 
 const Search = () => {
+    const location = useLocation();
     const {setRouteName, offers, fetchOffers, manageFilters} = useContext(MainContext);
     const [finalArray, setFinalArray] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [openDialog, setOpenDialog] = useState(false);
+    const [selectedProduct, setSelectedProduct] = useState(null);
     const [filter, setFilter] = useState({
         search: '',
         type: null,
@@ -40,6 +45,12 @@ const Search = () => {
         region: null,
         appellation: null,
     });
+
+    const handleSelection = (value) => {
+        setSelectedProduct(value.id);
+        const searchParams = new URLSearchParams(location.search);
+        searchParams.set('product', value.id);
+    }
 
     const filterFunction = (array, filterKey, filterValue) => {
         return array.filter((item) =>
@@ -108,10 +119,10 @@ const Search = () => {
 
     useEffect(() => {
         if (loading) {
-            // const cookiesFilter = manageFilters();
-            // if (cookiesFilter) {
-            //     setFilter(cookiesFilter);
-            // }
+            const refreshFilter = manageFilters();
+            if (refreshFilter) {
+                setFilter(refreshFilter);
+            }
             fetchOffers(true);
             setLoading(false);
         }
@@ -119,6 +130,7 @@ const Search = () => {
 
     useEffect(() => {
         if (offers && loading === false) {
+            // fetchOffers(true);
             manageFilters(filter);
 
             let array = offers;
@@ -126,7 +138,6 @@ const Search = () => {
                 array = array.filter(offer => offer.name.toLowerCase().includes(filter.search.toLowerCase()));
             }
             if (filter.type) {
-                console.log(filter.type);
                 array = filterFunction(array, "alcoholTypeId", filter.type.id);
             }
             if (filter.price) {
@@ -145,17 +156,33 @@ const Search = () => {
                 array = filterFunction(array, "appellationId", filter.appellation.id);
             }
 
-            console.log(array);
             setFinalArray(array);
         }
-    }, [offers, filter, manageFilters, loading]);
+    }, [offers, filter, manageFilters, loading, fetchOffers]);
 
     useEffect(() => {
         setRouteName("Search");
-    }, [setRouteName]);
+
+        const searchParams = new URLSearchParams(location.search);
+        const product = searchParams.get('product');
+        if (product) {
+            setSelectedProduct(product);
+        }
+    }, [setRouteName, setSelectedProduct, location.search]);
+
+    useEffect(() => {
+        if (selectedProduct) {
+            setOpenDialog(true);
+        } else {
+            setOpenDialog(false);
+            const searchParams = new URLSearchParams(location.search);
+            searchParams.delete('product');
+        }
+    }, [selectedProduct, setOpenDialog, location.search]);
 
     return (
         <Box>
+            <ProductDialog open={openDialog} setOpen={setOpenDialog} selected={selectedProduct} setSelected={setSelectedProduct} />
             <SearchBox sx={{backgroundImage: `url(${background})`}}>
                 <ImgLogoBg src={"/assets/img/blackWaxSeal.png"} alt={"logo"}/>
                 <ImgLogo src={"/assets/img/GuacaGnoleLogo.png"} alt={"logo2"}/>
@@ -307,13 +334,13 @@ const Search = () => {
                     </Box>
                     <Grid container spacing={3}>
                         {finalArray.map((offer) => {
-                            const {textAverage, average} = howManyStars(offer.comments);
-                            const available = isAvailable(offer.productOffers);
-                            const howMany = howManyBottles(offer.productOffers);
+                        const {textAverage, average} = howManyStars(offer.comments);
+                        const available = isAvailable(offer.productOffers);
+                        const howMany = howManyBottles(offer.productOffers);
 
                         return (
                             <Grid item xs={12} sm={6} md={4} lg={4} key={offer.id}>
-                                <ProductCard>
+                                <ProductCard onClick={() => handleSelection(offer)}>
                                     <ProductImage
                                         component="img"
                                         image={offer.imageUrl}
@@ -341,7 +368,7 @@ const Search = () => {
                                             {offer.name}
                                         </Typography>
                                         <Typography variant="h5" component="h6" sx={{ fontWeight: 'bold', mt:0 }}>
-                                            {offer.price}$
+                                            {offer.price}€
                                         </Typography>
                                     </Box>
                                 </ProductCard>

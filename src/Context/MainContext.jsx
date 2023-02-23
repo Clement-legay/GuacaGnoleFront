@@ -21,7 +21,10 @@ export const MainContext = createContext({
 
     token: null,
     user: null,
+    cart: [],
     role: null,
+
+    searchFilters: null,
 
     alcoholTypes: [],
     appellations: [],
@@ -42,9 +45,12 @@ export const MainProvider = ({ children }) => {
     const [theme, setTheme] = useState(null);
     const [routeName, setRouteName] = useState(null);
 
+    const [searchFilters, setSearchFilters] = useState(null);
+
     const [user, setUser] = useState(null);
     const [token, setToken] = useState(undefined);
     const [role, setRole] = useState(null);
+    const [cart, setCart] = useState([]);
 
     const canAdmin = () => {
         return role === "admin";
@@ -64,7 +70,29 @@ export const MainProvider = ({ children }) => {
     };
 
     const isAuth = () => {
-       return user !== null ? true : hasToken() ? undefined : false;
+        return user !== null ? true : hasToken() ? undefined : false;
+    };
+
+    const addToCart = (item) => {
+        setCart([...cart, item]);
+        const string = JSON.stringify([...cart, item]);
+        Cookies.set("cart", btoa(string), { expires: 14 });
+    };
+
+    const removeFromCart = (item) => {
+        setCart(cart.filter((i) => i.id !== item.id));
+        const string = JSON.stringify(cart.filter((i) => i.id !== item.id));
+        Cookies.set("cart", btoa(string), { expires: 14 });
+    };
+
+    const refreshCart = () => {
+        const string = Cookies.get("cart");
+        if (string) {
+            const cart = JSON.parse(atob(string));
+            setCart(cart);
+        }
+
+        return true;
     };
 
     const setAuthUser = (item, remember) => {
@@ -78,6 +106,7 @@ export const MainProvider = ({ children }) => {
     };
 
     const logUserOut = () => {
+        console.log("logout");
         setToken(null);
         setUser(null);
         setRole(null);
@@ -86,15 +115,9 @@ export const MainProvider = ({ children }) => {
 
     const manageFilters = (filters=null) => {
         if (filters) {
-            const json = JSON.stringify(filters);
-            Cookies.set('filters', btoa(json), { expires: 1 / 48 });
+            setSearchFilters(filters);
         } else {
-            const filters = Cookies.get('filters');
-            if (filters) {
-                return JSON.parse(atob(filters));
-            } else {
-                return null;
-            }
+            return searchFilters;
         }
     };
 
@@ -105,9 +128,11 @@ export const MainProvider = ({ children }) => {
         routeName, setRouteName,
         token, setToken,
         role, setRole,
+        cart,
         isAuth, canAdmin,
         setAuthUser, logUserOut,
-        manageFilters,
+        addToCart, removeFromCart,
+        refreshCart, manageFilters,
         ...ProductEntity(token),
         ...SupplierEntity(token),
         ...UserEntity(token),

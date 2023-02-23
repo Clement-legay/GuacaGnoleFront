@@ -68,7 +68,17 @@ const columns = [
         disablePadding: false,
         sortable: false,
         format: (url) => {
-            return <img src={url} alt="offer" style={{width: "50px", height: "50px"}}/>
+            return (
+                <div style={{
+                    width: "50px",
+                    height: "50px",
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center'
+                }}>
+                    <img src={url} alt="offer" style={{height: "100%", width:"auto"}}/>
+                </div>
+            )
         }
     },
     {
