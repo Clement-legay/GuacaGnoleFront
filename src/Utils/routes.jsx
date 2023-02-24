@@ -19,6 +19,7 @@ import Home from "../Components/Customer/Home/Home";
 import Offers from "../Components/Admin/Offers/Offers";
 import {Box} from "@mui/system";
 import Search from "../Components/Customer/Search/Search";
+import Command from "../Components/Sessions/Command/Command";
 
 const PathRoutes = () => {
     const { isAuth, canAdmin, postToken, setUser, refreshToken, fetchUserById, userId, token, setAuthUser, user, refreshCart } = useContext(MainContext)
@@ -83,6 +84,7 @@ const PathRoutes = () => {
                 <Route path="/signup" element={<RegisterForm />} />
                 <Route path="/forgot-password" element={<ForgotPassword />} />
                 <Route path="/account" element={<Home />} />
+                <Route path="/command" element={<Command />} />
                 <Route path="*" element={<NotFound />}/>
             </Routes>
         </SessionLayout>

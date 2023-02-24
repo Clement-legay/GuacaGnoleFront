@@ -196,7 +196,7 @@ export default function CartMenu({navigate, sx}) {
                             sx={{width: '100%'}}
                             disabled={finalCartArray === null || finalCartArray.length === 0}
                             onClick={() => {
-                                navigate('/session/cart')
+                                navigate('/session/command')
                                 handleClose()
                             }}
                         >
