@@ -24,13 +24,14 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import {StyledBigCard} from "../../../Styles/Customer/Home/Home";
 import ProductDialog from "../ProductDialog/ProductDialog";
-import {useLocation} from "react-router-dom";
+import {useLocation, useNavigate} from "react-router-dom";
 const background = require("../../../Assets/img/backgrounds/searchBar.jpg");
 
 // get the background image
 
 const Search = () => {
     const location = useLocation();
+    const navigate = useNavigate();
     const {setRouteName, offers, fetchOffers, manageFilters} = useContext(MainContext);
     const [finalArray, setFinalArray] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -48,8 +49,6 @@ const Search = () => {
 
     const handleSelection = (value) => {
         setSelectedProduct(value.id);
-        const searchParams = new URLSearchParams(location.search);
-        searchParams.set('product', value.id);
     }
 
     const filterFunction = (array, filterKey, filterValue) => {
@@ -144,7 +143,7 @@ const Search = () => {
                 array = array.filter(offer => offer.price >= filter.price[0] && offer.price <= filter.price[1]);
             }
             if (filter.millesime) {
-                array = filterFunction(array, "millesime", filter.millesime);
+                array = filterFunction(array, "millesime", Number(filter.millesime.format("YYYY")));
             }
             if (filter.domain) {
                 array = filterFunction(array, "domainId", filter.domain.id);
@@ -163,8 +162,8 @@ const Search = () => {
     useEffect(() => {
         setRouteName("Search");
 
-        const searchParams = new URLSearchParams(location.search);
-        const product = searchParams.get('product');
+        const query = new URLSearchParams(location.search);
+        const product = query.get('product');
         if (product) {
             setSelectedProduct(product);
         }
@@ -172,13 +171,18 @@ const Search = () => {
 
     useEffect(() => {
         if (selectedProduct) {
+            console.log(selectedProduct);
             setOpenDialog(true);
+            const query = new URLSearchParams(location.search);
+            query.set('product', selectedProduct);
+            navigate({search: query.toString()}, {replace: true});
         } else {
             setOpenDialog(false);
-            const searchParams = new URLSearchParams(location.search);
-            searchParams.delete('product');
+            const query = new URLSearchParams(location.search);
+            query.delete('product');
+            navigate({search: query.toString()}, {replace: true});
         }
-    }, [selectedProduct, setOpenDialog, location.search]);
+    }, [selectedProduct, setOpenDialog, location.search, navigate]);
 
     return (
         <Box>
@@ -334,47 +338,47 @@ const Search = () => {
                     </Box>
                     <Grid container spacing={3}>
                         {finalArray.map((offer) => {
-                        const {textAverage, average} = howManyStars(offer.comments);
-                        const available = isAvailable(offer.productOffers);
-                        const howMany = howManyBottles(offer.productOffers);
+                            const {textAverage, average} = howManyStars(offer.comments);
+                            const available = isAvailable(offer.productOffers);
+                            const howMany = howManyBottles(offer.productOffers);
 
-                        return (
-                            <Grid item xs={12} sm={6} md={4} lg={4} key={offer.id}>
-                                <ProductCard onClick={() => handleSelection(offer)}>
-                                    <ProductImage
-                                        component="img"
-                                        image={offer.imageUrl}
-                                        alt={offer.name}
-                                    />
-                                    <Grid container spacing={3}  alignItems="center"  justifyContent="center" sx={{mt:1}}>
-                                        <Grid item>
-                                            <IconContainer text={howMany > 1 ? `${howMany} bouteilles` : `${howMany} bouteille`}>
-                                                <LiquorIcon color={"text.primary"} />
-                                            </IconContainer>
+                            return (
+                                <Grid item xs={12} sm={6} md={4} lg={4} key={offer.id}>
+                                    <ProductCard onClick={() => handleSelection(offer)}>
+                                        <ProductImage
+                                            component="img"
+                                            image={offer.imageUrl}
+                                            alt={offer.name}
+                                        />
+                                        <Grid container spacing={3}  alignItems="center"  justifyContent="center" sx={{mt:1}}>
+                                            <Grid item>
+                                                <IconContainer text={howMany > 1 ? `${howMany} bouteilles` : `${howMany} bouteille`}>
+                                                    <LiquorIcon color={"text.primary"} />
+                                                </IconContainer>
+                                            </Grid>
+                                            <Grid item>
+                                                <IconContainer text={available  ? "Available" : "Out of stock"}>
+                                                    <WarehouseIcon color={available ? "text.primary" : "disabled"} />
+                                                </IconContainer>
+                                            </Grid>
+                                            <Grid item>
+                                                <IconContainer text={textAverage}>
+                                                    {average > 2.5 ? <StarIcon color="warning" /> : <StarOutlineOutlinedIcon color="warning" />}
+                                                </IconContainer>
+                                            </Grid>
                                         </Grid>
-                                        <Grid item>
-                                            <IconContainer text={available  ? "Available" : "Out of stock"}>
-                                                <WarehouseIcon color={available ? "text.primary" : "disabled"} />
-                                            </IconContainer>
-                                        </Grid>
-                                        <Grid item>
-                                            <IconContainer text={textAverage}>
-                                                {average > 2.5 ? <StarIcon color="warning" /> : <StarOutlineOutlinedIcon color="warning" />}
-                                            </IconContainer>
-                                        </Grid>
-                                    </Grid>
-                                    <Box sx={{ p: 1, display:'flex', justifyContent: "center", alignItems: "center", flexDirection: "column" }}>
-                                        <Typography variant="h6" component="h6" sx={{ textAlign:'center', mt:0, fontWeight: 300 }}>
-                                            {offer.name}
-                                        </Typography>
-                                        <Typography variant="h5" component="h6" sx={{ fontWeight: 'bold', mt:0 }}>
-                                            {offer.price}€
-                                        </Typography>
-                                    </Box>
-                                </ProductCard>
-                            </Grid>
-                        )
-                    })}
+                                        <Box sx={{ p: 1, display:'flex', justifyContent: "center", alignItems: "center", flexDirection: "column" }}>
+                                            <Typography variant="h6" component="h6" sx={{ textAlign:'center', mt:0, fontWeight: 300 }}>
+                                                {offer.name}
+                                            </Typography>
+                                            <Typography variant="h5" component="h6" sx={{ fontWeight: 'bold', mt:0 }}>
+                                                {offer.price}€
+                                            </Typography>
+                                        </Box>
+                                    </ProductCard>
+                                </Grid>
+                            )
+                        })}
                     </Grid>
                 </Container>
             </StyledBigCard>

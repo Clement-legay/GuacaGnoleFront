@@ -14,6 +14,8 @@ import {
 
 } from "../../../Styles/Customer/ProductDialog/ProductDialog";
 import {MainContext} from "../../../Context/MainContext";
+import CartMenu from "../NavBar/Component/CartMenu";
+import {useNavigate} from "react-router-dom";
 
 const Transition = forwardRef(function Transition(props, ref) {
     return <Slide direction="left" ref={ref} {...props} />;
@@ -21,6 +23,7 @@ const Transition = forwardRef(function Transition(props, ref) {
 
 
 const ProductDialog = ({setOpen, open, selected, setSelected}) => {
+    const navigate = useNavigate();
     const { fetchOfferById, fetchDomainById, fetchRegionById, fetchAppellationById, fetchAlcoholTypeById, addToCart } = useContext(MainContext)
     const [products, setProducts] = useState([]);
     const [offer, setOffer] = useState(null);
@@ -118,6 +121,14 @@ const ProductDialog = ({setOpen, open, selected, setSelected}) => {
                     <Grid item xs={12} lg={7}>
                         <StyledDataContainer>
                             <StyledContainerDesc>
+                                <Box sx={{
+                                    position: 'absolute',
+                                    top: 0,
+                                    right: 0,
+                                    margin: '1rem',
+                                }}>
+                                    <CartMenu navigate={navigate} sx={{color:"black"}}/>
+                                </Box>
                                 <Grid container justifyContent="space-between" alignItems="center">
                                     <Grid item>
                                         <Typography variant="h2" component="h1" gutterBottom>

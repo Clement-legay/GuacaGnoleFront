@@ -25,7 +25,12 @@ export const UserEntity = (token) => {
                 })
         ),
         fetchUserById: (id) => (
-            fetchAPI(`${userLinkPrefix}/GetUserById/${id}`)
+            fetchAPI(`${userLinkPrefix}/GetUserById/${id}`, {token: token})
+                .then((res) => {
+                    res.data.id = res.data.userId;
+                    delete res.data.userId;
+                    return res.data;
+                })
         ),
         fetchUserByUsername: (username) => (
             fetchAPI(`${userLinkPrefix}/GetUserByUsername/${username}`)

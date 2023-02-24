@@ -21,23 +21,29 @@ import {Box} from "@mui/system";
 import Search from "../Components/Customer/Search/Search";
 
 const PathRoutes = () => {
-    const { isAuth, canAdmin, postToken, token, setAuthUser, user, refreshCart } = useContext(MainContext)
+    const { isAuth, canAdmin, postToken, setUser, refreshToken, fetchUserById, userId, token, setAuthUser, user, refreshCart } = useContext(MainContext)
     const loading = token === undefined || (token && !user)
     // const navigate = useNavigate();
 
     useEffect(() => {
-        if (isAuth() === undefined) {
+        if (isAuth() && loading) {
             refreshCart()
             if (token) {
-                try {
-                    const result = postToken(token)
-                    setAuthUser(result);
-                } catch (e) {
-                    console.log(e)
-                }
+                (async () => {
+                    const user = await fetchUserById(userId)
+                    setUser(user)
+                })()
+            } else if (refreshToken) {
+                (async () => {
+                    const result = await postToken(refreshToken)
+                    setAuthUser(result)
+
+                    const user = await fetchUserById(result.id)
+                    setUser(user)
+                })()
             }
         }
-    }, [isAuth, token, postToken, setAuthUser, refreshCart])
+    }, [isAuth, loading, userId, token, refreshToken, postToken, setAuthUser, setUser, fetchUserById, refreshCart])
 
     const adminRoutes = () => {
         if (isAuth()) {
@@ -85,7 +91,7 @@ const PathRoutes = () => {
     return loading ?
         (
             <Box sx={{ width: '100%', height: '98vh', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                <CircularProgress />
+                <CircularProgress  color="secondary" />
             </Box>
         ) : (
             <Routes>

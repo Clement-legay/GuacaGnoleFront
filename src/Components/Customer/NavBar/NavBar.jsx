@@ -3,8 +3,8 @@ import {Typography} from "@mui/material";
 import {Link, useNavigate} from "react-router-dom";
 import {MainContext} from "../../../Context/MainContext";
 import { StyledAppBar, StyledButton, StyledToolbar, StyledTitle, StyledBoxTitle} from "../../../Styles/Customer/NavBar/NavBar";
-import {ShoppingCart} from "@mui/icons-material";
-import BasicMenu from "./Component/ProfileMenu";
+import ProfileMenu from "./Component/ProfileMenu";
+import CartMenu from "./Component/CartMenu";
 
 const navbarSize = 80;
 
@@ -90,15 +90,14 @@ const Navbar = () => {
                         </Typography>
                     </StyledButton>
                 ))}
-                <BasicMenu isAuth={isAuth} logUserOut={logUserOut} navigate={navigate} />
-                {isAuth() && (
-                    <StyledButton color="inherit" onClick={() => navigate("/session/cart")}>
-                        <ShoppingCart sx={{
-                            fontSize: 30,
-                            color: isRoute ? (theme) => theme.palette.text.title : (theme) => theme.palette.text.primary,
-                        }}/>
-                    </StyledButton>
-                )}
+                <ProfileMenu isAuth={isAuth} logUserOut={logUserOut} navigate={navigate} sx={{
+                    fontSize: 30,
+                    color: isRoute ? (theme) => theme.palette.text.title : (theme) => theme.palette.text.primary,
+                }}/>
+                <CartMenu navigate={navigate} sx={{
+                    fontSize: 30,
+                    color: isRoute ? (theme) => theme.palette.text.title : (theme) => theme.palette.text.primary,
+                }}/>
             </StyledToolbar>
         </StyledAppBar>
     );
