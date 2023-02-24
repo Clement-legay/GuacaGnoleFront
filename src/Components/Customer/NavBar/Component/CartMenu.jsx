@@ -100,7 +100,10 @@ export default function CartMenu({navigate, sx}) {
                             <CircularProgress/>
                         </Box>
                     ) : (
-                        <List>
+                        <List sx={{
+                            overflowY: 'auto',
+                            maxHeight: 200,
+                        }}>
                             {finalCartArray.length === 0 ? (
                                 <StyledOfferItemContainer>
                                     No items in cart
@@ -216,7 +219,6 @@ const StyledShoppingCartContainer = styled(Box)(
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
-        overflow: 'auto'
     })
 )
 
