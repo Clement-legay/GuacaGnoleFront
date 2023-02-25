@@ -51,7 +51,7 @@ const JwtRegister = () => {
         firstName: values.firstName,
         lastName: values.lastName,
         phone: values.phone,
-        adress: address,
+        address: address,
       });
       console.log(result);
       if (result.status === 201) {
@@ -90,7 +90,7 @@ const JwtRegister = () => {
             firstName: "",
             lastName: "",
             phone: "",
-            adress: "",
+            address: "",
           }}
           validationSchema={validationSchema}
         >
@@ -184,7 +184,7 @@ const JwtRegister = () => {
                           fullWidth
                           type="address"
                           label="adress"
-                          name="adress"
+                          name="Address"
                           size="big"
                           onChange={setAddress}
                           onBlur={handleBlur}
