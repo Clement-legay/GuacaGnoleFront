@@ -1,333 +1,327 @@
-import { LoadingButton } from '@mui/lab';
-import {Card, MenuItem, List, Checkbox, Grid, TextField, Typography, ListItem} from '@mui/material';
+import { LoadingButton } from "@mui/lab";
+import {
+  Card,
+  List,
+  Checkbox,
+  Grid,
+  TextField,
+  Typography,
+  ListItem,
+} from "@mui/material";
 
-import { Formik } from 'formik';
-import {useContext, useState, useEffect} from 'react';
-import { NavLink, useNavigate } from 'react-router-dom';
-import * as Yup from 'yup';
-import {MainContext} from "../../Context/MainContext";
-import {RegisterForm, FlexBox} from "../../Styles/Sessions/AuthForms";
-import PlacesAutocomplete from 'react-places-autocomplete';
-import {useJsApiLoader} from '@react-google-maps/api';
+import { Formik } from "formik";
+import { useContext, useState, useEffect } from "react";
+import { NavLink, useNavigate } from "react-router-dom";
+import * as Yup from "yup";
+import { MainContext } from "../../Context/MainContext";
+import { RegisterForm, FlexBox } from "../../Styles/Sessions/AuthForms";
+import PlacesAutocomplete from "react-places-autocomplete";
+import { useJsApiLoader } from "@react-google-maps/api";
 
-// https://maps.googleapis.com/maps/api/js?key=AIzaSyCjq3LsUB4kmIdqT_tAXPsA1_yAKPX6UDg&libraries=places"
+
 
 // form field validation schema
 const validationSchema = Yup.object().shape({
-    password: Yup.string()
-        .min(6, 'Password must be 6 character length')
-        .required('Password is required!'),
-    email: Yup.string().email('Invalid Email address').required('Email is required!'),
-    firstName: Yup.string().required('First name is required!'),
-    lastName: Yup.string().required('Last name is required!'),
-    phone: Yup.string().required('Phone number is required!'),
-    username: Yup.string().required('Username is required!'),
+  password: Yup.string()
+    .min(6, "Password must be 6 character length")
+    .required("Password is required!"),
+  email: Yup.string()
+    .email("Invalid Email address")
+    .required("Email is required!"),
+  firstName: Yup.string().required("First name is required!"),
+  lastName: Yup.string().required("Last name is required!"),
+  phone: Yup.string().required("Phone number is required!"),
+  username: Yup.string().required("Username is required!"),
 });
 
 const JwtRegister = () => {
-    const { postRegister } = useContext(MainContext);
-    const navigate = useNavigate();
-    const [loading, setLoading] = useState(false);
+  const { postRegister } = useContext(MainContext);
+  const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
 
-    const handleFormSubmit = async (values) => {
-        setLoading(true);
+  const handleFormSubmit = async (values) => {
+    setLoading(true);
 
-        try {
-            const result = await postRegister({
-                email: values.email, username: values.username,
-                password: values.password, confirmPassword: values.confirmPassword,
-                firstName: values.firstName, lastName: values.lastName,
-                phone: values.phone, adress: address
-
-            });
-            console.log(result);
-            if (result.status === 201) {
-                navigate('/session/signin');
-                setLoading(false);
-            }
-        } catch (e) {
-            console.log(e);
-            setLoading(false);
-        }
-    };
-
-    useJsApiLoader({
-        googleMapsApiKey: "AIzaSyCjq3LsUB4kmIdqT_tAXPsA1_yAKPX6UDg",
-        libraries: "places"
-    })
-    const [address, setAddress] = useState("");
-    // const [coordinates, setCoordinates] = useState({lat: null, lng: null});
-    const handleSelect = async (value) => {
-        // const results = geocodeByAddress(value);
-
-        setAddress(value)
+    try {
+      const result = await postRegister({
+        email: values.email,
+        username: values.username,
+        password: values.password,
+        confirmPassword: values.confirmPassword,
+        firstName: values.firstName,
+        lastName: values.lastName,
+        phone: values.phone,
+        adress: address,
+      });
+      console.log(result);
+      if (result.status === 201) {
+        navigate("/session/signin");
+        setLoading(false);
+      }
+    } catch (e) {
+      console.log(e);
+      setLoading(false);
     }
+  };
 
-    useEffect(() => {
-        console.log(address, " addres new")
-    }, [address]);
+  /**
+   * Load google librairie Places
+   */
+  useJsApiLoader({
+    googleMapsApiKey: "AIzaSyCjq3LsUB4kmIdqT_tAXPsA1_yAKPX6UDg",
+    libraries: "places",
+  });
+  //Address in form
+  const [address, setAddress] = useState("");
+  const handleSelect = async (value) => {
+    setAddress(value);
+  };
 
-    return (
-        <RegisterForm>
-            <Card className="card">
+  return (
+    <RegisterForm>
+      <Card className="card">
+        <Formik
+          onSubmit={handleFormSubmit}
+          initialValues={{
+            email: "",
+            username: "",
+            password: "",
+            confirmPassword: "",
+            firstName: "",
+            lastName: "",
+            phone: "",
+            adress: "",
+          }}
+          validationSchema={validationSchema}
+        >
+          {({
+            values,
+            errors,
+            touched,
+            handleChange,
+            handleBlur,
+            handleSubmit,
+          }) => (
+            <form onSubmit={handleSubmit}>
+              <Grid
+                container
+                alignContent={"center"}
+                justifyContent={"center"}
+                spacing={2}
+                p={4}
+              >
+                <Grid item sm={6} xs={6}>
+                  <TextField
+                    fullWidth
+                    size="small"
+                    type="text"
+                    name="username"
+                    label="Username"
+                    variant="outlined"
+                    onBlur={handleBlur}
+                    value={values.username}
+                    onChange={handleChange}
+                    helperText={touched.username && errors.username}
+                    error={Boolean(errors.username && touched.username)}
+                    sx={{ mb: 2 }}
+                  />
+                  <TextField
+                    fullWidth
+                    size="small"
+                    type="text"
+                    name="firstName"
+                    label="First Name"
+                    variant="outlined"
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    value={values.firstName}
+                    helperText={touched.firstName && errors.firstName}
+                    error={Boolean(errors.firstName && touched.firstName)}
+                    sx={{ mb: 2 }}
+                  />
 
-                <Formik
-                    onSubmit={handleFormSubmit}
-                    initialValues={{
-                        email: '',
-                        username: '',
-                        password: '',
-                        confirmPassword: '',
-                        firstName: '',
-                        lastName: '',
-                        phone: '',
-                        adress: ''
-                    }}
-                    validationSchema={validationSchema}
-                >
-                    {({ values, errors, touched, handleChange, handleBlur, handleSubmit }) => (
-                        <form onSubmit={handleSubmit}>
-                            <Grid container alignContent={'center'} justifyContent={'center'} spacing={2} p={4}>
-                                    <Grid item sm={6} xs={6}>
-                                        <TextField
-                                            fullWidth
-                                            size="small"
-                                            type="text"
-                                            name="username"
-                                            label="Username"
-                                            variant="outlined"
-                                            onBlur={handleBlur}
-                                            value={values.username}
-                                            onChange={handleChange}
-                                            helperText={touched.username && errors.username}
-                                            error={Boolean(errors.username && touched.username)}
-                                            sx={{ mb: 2 }}
-                                        />
-                                        <TextField
-                                            fullWidth
-                                            size="small"
-                                            type="text"
-                                            name="firstName"
-                                            label="First Name"
-                                            variant="outlined"
-                                            onChange={handleChange}
-                                            onBlur={handleBlur}
-                                            value={values.firstName}
-                                            helperText={touched.firstName && errors.firstName}
-                                            error={Boolean(errors.firstName && touched.firstName)}
-                                            sx={{ mb: 2 }}
-                                        />
+                  <TextField
+                    fullWidth
+                    label="Last Name"
+                    name="lastName"
+                    size="small"
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    value={values.lastName}
+                    variant="outlined"
+                    helperText={touched.lastName && errors.lastName}
+                    error={Boolean(errors.lastName && touched.lastName)}
+                    sx={{ mb: 2 }}
+                  />
 
-                                        <TextField
-                                            fullWidth
-                                            label="Last Name"
-                                            name="lastName"
-                                            size="small"
-                                            onChange={handleChange}
-                                            onBlur={handleBlur}
-                                            value={values.lastName}
-                                            variant="outlined"
-                                            helperText={touched.lastName && errors.lastName}
-                                            error={Boolean(errors.lastName && touched.lastName)}
-                                            sx={{ mb: 2 }}
-                                        />
+                  <TextField
+                    fullWidth
+                    label="Phone"
+                    name="phone"
+                    size="small"
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    value={values.phone}
+                    variant="outlined"
+                    helperText={touched.phone && errors.phone}
+                    error={Boolean(errors.phone && touched.phone)}
+                    sx={{ mb: 2 }}
+                  />
 
-                                        <TextField
-                                            fullWidth
-                                            label="Phone"
-                                            name="phone"
-                                            size="small"
-                                            onChange={handleChange}
-                                            onBlur={handleBlur}
-                                            value={values.phone}
-                                            variant="outlined"
-                                            helperText={touched.phone && errors.phone}
-                                            error={Boolean(errors.phone && touched.phone)}
-                                            sx={{ mb: 2 }}
-                                        />
-                                        {/* <TextField
-                                            fullWidth
-                                            label="City"
-                                            name="ville"
-                                            size="small"
-                                            onChange={handleChange}
-                                            onBlur={handleBlur}
-                                            value={values.phone}
-                                            variant="outlined"
-                                            helperText={touched.phone && errors.phone}
-                                            error={Boolean(errors.phone && touched.phone)}
-                                            sx={{ mb: 2 }}
-                                        /> */}
-
-                                        {/* <PlacesAutocomplete
-                                                value={address}
-                                                onChange={handleChange}
-                                                onSelect={handleSelect}
-                                            >
-                                                {({getInputProps, suggestions, getSuggestionItemProps, loading}) => 
-                                                (<div>
-
-                                                    <TextField
-                                                        fullWidth
-                                                        type="address"
-                                                        label="adress"
-                                                        name="adress"
-                                                        size="big"
-                                                        onChange={handleChange}
-                                                        onBlur={handleBlur}
-                                                        value={values.adress}
-                                                        variant="outlined"
-                                                        helperText={touched.phone && errors.phone}
-                                                        error={Boolean(errors.phone && touched.phone)}
-                                                        sx={{ mb: 2 }}
-                                                        {...getInputProps({placeholder: "Type address" }) }
-                                                    />
-
-                                                    <div>
-                                                        {loading ? <div>...loading</div> : null}
-
-                                                        {suggestions.map((suggestion) => {
-                                                            return <MenuItem value={suggestion.description} >{suggestion.description}</MenuItem>
-                                                        })}
-                                                    </div>
-                                                </div>)}
-                                            </PlacesAutocomplete> */}
-                                             <PlacesAutocomplete
-        value={address}
-        onChange={setAddress}
-        onSelect={handleSelect}
-      >
-        {({ getInputProps, suggestions, getSuggestionItemProps, loading }) => (
-          <div>
-            <TextField
-                fullWidth
-                type="address"
-                label="adress"
-                name="adress"
-                size="big"
-                onChange={setAddress}
-                onBlur={handleBlur}
-                value={values.adress}
-                variant="outlined"
-                helperText={touched.phone && errors.phone}
-                error={Boolean(errors.phone && touched.phone)}
-                sx={{ mb: 2 }}
-                {...getInputProps({placeholder: "Type address" }) }
-            />
-            <div>
-              {loading && <div>Loading...</div>}
-              {suggestions.map(suggestion => {
-                const className = suggestion.active
-                  ? 'suggestion-item--active'
-                  : 'suggestion-item';
-                const style = suggestion.active
-                  ? { backgroundColor: '#010101', cursor: 'pointer', width: "100%" }
-                  : { backgroundColor: 'rgba(0,0,0,0.5)', cursor: 'pointer', width: "100%"  };
-                return (
-
-                  <List
-                    {...getSuggestionItemProps(suggestion, {
-                        className,
-                        style,
-                    })}
+                  <PlacesAutocomplete
+                    value={address}
+                    onChange={setAddress}
+                    onSelect={handleSelect}
                   >
-                    <ListItem style={{maxWidth: "100%"}}>{suggestion.description}</ListItem>
-                  </List>
-                );
-              })}
-            </div>
-          </div>
-        )}
-      </PlacesAutocomplete>
-                                    </Grid>
-                                    <Grid item sm={6} xs={6}>
-
-                                        <TextField
-                                            fullWidth
-                                            size="small"
-                                            type="email"
-                                            name="email"
-                                            label="Email"
-                                            variant="outlined"
-                                            onBlur={handleBlur}
-                                            value={values.email}
-                                            onChange={handleChange}
-                                            helperText={touched.email && errors.email}
-                                            error={Boolean(errors.email && touched.email)}
-                                            sx={{ mb: 2 }}
-                                        />
-                                        <TextField
-                                            fullWidth
-                                            size="small"
-                                            name="password"
-                                            type="password"
-                                            label="Password"
-                                            variant="outlined"
-                                            onBlur={handleBlur}
-                                            value={values.password}
-                                            onChange={handleChange}
-                                            helperText={touched.password && errors.password}
-                                            error={Boolean(errors.password && touched.password)}
-                                            sx={{ mb: 2 }}
-                                        />
-
-                                        <TextField
-                                            fullWidth
-                                            size="small"
-                                            name="confirmPassword"
-                                            type="password"
-                                            label="Confirm Password"
-                                            variant="outlined"
-                                            onBlur={handleBlur}
-                                            value={values.confirmPassword}
-                                            onChange={handleChange}
-                                            helperText={touched.confirmPassword && errors.confirmPassword}
-                                            error={Boolean(errors.confirmPassword && touched.confirmPassword)}
-                                            sx={{ mb: 2 }}
-                                        />
-
-                                        <FlexBox gap={2} alignItems="center" sx={{mt:1}}>
-                                            <Checkbox
-                                                size="small"
-                                                name="remember"
-                                                sx={{ padding: 0 }}
-                                            />
-
-                                            <Typography fontSize={13}>
-                                                I have read and agree to the terms of service.
-                                            </Typography>
-                                        </FlexBox>
-                                    </Grid>
-                                    <Grid item sm={4} xs={12}>
-                                        <LoadingButton
-                                            type="submit"
-                                            color="primary"
-                                            loading={loading}
-                                            variant="contained"
-                                            sx={{ mb: 2, mt: 3, width: '100%' }}
-                                        >
-                                            Register
-                                        </LoadingButton>
-
-                                        <Typography>
-                                            Already have an account?
-                                            <NavLink
-                                                to="/session/signin"
-                                                style={{
-                                                    color: "#fff",
-                                                    marginLeft: 5
-                                                }}>
-                                                Login
-                                            </NavLink>
-                                        </Typography>
-                                    </Grid>
-                            </Grid>
-                        </form>
+                    {({
+                      getInputProps,
+                      suggestions,
+                      getSuggestionItemProps,
+                      loading,
+                    }) => (
+                      <div>
+                        <TextField
+                          fullWidth
+                          type="address"
+                          label="adress"
+                          name="adress"
+                          size="big"
+                          onChange={setAddress}
+                          onBlur={handleBlur}
+                          value={values.adress}
+                          variant="outlined"
+                          helperText={touched.phone && errors.phone}
+                          error={Boolean(errors.phone && touched.phone)}
+                          sx={{ mb: 2 }}
+                          {...getInputProps({ placeholder: "Type address" })}
+                        />
+                        <div>
+                          {loading && <div>Loading...</div>}
+                          {suggestions.map((suggestion) => {
+                            const className = suggestion.active
+                              ? "suggestion-item--active"
+                              : "suggestion-item";
+                            const style = suggestion.active
+                              ? {
+                                  backgroundColor: "#010101",
+                                  cursor: "pointer",
+                                  width: "100%",
+                                }
+                              : {
+                                  backgroundColor: "rgba(0,0,0,0.5)",
+                                  cursor: "pointer",
+                                  width: "100%",
+                                };
+                            return (
+                              <List
+                                {...getSuggestionItemProps(suggestion, {
+                                  className,
+                                  style,
+                                })}
+                              >
+                                <ListItem style={{ maxWidth: "100%" }}>
+                                  {suggestion.description}
+                                </ListItem>
+                              </List>
+                            );
+                          })}
+                        </div>
+                      </div>
                     )}
-                </Formik>
-            </Card>
-        </RegisterForm>
-    );
+                  </PlacesAutocomplete>
+                </Grid>
+                <Grid item sm={6} xs={6}>
+                  <TextField
+                    fullWidth
+                    size="small"
+                    type="email"
+                    name="email"
+                    label="Email"
+                    variant="outlined"
+                    onBlur={handleBlur}
+                    value={values.email}
+                    onChange={handleChange}
+                    helperText={touched.email && errors.email}
+                    error={Boolean(errors.email && touched.email)}
+                    sx={{ mb: 2 }}
+                  />
+                  <TextField
+                    fullWidth
+                    size="small"
+                    name="password"
+                    type="password"
+                    label="Password"
+                    variant="outlined"
+                    onBlur={handleBlur}
+                    value={values.password}
+                    onChange={handleChange}
+                    helperText={touched.password && errors.password}
+                    error={Boolean(errors.password && touched.password)}
+                    sx={{ mb: 2 }}
+                  />
+
+                  <TextField
+                    fullWidth
+                    size="small"
+                    name="confirmPassword"
+                    type="password"
+                    label="Confirm Password"
+                    variant="outlined"
+                    onBlur={handleBlur}
+                    value={values.confirmPassword}
+                    onChange={handleChange}
+                    helperText={
+                      touched.confirmPassword && errors.confirmPassword
+                    }
+                    error={Boolean(
+                      errors.confirmPassword && touched.confirmPassword
+                    )}
+                    sx={{ mb: 2 }}
+                  />
+
+                  <FlexBox gap={2} alignItems="center" sx={{ mt: 1 }}>
+                    <Checkbox
+                      size="small"
+                      name="remember"
+                      sx={{ padding: 0 }}
+                    />
+
+                    <Typography fontSize={13}>
+                      I have read and agree to the terms of service.
+                    </Typography>
+                  </FlexBox>
+                </Grid>
+                <Grid item sm={4} xs={12}>
+                  <LoadingButton
+                    type="submit"
+                    color="primary"
+                    loading={loading}
+                    variant="contained"
+                    sx={{ mb: 2, mt: 3, width: "100%" }}
+                  >
+                    Register
+                  </LoadingButton>
+
+                  <Typography>
+                    Already have an account?
+                    <NavLink
+                      to="/session/signin"
+                      style={{
+                        color: "#fff",
+                        marginLeft: 5,
+                      }}
+                    >
+                      Login
+                    </NavLink>
+                  </Typography>
+                </Grid>
+              </Grid>
+            </form>
+          )}
+        </Formik>
+      </Card>
+    </RegisterForm>
+  );
 };
 
 export default JwtRegister;
