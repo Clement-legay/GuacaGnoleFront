@@ -1,11 +1,16 @@
 import { LoadingButton } from '@mui/lab';
-import {Card, Checkbox, Grid, TextField, Typography} from '@mui/material';
+import {Card, MenuItem, List, Checkbox, Grid, TextField, Typography, ListItem} from '@mui/material';
+
 import { Formik } from 'formik';
-import {useContext, useState} from 'react';
+import {useContext, useState, useEffect} from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import * as Yup from 'yup';
 import {MainContext} from "../../Context/MainContext";
 import {RegisterForm, FlexBox} from "../../Styles/Sessions/AuthForms";
+import PlacesAutocomplete from 'react-places-autocomplete';
+import {useJsApiLoader} from '@react-google-maps/api';
+
+// https://maps.googleapis.com/maps/api/js?key=AIzaSyCjq3LsUB4kmIdqT_tAXPsA1_yAKPX6UDg&libraries=places"
 
 // form field validation schema
 const validationSchema = Yup.object().shape({
@@ -32,7 +37,8 @@ const JwtRegister = () => {
                 email: values.email, username: values.username,
                 password: values.password, confirmPassword: values.confirmPassword,
                 firstName: values.firstName, lastName: values.lastName,
-                phone: values.phone
+                phone: values.phone, adress: address
+
             });
             console.log(result);
             if (result.status === 201) {
@@ -44,6 +50,22 @@ const JwtRegister = () => {
             setLoading(false);
         }
     };
+
+    useJsApiLoader({
+        googleMapsApiKey: "AIzaSyCjq3LsUB4kmIdqT_tAXPsA1_yAKPX6UDg",
+        libraries: "places"
+    })
+    const [address, setAddress] = useState("");
+    // const [coordinates, setCoordinates] = useState({lat: null, lng: null});
+    const handleSelect = async (value) => {
+        // const results = geocodeByAddress(value);
+
+        setAddress(value)
+    }
+
+    useEffect(() => {
+        console.log(address, " addres new")
+    }, [address]);
 
     return (
         <RegisterForm>
@@ -59,6 +81,7 @@ const JwtRegister = () => {
                         firstName: '',
                         lastName: '',
                         phone: '',
+                        adress: ''
                     }}
                     validationSchema={validationSchema}
                 >
@@ -122,6 +145,100 @@ const JwtRegister = () => {
                                             error={Boolean(errors.phone && touched.phone)}
                                             sx={{ mb: 2 }}
                                         />
+                                        {/* <TextField
+                                            fullWidth
+                                            label="City"
+                                            name="ville"
+                                            size="small"
+                                            onChange={handleChange}
+                                            onBlur={handleBlur}
+                                            value={values.phone}
+                                            variant="outlined"
+                                            helperText={touched.phone && errors.phone}
+                                            error={Boolean(errors.phone && touched.phone)}
+                                            sx={{ mb: 2 }}
+                                        /> */}
+
+                                        {/* <PlacesAutocomplete
+                                                value={address}
+                                                onChange={handleChange}
+                                                onSelect={handleSelect}
+                                            >
+                                                {({getInputProps, suggestions, getSuggestionItemProps, loading}) => 
+                                                (<div>
+
+                                                    <TextField
+                                                        fullWidth
+                                                        type="address"
+                                                        label="adress"
+                                                        name="adress"
+                                                        size="big"
+                                                        onChange={handleChange}
+                                                        onBlur={handleBlur}
+                                                        value={values.adress}
+                                                        variant="outlined"
+                                                        helperText={touched.phone && errors.phone}
+                                                        error={Boolean(errors.phone && touched.phone)}
+                                                        sx={{ mb: 2 }}
+                                                        {...getInputProps({placeholder: "Type address" }) }
+                                                    />
+
+                                                    <div>
+                                                        {loading ? <div>...loading</div> : null}
+
+                                                        {suggestions.map((suggestion) => {
+                                                            return <MenuItem value={suggestion.description} >{suggestion.description}</MenuItem>
+                                                        })}
+                                                    </div>
+                                                </div>)}
+                                            </PlacesAutocomplete> */}
+                                             <PlacesAutocomplete
+        value={address}
+        onChange={setAddress}
+        onSelect={handleSelect}
+      >
+        {({ getInputProps, suggestions, getSuggestionItemProps, loading }) => (
+          <div>
+            <TextField
+                fullWidth
+                type="address"
+                label="adress"
+                name="adress"
+                size="big"
+                onChange={setAddress}
+                onBlur={handleBlur}
+                value={values.adress}
+                variant="outlined"
+                helperText={touched.phone && errors.phone}
+                error={Boolean(errors.phone && touched.phone)}
+                sx={{ mb: 2 }}
+                {...getInputProps({placeholder: "Type address" }) }
+            />
+            <div>
+              {loading && <div>Loading...</div>}
+              {suggestions.map(suggestion => {
+                const className = suggestion.active
+                  ? 'suggestion-item--active'
+                  : 'suggestion-item';
+                const style = suggestion.active
+                  ? { backgroundColor: '#010101', cursor: 'pointer', width: "100%" }
+                  : { backgroundColor: 'rgba(0,0,0,0.5)', cursor: 'pointer', width: "100%"  };
+                return (
+
+                  <List
+                    {...getSuggestionItemProps(suggestion, {
+                        className,
+                        style,
+                    })}
+                  >
+                    <ListItem style={{maxWidth: "100%"}}>{suggestion.description}</ListItem>
+                  </List>
+                );
+              })}
+            </div>
+          </div>
+        )}
+      </PlacesAutocomplete>
                                     </Grid>
                                     <Grid item sm={6} xs={6}>
 
