@@ -176,7 +176,7 @@ const JwtRegister = () => {
                         <TextField
                           fullWidth
                           type="address"
-                          label="adress"
+                          label="Address"
                           name="Address"
                           size="big"
                           onChange={setAddress}
