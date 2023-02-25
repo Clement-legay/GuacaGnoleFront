@@ -10,13 +10,12 @@ import {
 } from "@mui/material";
 
 import { Formik } from "formik";
-import { useContext, useState, useEffect } from "react";
+import { useContext, useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import * as Yup from "yup";
 import { MainContext } from "../../Context/MainContext";
 import { RegisterForm, FlexBox } from "../../Styles/Sessions/AuthForms";
 import PlacesAutocomplete from "react-places-autocomplete";
-import { useJsApiLoader } from "@react-google-maps/api";
 
 
 
@@ -64,13 +63,7 @@ const JwtRegister = () => {
     }
   };
 
-  /**
-   * Load google librairie Places
-   */
-  useJsApiLoader({
-    googleMapsApiKey: "AIzaSyCjq3LsUB4kmIdqT_tAXPsA1_yAKPX6UDg",
-    libraries: "places",
-  });
+
   //Address in form
   const [address, setAddress] = useState("");
   const handleSelect = async (value) => {
