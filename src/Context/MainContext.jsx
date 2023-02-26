@@ -88,13 +88,21 @@ export const MainProvider = ({ children }) => {
 
     // log the user in
     const setAuthUser = (item, remember) => {
-        const { accessToken, id, tokenExpires, refreshExpires, refreshToken } = item;
-        setToken(accessToken);
-        setUserId(id);
-        Cookies.set("token", btoa(accessToken + '::::' + id), { expires: new Date(tokenExpires) });
+        if (item) {
+            const { accessToken, id, tokenExpires, refreshExpires, refreshToken } = item;
+            setToken(accessToken);
+            setUserId(id);
+            Cookies.set("token", btoa(accessToken + '::::' + id), { expires: new Date(tokenExpires) });
 
-        if (remember) {
-            Cookies.set("refreshToken", btoa(refreshToken), { expires: new Date(refreshExpires) });
+            if (remember) {
+                Cookies.set("refreshToken", btoa(refreshToken), { expires: new Date(refreshExpires) });
+            }
+        } else {
+            Cookies.remove("token")
+            Cookies.remove("refreshToken")
+
+            setToken(null)
+            setUserId(null)
         }
     };
 
