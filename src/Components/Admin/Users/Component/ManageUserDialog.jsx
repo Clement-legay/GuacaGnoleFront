@@ -1,14 +1,14 @@
 import {
     Dialog,
     DialogContent,
-    DialogTitle,
-    Grid,
+    DialogTitle, FormControl,
+    Grid, InputLabel, MenuItem, Select,
     TextField,
 } from "@mui/material";
 import {Formik} from "formik";
 import * as Yup from "yup";
 import {LoadingButton} from "@mui/lab";
-import {useContext, useEffect, useState} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import {MainContext} from "../../../../Context/MainContext";
 
 
@@ -18,6 +18,7 @@ const validationSchema = Yup.object().shape({
     firstName: Yup.string().required('First Name is required'),
     lastName: Yup.string().required('Last Name is required'),
     phone: Yup.string().required('Phone is required'),
+    roleId: Yup.number().required('Role is required'),
 });
 
 const ManageUserDialog = ({setRefresh, addRequest, setAddRequest, setEditRequest, item}) => {
@@ -31,6 +32,7 @@ const ManageUserDialog = ({setRefresh, addRequest, setAddRequest, setEditRequest
         firstName: '',
         lastName: '',
         phone: '',
+        roleId: 2,
     });
 
     const handleFormSubmit = async (values) => {
@@ -41,6 +43,7 @@ const ManageUserDialog = ({setRefresh, addRequest, setAddRequest, setEditRequest
             firstName: values.firstName,
             lastName: values.lastName,
             phone: values.phone,
+            roleId: values.roleId,
             password: "password",
             confirmPassword: "password",
         };
@@ -87,6 +90,7 @@ const ManageUserDialog = ({setRefresh, addRequest, setAddRequest, setEditRequest
                 firstName: item.firstName,
                 lastName: item.lastName,
                 phone: item.phone,
+                roleId: item.roleId,
             });
         } else {
             setInitialValues({
@@ -95,6 +99,7 @@ const ManageUserDialog = ({setRefresh, addRequest, setAddRequest, setEditRequest
                 firstName: '',
                 lastName: '',
                 phone: '',
+                roleId: 2,
             });
         }
     }, [item]);
@@ -173,6 +178,20 @@ const ManageUserDialog = ({setRefresh, addRequest, setAddRequest, setEditRequest
                                         error={touched.email && Boolean(errors.email)}
                                         helperText={touched.email && errors.email}
                                     />
+                                </Grid>
+                                <Grid item xs={12}>
+                                    <FormControl fullWidth>
+                                        <InputLabel id={"select-roleId"} sx={{color:"black"}}>RoleId</InputLabel>
+                                        <Select
+                                            labelId="select-roleId"
+                                            value={item.quantity}
+                                            onChange={(e) => setFieldValue("roleId", e.target.value)}
+                                        >
+                                            <MenuItem value={2}>User</MenuItem>
+                                            <MenuItem value={1}>Admin</MenuItem>
+                                            <MenuItem value={3}>Pro</MenuItem>
+                                        </Select>
+                                    </FormControl>
                                 </Grid>
                                 <Grid item xs={12}>
                                     <LoadingButton

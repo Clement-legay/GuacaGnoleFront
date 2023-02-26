@@ -32,6 +32,14 @@ export const UserEntity = (token) => {
                     return res.data;
                 })
         ),
+        fetchCurrentUser: () => (
+            fetchAPI(`${userLinkPrefix}/GetMesInfos`, {token: token})
+                .then((res) => {
+                    res.data.id = res.data.userId;
+                    delete res.data.userId;
+                    return res.data;
+                })
+        ),
         fetchUserByUsername: (username) => (
             fetchAPI(`${userLinkPrefix}/GetUserByUsername/${username}`)
         ),
@@ -46,14 +54,9 @@ export const UserEntity = (token) => {
             postAPI(`${userLinkPrefix}/Login`, data)
                 .then(res => res)
         ),
-        postToken: (jwtToken) => {
-            // return postAPI(`${userLinkPrefix}/Token`, token)
-            //     .then(res => res.data)
-            return {
-                id: 1,
-                jwtToken: jwtToken,
-                username: "fakeConnection",
-            }
+        postToken: (data) => {
+            postAPI(`${userLinkPrefix}/RefreshToken`, data)
+                .then(res => res)
         },
         putUser: (id, data) => (
             postAPI(`${userLinkPrefix}/UpdateUser/${id}`, data)

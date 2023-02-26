@@ -35,6 +35,7 @@ const LoginForm = () => {
                 navigate('/');
             }
         } catch (e) {
+            console.log(e)
             setErrorMsg("Invalid username or password");
             setLoading(false);
         }

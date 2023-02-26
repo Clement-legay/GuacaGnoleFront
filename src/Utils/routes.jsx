@@ -1,9 +1,7 @@
-import React, {useContext, useEffect} from 'react';
-import {Route, Routes} from 'react-router-dom';
-
+import React, {useContext, useEffect, useState} from 'react';
+import {Route, Routes, useNavigate} from 'react-router-dom';
 import AdminLayout from '../Components/Admin/AdminLayout/AdminLayout';
 import CustomerLayout from "../Components/Customer/CustomerLayout/CustomerLayout";
-
 import DashBoard from "../Components/Admin/DashBoard/DashBoard";
 import Suppliers from "../Components/Admin/Suppliers/Suppliers";
 import Products from "../Components/Admin/Products/Products";
@@ -22,29 +20,54 @@ import Search from "../Components/Customer/Search/Search";
 import Command from "../Components/Sessions/Command/Command";
 
 const PathRoutes = () => {
-    const { isAuth, canAdmin, postToken, setUser, refreshToken, fetchUserById, userId, token, setAuthUser, user, refreshCart } = useContext(MainContext)
+    const { isAuth, canAdmin, postToken, setUser, refreshToken, fetchCurrentUser, userId, token, setAuthUser, user, refreshCart, removeToken } = useContext(MainContext)
     const loading = token === undefined || (token && !user)
+    const [failed, setFailed] = useState(false);
     // const navigate = useNavigate();
 
     useEffect(() => {
-        if (isAuth() && loading) {
+        if (isAuth() && loading && !failed) {
             refreshCart()
             if (token) {
                 (async () => {
-                    const user = await fetchUserById(userId)
-                    setUser(user)
+                    try {
+                        const user = await fetchCurrentUser(userId)
+                        console.log(user)
+                        setUser(user)
+                    } catch (e) {
+                        setFailed(true)
+                        removeToken()
+                    }
                 })()
             } else if (refreshToken) {
                 (async () => {
-                    const result = await postToken(refreshToken)
-                    setAuthUser(result)
+                    try {
+                        const result = await postToken({refreshToken})
+                        setAuthUser(result, true)
 
-                    const user = await fetchUserById(result.id)
-                    setUser(user)
+                        try {
+                            const user = await fetchCurrentUser(result.id)
+                            setUser(user)
+                        } catch (e) {
+                            removeToken(true)
+                        }
+                    } catch (e) {
+                        setAuthUser(null, true)
+                    }
                 })()
             }
         }
-    }, [isAuth, loading, userId, token, refreshToken, postToken, setAuthUser, setUser, fetchUserById, refreshCart])
+    }, [isAuth, loading, userId, token, refreshToken, postToken, setAuthUser, setUser, fetchCurrentUser, refreshCart, removeToken, failed])
+
+    const RedirectToLogin = () => {
+        const navigate = useNavigate();
+
+        useEffect(() => {
+            navigate('/session/signin')
+        }, [navigate])
+
+        return null
+    }
 
     const adminRoutes = () => {
         if (isAuth()) {
@@ -77,6 +100,26 @@ const PathRoutes = () => {
         </CustomerLayout>
     )
 
+    const cartRoutes = () => {
+        if (isAuth()) {
+            return (
+                <Routes>
+                    <Route path="/validation" element={<Command defineStep={0}/>}/>
+                    <Route path="/delivery" element={<Command defineStep={1}/>}/>
+                    <Route path="/payment" element={<Command defineStep={2}/>}/>
+                    <Route path="/confirmation" element={<Command defineStep={3}/>}/>
+                    <Route path="*" element={<NotFound/>}/>
+                </Routes>
+            )
+        } else {
+            return (
+                <Routes>
+                    <Route path="*" element={<RedirectToLogin/>}/>
+                </Routes>
+            )
+        }
+    }
+
     const sessionRoutes = () => (
         <SessionLayout>
             <Routes>
@@ -84,7 +127,7 @@ const PathRoutes = () => {
                 <Route path="/signup" element={<RegisterForm />} />
                 <Route path="/forgot-password" element={<ForgotPassword />} />
                 <Route path="/account" element={<Home />} />
-                <Route path="/command" element={<Command />} />
+                <Route path="/cart/*" element={cartRoutes()} />
                 <Route path="*" element={<NotFound />}/>
             </Routes>
         </SessionLayout>

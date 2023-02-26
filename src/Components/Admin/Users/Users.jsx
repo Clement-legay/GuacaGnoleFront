@@ -61,6 +61,26 @@ const columns = [
         },
     },
     {
+        id: "roleId",
+        label: "Role",
+        minWidth: 50,
+        align: "center",
+        disablePadding: false,
+        format: (value) => {
+            return value === 1 ? "Admin" : value === 2 ? "User" : "Pro";
+        },
+        sortable: true,
+        sortFunction: (data, order) => {
+            return data.sort((a, b) => {
+                if (order === "asc") {
+                    return a.roleId - b.roleId;
+                } else {
+                    return b.roleId - a.roleId;
+                }
+            });
+        },
+    },
+    {
         id: "username",
         label: "Username",
         minWidth: 50,

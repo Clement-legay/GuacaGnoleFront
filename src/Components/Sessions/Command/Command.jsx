@@ -7,6 +7,8 @@ import {Box} from "@mui/system";
 import {StyledStepperContainer} from "../../../Styles/Sessions/Command/Command";
 import DoneIcon from '@mui/icons-material/Done';
 import IconButton from "@mui/material/IconButton";
+import {useNavigate} from "react-router-dom";
+import DeliveryForm from "./Component/DeliveryForm";
 
 const steps = [
     {id:1, label: 'Validation du panier'},
@@ -49,10 +51,31 @@ const HorizontalLabelPositionBelowStepper = ({step, setStep}) => {
     );
 }
 
-const Command = () => {
+const Command = ({defineStep}) => {
+    const navigate = useNavigate();
     const {cart, fetchOfferById} = useContext(MainContext);
     const [finalCartArray, setFinalCartArray] = useState([])
-    const [step, setStep] = useState(0)
+    const [step, setStep] = useState(defineStep)
+
+    useEffect(() => {
+        switch (step) {
+            case 0:
+                navigate('/session/cart/validation', true)
+                break;
+            case 1:
+                navigate('/session/cart/delivery', true)
+                break;
+            case 2:
+                navigate('/session/cart/payment', true)
+                break;
+            case 3:
+                navigate('/session/cart/confirmation', true)
+                break;
+            default:
+                navigate('/session/cart/validation', true)
+                break;
+        }
+    }, [step, navigate])
 
     const cartSize = () => {
         let size = 0
@@ -108,6 +131,9 @@ const Command = () => {
 
                 {step === 0 &&
                     <Validation cartSize={cartSize} cartTotalPrice={cartTotalPrice} deliveryPrice={deliveryPrice} handleValidate={handleValidate} finalCartArray={finalCartArray} />
+                }
+                {step === 1 &&
+                    <DeliveryForm cartTotalPrice={cartTotalPrice} deliveryPrice={deliveryPrice} handleValidate={handleValidate}/>
                 }
             </Container>
 
