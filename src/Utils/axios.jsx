@@ -8,7 +8,8 @@ const RequestAPI = (params={file:false, token:false}) => {
         headers: {
             'Content-Type':  params.file ? "multipart/form-data" : 'application/json',
             'Authorization': params.token ? `bearer ${params.token}` : ''
-        }
+        },
+        withCredentials: true
     });
 };
 
@@ -18,7 +19,6 @@ export const fetchAPI = async (url, params) => {
         return await response
 
     } catch (error) {
-        console.log(error);
         return [];
     }
 };
@@ -28,7 +28,6 @@ export const postAPI = async (url, data, params) => {
         const response = await RequestAPI(params).post(url, data);
         return await response;
     } catch (error) {
-        console.log(error);
         return [];
     }
 }
@@ -38,7 +37,6 @@ export const putAPI = async (url, data, params) => {
         const response = await RequestAPI(params).put(url, data);
         return await response;
     } catch (error) {
-        console.log(error);
         return [];
     }
 }
@@ -48,7 +46,6 @@ export const deleteAPI = async (url, params) => {
         const response = await RequestAPI(params).delete(url);
         return await response;
     } catch (error) {
-        console.log(error);
         return [];
     }
 }

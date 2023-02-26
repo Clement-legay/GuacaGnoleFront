@@ -31,16 +31,40 @@ const PathRoutes = () => {
             refreshCart()
             if (token) {
                 (async () => {
-                    const user = await fetchUserById(userId)
-                    setUser(user)
+                    try {
+                        const user = await fetchUserById(userId)
+                        setUser(user)
+                    } catch (e) {
+                        console.log('failed but faked')
+                        setUser({
+                            id: 1,
+                            username: "Savoldetour",
+                            firstName: "Clément",
+                            lastName: "Legay",
+                            role: 1,
+                            city: null,
+                            streetName: null,
+                            postalCode: null
+                        })
+                    }
                 })()
             } else if (refreshToken) {
                 (async () => {
-                    const result = await postToken(refreshToken)
-                    setAuthUser(result)
+                    try {
+                        const result = await postToken(refreshToken)
+                        setAuthUser(result, true)
 
-                    const user = await fetchUserById(result.id)
-                    setUser(user)
+                        try {
+                            const user = await fetchUserById(result.id)
+                            setUser(user)
+                        } catch (e) {
+                            console.log('failed', e)
+                        }
+                    } catch (e) {
+                        console.log("failed", e)
+                        setAuthUser(null, true)
+
+                    }
                 })()
             }
         }
@@ -77,6 +101,16 @@ const PathRoutes = () => {
         </CustomerLayout>
     )
 
+    const cartRoutes = () => (
+        <Routes>
+            <Route path="/validation" element={<Command defineStep={0}/>} />
+            <Route path="/delivery" element={<Command defineStep={1}/>} />
+            <Route path="/payment" element={<Command defineStep={2}/>} />
+            <Route path="/confirmation" element={<Command defineStep={3}/>} />
+            <Route path="*" element={<NotFound />}/>
+        </Routes>
+    )
+
     const sessionRoutes = () => (
         <SessionLayout>
             <Routes>
@@ -84,7 +118,7 @@ const PathRoutes = () => {
                 <Route path="/signup" element={<RegisterForm />} />
                 <Route path="/forgot-password" element={<ForgotPassword />} />
                 <Route path="/account" element={<Home />} />
-                <Route path="/command" element={<Command />} />
+                <Route path="/cart/*" element={cartRoutes()} />
                 <Route path="*" element={<NotFound />}/>
             </Routes>
         </SessionLayout>
