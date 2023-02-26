@@ -9,7 +9,6 @@ const RequestAPI = (params={file:false, token:false}) => {
             'Content-Type':  params.file ? "multipart/form-data" : 'application/json',
             'Authorization': params.token ? `bearer ${params.token}` : ''
         },
-        withCredentials: true
     });
 };
 

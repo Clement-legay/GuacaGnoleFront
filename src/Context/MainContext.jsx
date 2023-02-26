@@ -24,7 +24,6 @@ export const MainContext = createContext({
     userId: null,
     user: null,
     cart: [],
-    role: null,
 
     searchFilters: null,
 
@@ -53,12 +52,11 @@ export const MainProvider = ({ children }) => {
     const [refreshToken, setRefreshToken] = useState(null);
     const [user, setUser] = useState(null);
     const [token, setToken] = useState(undefined);
-    const [role, setRole] = useState(null);
     const [cart, setCart] = useState([]);
 
     // check user's role
     const canAdmin = () => {
-        return role === "admin";
+        return user.roleId === 1;
     };
 
     // check if user has accessToken in his cookies
@@ -67,12 +65,25 @@ export const MainProvider = ({ children }) => {
             const cookedToken = Cookies.get("token");
             const cookedRefreshToken = Cookies.get("refreshToken");
             if (cookedToken) {
-                const [token, id] = atob(cookedToken).split("::::");
-                setToken(token);
-                setUserId(id);
+                try {
+                    const [token, id] = atob(cookedToken).split("::::");
+                    setToken(token);
+                    setUserId(id);
+                } catch (e) {
+                    console.log(e);
+                    Cookies.remove("token");
+                    Cookies.remove("refreshToken");
+                    setToken(null);
+                }
             } else if (cookedRefreshToken) {
-                const refreshToken = atob(cookedRefreshToken);
-                setRefreshToken(refreshToken);
+                try {
+                    const refreshToken = atob(cookedRefreshToken);
+                    setRefreshToken(refreshToken);
+                } catch (e) {
+                    console.log(e);
+                    Cookies.remove("refreshToken");
+                    setRefreshToken(null);
+                }
             } else {
                 setToken(null)
             }
@@ -92,10 +103,12 @@ export const MainProvider = ({ children }) => {
             const { accessToken, id, tokenExpires, refreshExpires, refreshToken } = item;
             setToken(accessToken);
             setUserId(id);
-            Cookies.set("token", btoa(accessToken + '::::' + id), { expires: new Date(tokenExpires) });
+            const tokenExpiresDate = new Date(tokenExpires);
+            Cookies.set("token", btoa(accessToken + '::::' + id), { expires: tokenExpiresDate });
 
             if (remember) {
-                Cookies.set("refreshToken", btoa(refreshToken), { expires: new Date(refreshExpires) });
+                const refreshExpiresDate = new Date(refreshExpires);
+                Cookies.set("refreshToken", btoa(refreshToken), { expires: refreshExpiresDate });
             }
         } else {
             Cookies.remove("token")
@@ -106,12 +119,22 @@ export const MainProvider = ({ children }) => {
         }
     };
 
+    // remove all token if failed
+    const removeToken = (all=false) => {
+        Cookies.remove("token")
+        setToken(null)
+
+        if (all) {
+            Cookies.remove("refreshToken")
+            setRefreshToken(null)
+        }
+    };
+
     // log the user out
     const logUserOut = () => {
         console.log("logout");
         setToken(null);
         setUser(null);
-        setRole(null);
         setUserId(null);
         setRefreshToken(null);
         Cookies.remove("token");
@@ -166,8 +189,14 @@ export const MainProvider = ({ children }) => {
     const refreshCart = () => {
         const string = Cookies.get("cart");
         if (string) {
-            const cart = JSON.parse(atob(string));
-            setCart(cart);
+            try {
+                const cart = JSON.parse(atob(string));
+                setCart(cart);
+            } catch (e) {
+                console.log(e);
+                Cookies.remove("cart");
+                setCart([])
+            }
         }
 
         return true;
@@ -188,14 +217,13 @@ export const MainProvider = ({ children }) => {
         themeStyle, setThemeStyle,
         routeName, setRouteName,
         token, setToken,
-        role, setRole,
         refreshToken,
         userId, cart,
         isAuth, canAdmin,
         setAuthUser, logUserOut,
         addToCart, removeFromCart,
         refreshCart, manageFilters,
-        setCartQuantity,
+        setCartQuantity, removeToken,
         ...ProductEntity(token),
         ...SupplierEntity(token),
         ...UserEntity(token),

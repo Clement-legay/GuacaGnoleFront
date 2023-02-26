@@ -1,12 +1,10 @@
 import { LoadingButton } from "@mui/lab";
 import {
   Card,
-  List,
   Checkbox,
   Grid,
   TextField,
   Typography,
-  ListItem,
 } from "@mui/material";
 
 import { Formik } from "formik";
@@ -15,8 +13,6 @@ import { NavLink, useNavigate } from "react-router-dom";
 import * as Yup from "yup";
 import { MainContext } from "../../Context/MainContext";
 import { RegisterForm, FlexBox } from "../../Styles/Sessions/AuthForms";
-import PlacesAutocomplete from "react-places-autocomplete";
-
 
 
 // form field validation schema
@@ -50,9 +46,7 @@ const JwtRegister = () => {
         firstName: values.firstName,
         lastName: values.lastName,
         phone: values.phone,
-        address: address,
       });
-      console.log(result);
       if (result.status === 201) {
         navigate("/session/signin");
         setLoading(false);
@@ -61,13 +55,6 @@ const JwtRegister = () => {
       console.log(e);
       setLoading(false);
     }
-  };
-
-
-  //Address in form
-  const [address, setAddress] = useState("");
-  const handleSelect = async (value) => {
-    setAddress(value);
   };
 
   return (
@@ -83,7 +70,6 @@ const JwtRegister = () => {
             firstName: "",
             lastName: "",
             phone: "",
-            address: "",
           }}
           validationSchema={validationSchema}
         >
@@ -160,68 +146,6 @@ const JwtRegister = () => {
                     error={Boolean(errors.phone && touched.phone)}
                     sx={{ mb: 2 }}
                   />
-
-                  <PlacesAutocomplete
-                    value={address}
-                    onChange={setAddress}
-                    onSelect={handleSelect}
-                  >
-                    {({
-                      getInputProps,
-                      suggestions,
-                      getSuggestionItemProps,
-                      loading,
-                    }) => (
-                      <div>
-                        <TextField
-                          fullWidth
-                          type="address"
-                          label="Address"
-                          name="Address"
-                          size="big"
-                          onChange={setAddress}
-                          onBlur={handleBlur}
-                          value={values.adress}
-                          variant="outlined"
-                          helperText={touched.phone && errors.phone}
-                          error={Boolean(errors.phone && touched.phone)}
-                          sx={{ mb: 2 }}
-                          {...getInputProps({ placeholder: "Type address" })}
-                        />
-                        <div>
-                          {loading && <div>Loading...</div>}
-                          {suggestions.map((suggestion) => {
-                            const className = suggestion.active
-                              ? "suggestion-item--active"
-                              : "suggestion-item";
-                            const style = suggestion.active
-                              ? {
-                                  backgroundColor: "#010101",
-                                  cursor: "pointer",
-                                  width: "100%",
-                                }
-                              : {
-                                  backgroundColor: "rgba(0,0,0,0.5)",
-                                  cursor: "pointer",
-                                  width: "100%",
-                                };
-                            return (
-                              <List
-                                {...getSuggestionItemProps(suggestion, {
-                                  className,
-                                  style,
-                                })}
-                              >
-                                <ListItem style={{ maxWidth: "100%" }}>
-                                  {suggestion.description}
-                                </ListItem>
-                              </List>
-                            );
-                          })}
-                        </div>
-                      </div>
-                    )}
-                  </PlacesAutocomplete>
                 </Grid>
                 <Grid item sm={6} xs={6}>
                   <TextField

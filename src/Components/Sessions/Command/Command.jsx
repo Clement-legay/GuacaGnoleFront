@@ -133,7 +133,7 @@ const Command = ({defineStep}) => {
                     <Validation cartSize={cartSize} cartTotalPrice={cartTotalPrice} deliveryPrice={deliveryPrice} handleValidate={handleValidate} finalCartArray={finalCartArray} />
                 }
                 {step === 1 &&
-                    <DeliveryForm/>
+                    <DeliveryForm cartTotalPrice={cartTotalPrice} deliveryPrice={deliveryPrice} handleValidate={handleValidate}/>
                 }
             </Container>
 

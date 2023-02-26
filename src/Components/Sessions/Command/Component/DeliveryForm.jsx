@@ -1,150 +1,242 @@
 import {MainContext} from "../../../../Context/MainContext";
-import {useContext} from "react";
+import React, {useContext, useState} from "react";
 import {Formik} from "formik";
-import {Button, CircularProgress, Grid, Typography} from "@mui/material";
+import {Button, CircularProgress, Divider, Grid, List, ListItem, TextField, Typography} from "@mui/material";
 import {Box, styled} from "@mui/system";
+import PlacesAutocomplete from "react-places-autocomplete";
+import {
+    StyledProductBox,
+    StyledValidateBox,
+    StyledValidateBoxSecond
+} from "../../../../Styles/Sessions/Command/Command";
 
-const DeliveryForm = () => {
+const DeliveryForm = ({handleValidate, cartTotalPrice, deliveryPrice}) => {
     const { user } = useContext(MainContext);
+    const [address, setAddress] = useState("");
     const loading = user === undefined;
+
     const handleSubmit = (values) => {
         console.log(values);
     }
 
+    const handleSelect = async (value) => {
+        setAddress(value);
+    };
+
     return (
-        <StyledDeliveryFormContainer>
-            <Grid container spacing={2} alignItems={"center"} justifyContent={"center"}>
-                <Grid item>
-                    <StyledTitle>Delivery Address</StyledTitle>
-                </Grid>
-            </Grid>
+        <Grid container spacing={2} justifyItems={"space-between"}>
+            <Grid item xs={12} md={8} sx={{width:'100%', my:1}}>
+                <StyledProductBox>
+                    <Grid container spacing={2} alignItems={"center"} justifyContent={"center"}>
+                        <Grid item>
+                            <StyledTitle>Delivery Address</StyledTitle>
+                        </Grid>
+                    </Grid>
+                    <Divider sx={{width: "100%", my: 2}} color={"grey"}/>
+                    {loading ? (
+                        <Box sx={{display:"flex", alignItems:"center", justifyContent:"center", width: "100%", height: "30vh"}}>
+                            <CircularProgress size={20}/>
+                        </Box>
+                    ) : (
+                        <Formik
+                            initialValues={{
+                                address: user.address,
+                            }}
+                            onSubmit={handleSubmit}
+                        >
+                            {({values, handleBlur, handleChange, handleSubmit}) => (
+                                <form onSubmit={handleSubmit}>
+                                    <Grid container spacing={2} alignItems={"center"} justifyContent={"center"}>
+                                        <Grid item>
+                                            <PlacesAutocomplete
+                                                value={address}
+                                                onChange={setAddress}
+                                                onSelect={handleSelect}
+                                            >
+                                                {({
+                                                      getInputProps,
+                                                      suggestions,
+                                                      getSuggestionItemProps,
+                                                      loading,
+                                                  }) => (
+                                                    <div>
+                                                        <TextField
+                                                            fullWidth
+                                                            type="address"
+                                                            label="Address"
+                                                            name="Address"
+                                                            size="big"
+                                                            onChange={setAddress}
+                                                            onBlur={handleBlur}
+                                                            value={address}
+                                                            variant="outlined"
+                                                            sx={{
+                                                                maxWidth: 250,
+                                                                borderRadius: 1,
+                                                                // change label font style
+                                                                "& .MuiInputLabel-root": {
+                                                                    fontSize: "1rem",
+                                                                    fontWeight: "500",
+                                                                    color: "black",
+                                                                },
+                                                                // change border style
+                                                                "& .MuiOutlinedInput-root": {
+                                                                    borderRadius: 1,
+                                                                    "& fieldset": {
+                                                                        borderColor: "grey.500",
+                                                                    },
+                                                                    "&.Mui-focused fieldset": {
+                                                                        borderColor: "primary",
+                                                                    },
+                                                                    // on hover
+                                                                    "&:hover fieldset": {
+                                                                        borderColor: "grey.500",
+                                                                    },
+                                                                },
+                                                                // change input font style
+                                                                "& .MuiInputBase-input": {
+                                                                    fontSize: "1rem",
+                                                                    fontWeight: "500",
+                                                                    color: "black",
+                                                                },
 
-            {loading ? (
-                <Box sx={{display:"flex", alignItems:"center", justifyContent:"center", width: "100%"}}>
-                    <CircularProgress size={20}/>
-                </Box>
-            ) : (
-                <Formik
-                    initialValues={{
-                        city: user.city,
-                        street: user.street,
-                        postalCode: user.postalCode,
-                    }}
-                    onSubmit={handleSubmit}
-                    >
-                        {({values, handleChange, handleSubmit}) => (
-                        <StyledForm onSubmit={handleSubmit}>
-                            <Grid container spacing={2} alignItems={"center"} justifyContent={"center"}>
-                                <Grid item>
-                                    <StyledInput
-                                        type="text"
-                                        name="city"
-                                        value={values.city}
-                                        onChange={handleChange}
-                                        placeholder="City"
-                                    />
-                                </Grid>
-                                <Grid item>
-                                    <StyledInput
-                                        type="text"
-                                        name="street"
-                                        value={values.street}
-                                        onChange={handleChange}
-                                        placeholder="Street"
-                                    />
-                                </Grid>
-                                <Grid item>
-                                    <StyledInput
-                                        type="text"
-                                        name="postalCode"
-                                        value={values.postalCode}
-                                        onChange={handleChange}
-                                        placeholder="Postal Code"
-                                    />
-                                </Grid>
-                                <Grid item>
-                                    <Typography variant={"body1"}>
-                                        Si les informations sont correctes, cliquez sur le bouton "Valider" ci-dessous.
-                                    </Typography>
-                                </Grid>
-                                <Grid item>
-                                    <StyledButton type="submit">Valider</StyledButton>
-                                </Grid>
-                            </Grid>
-                        </StyledForm>
+                                                            }}
+                                                            {...getInputProps({ placeholder: "Type address" })}
+                                                        />
+                                                        <div>
+                                                            {loading && <div>Loading...</div>}
+                                                            {suggestions.map((suggestion) => {
+                                                                const className = suggestion.active
+                                                                    ? "suggestion-item--active"
+                                                                    : "suggestion-item";
+                                                                const style = suggestion.active
+                                                                    ? {
+                                                                        backgroundColor: "grey.200",
+                                                                        cursor: "pointer",
+                                                                        width: "100%",
+                                                                    }
+                                                                    : {
+                                                                        backgroundColor: "grey.100",
+                                                                        cursor: "pointer",
+                                                                        width: "100%",
+                                                                    };
+                                                                return (
+                                                                    <List
+                                                                        {...getSuggestionItemProps(suggestion, {
+                                                                            className,
+                                                                            style,
+                                                                        })}
+                                                                    >
+                                                                        <ListItem style={{
+                                                                            maxWidth: "200",
+                                                                            ":hover": {
+                                                                                backgroundColor: "grey.200",
+                                                                            }
+                                                                        }}>
+                                                                            {suggestion.description}
+                                                                        </ListItem>
+                                                                    </List>
+                                                                );
+                                                            })}
+                                                        </div>
+                                                    </div>
+                                                )}
+                                            </PlacesAutocomplete>
+                                        </Grid>
+                                    </Grid>
+                                </form>
+                            )}
+                        </Formik>
                     )}
-                </Formik>
-            )}
-
-        </StyledDeliveryFormContainer>
+                </StyledProductBox>
+                <StyledValidateBoxSecond>
+                    <Grid container spacing={1} alignItems={"center"} justifyContent={"space-between"} sx={{px:1, py:1}}>
+                        <Grid item xs={4}>
+                            <Button variant={"contained"} color={"primary"} sx={{width:'100%', my:1}} onClick={handleValidate}>
+                                Valider vos informations
+                            </Button>
+                        </Grid>
+                        <Grid item xs={8}>
+                            <Box sx={{display: 'flex', flexDirection:'column', width: '100%'}}>
+                                <Typography variant={"body1"} sx={{fontWeight:"bold"}}>
+                                    Total: {cartTotalPrice()} €
+                                </Typography>
+                                <Typography sx={{fontWeight:"thin", fontSize: '10px'}}>
+                                    En passant votre commande, vous acceptez les Conditions générales de vente de GuacaGnole.
+                                    Veuillez consulter notre Notice Protection de vos informations personnelles,
+                                    notre Notice Cookies et notre Notice Annonces publicitaires basées sur vos centres d’intérêt.
+                                </Typography>
+                            </Box>
+                        </Grid>
+                    </Grid>
+                </StyledValidateBoxSecond>
+            </Grid>
+            <Grid item xs={12} md={4}>
+                <StyledValidateBox>
+                    <Button variant={"contained"} color={"primary"} sx={{width:'100%', my:1}} onClick={handleValidate}>
+                        Valider vos informations
+                    </Button>
+                    <Typography variant={"body2"} align={"center"}>
+                        En passant votre commande, vous acceptez les Conditions générales de vente de GuacaGnole.
+                        Veuillez consulter notre Notice Protection de vos informations personnelles,
+                        notre Notice Cookies et notre Notice Annonces publicitaires basées sur vos centres d’intérêt.
+                    </Typography>
+                    <Divider sx={{width:'100%', my:2}} color={"grey"}/>
+                    <Typography variant={"body1"} align={"center"} sx={{fontWeight:"bold"}}>
+                        Récapitulatif de votre commande
+                    </Typography>
+                    <Grid container spacing={2} alignItems={"center"} justifyContent={"space-between"} sx={{px:4, py:1}}>
+                        <Grid item>
+                            <Typography variant={"body2"} sx={{fontWeight:"thin"}}>
+                                Sous-total
+                            </Typography>
+                        </Grid>
+                        <Grid item>
+                            <Typography variant={"body2"} sx={{fontWeight:"thin"}}>
+                                {cartTotalPrice()} €
+                            </Typography>
+                        </Grid>
+                    </Grid>
+                    <Grid container spacing={2} alignItems={"center"} justifyContent={"space-between"} sx={{px:4, py:1}}>
+                        <Grid item>
+                            <Typography variant={"body2"} sx={{fontWeight:"thin"}}>
+                                Frais de livraison
+                            </Typography>
+                        </Grid>
+                        <Grid item>
+                            <Typography variant={"body2"} sx={{fontWeight:"thin"}}>
+                                {deliveryPrice()} €
+                            </Typography>
+                        </Grid>
+                    </Grid>
+                    <Divider sx={{width:'100%', my:2}} color={"grey"}/>
+                    <Grid container spacing={2} alignItems={"center"} justifyContent={"space-between"} sx={{px:4, py:1}}>
+                        <Grid item>
+                            <Typography variant={"body1"} sx={{fontWeight:"bold"}}>
+                                Total
+                            </Typography>
+                        </Grid>
+                        <Grid item>
+                            <Typography variant={"body1"} sx={{fontWeight:"bold"}}>
+                                {cartTotalPrice() + deliveryPrice()} €
+                            </Typography>
+                        </Grid>
+                    </Grid>
+                    <Typography variant={"body2"} align={"center"}>
+                        Total de la commande, TVA incluse.
+                    </Typography>
+                </StyledValidateBox>
+            </Grid>
+        </Grid>
     )
 }
 
 export default DeliveryForm;
-
-const StyledDeliveryFormContainer = styled(Box)(
-    ({theme}) => ({
-        backgroundColor: theme.palette.background.default,
-        borderRadius: 5,
-        width: "100%",
-        margin: "10px 0",
-        padding: '10px 10px',
-        border: "1px solid #e0e0e0",
-        color: "black",
-    })
-)
 
 const StyledTitle = styled(Typography)(
     ({theme}) => ({
         color: theme.palette.primary.main,
         fontWeight: 600,
         fontSize: 20,
-    })
-)
-
-const StyledForm = styled("form")(
-    ({theme}) => ({
-        width: "100%",
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "center",
-    })
-)
-
-const StyledInput = styled("input")(
-    ({theme}) => ({
-        width: "100%",
-        height: 40,
-        padding: "0 10px",
-        border: "1px solid #e0e0e0",
-        borderRadius: 5,
-        outline: "none",
-        fontSize: 16,
-        color: "black",
-        backgroundColor: "white",
-        transition: "all 0.3s ease",
-        "&:focus": {
-            border: `1px solid ${theme.palette.primary.main}`,
-        }
-    })
-)
-
-const StyledButton = styled(Button)(
-    ({theme}) => ({
-        width: "100%",
-        height: 40,
-        padding: "0 10px",
-        border: "1px solid #e0e0e0",
-        borderRadius: 5,
-        outline: "none",
-        fontSize: 16,
-        color: "black",
-        backgroundColor: "white",
-        transition: "all 0.3s ease",
-        "&:hover": {
-            backgroundColor: theme.palette.primary.main,
-            color: "white",
-        }
     })
 )
