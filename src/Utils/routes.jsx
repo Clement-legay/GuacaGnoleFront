@@ -48,9 +48,10 @@ const PathRoutes = () => {
                         }
                         const result = await postToken(data)
                         if (result) {
+                            console.log(result)
                             setAuthUser(result.data, true)
                         } else {
-                            removeToken(true)
+                            // removeToken(true)
                         }
                     } catch (error) {
                         console.error("Une erreur s'est produite lors de la récupération du jeton de rafraîchissement: ", error);

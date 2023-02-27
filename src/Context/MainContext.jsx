@@ -78,7 +78,7 @@ export const MainProvider = ({ children }) => {
                     const refreshToken = atob(cookedRefreshToken);
                     setRefreshToken(refreshToken);
                 } catch (e) {
-                    Cookies.remove("refreshToken");
+                    // Cookies.remove("refreshToken");
                     setRefreshToken(null);
                 }
             } else {
