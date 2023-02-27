@@ -28,7 +28,12 @@ const LoginForm = () => {
     const handleFormSubmit = async (values) => {
         setLoading(true);
         try {
+            console.log("coucou")
+            console.log("coucou ", values.username)
+            console.log("coucou ", values.password)
             const result = await postLogin({username: values.username, password: values.password});
+            console.log("coucou ", result)
+
             if (result.status === 200) {
                 console.log(result.data)
                 setAuthUser(result.data, values.remember);
