@@ -44,13 +44,15 @@ const ManageUserDialog = ({setRefresh, addRequest, setAddRequest, setEditRequest
             lastName: values.lastName,
             phone: values.phone,
             roleId: values.roleId,
-            password: "password",
-            confirmPassword: "password",
         };
 
         try {
             if (type === "create") {
-                await postRegister(newItem);
+                await postRegister({
+                    ...newItem,
+                    password: "password",
+                    confirmPassword: "password",
+                });
             } else {
                 await putUser(item.id, newItem);
             }
@@ -184,7 +186,7 @@ const ManageUserDialog = ({setRefresh, addRequest, setAddRequest, setEditRequest
                                         <InputLabel id={"select-roleId"} sx={{color:"black"}}>RoleId</InputLabel>
                                         <Select
                                             labelId="select-roleId"
-                                            value={item.quantity}
+                                            value={values.roleId}
                                             onChange={(e) => setFieldValue("roleId", e.target.value)}
                                         >
                                             <MenuItem value={2}>User</MenuItem>
