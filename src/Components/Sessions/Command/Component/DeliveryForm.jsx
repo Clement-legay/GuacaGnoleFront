@@ -105,7 +105,7 @@ const DeliveryForm = ({handleValidate, cartTotalPrice, deliveryPrice}) => {
                                                         />
                                                         <div>
                                                             {loading && <div>Loading...</div>}
-                                                            {suggestions.map((suggestion) => {
+                                                            {suggestions.map((suggestion, index) => {
                                                                 const className = suggestion.active
                                                                     ? "suggestion-item--active"
                                                                     : "suggestion-item";
@@ -121,7 +121,7 @@ const DeliveryForm = ({handleValidate, cartTotalPrice, deliveryPrice}) => {
                                                                         width: "100%",
                                                                     };
                                                                 return (
-                                                                    <List
+                                                                    <List key={index}
                                                                         {...getSuggestionItemProps(suggestion, {
                                                                             className,
                                                                             style,

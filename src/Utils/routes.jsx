@@ -30,29 +30,30 @@ const PathRoutes = () => {
             refreshCart()
             if (token) {
                 (async () => {
-                    try {
-                        const user = await fetchCurrentUser(userId)
+                    const user = await fetchCurrentUser(userId)
+                    if (user) {
                         console.log(user)
                         setUser(user)
-                    } catch (e) {
+                    } else {
                         setFailed(true)
                         removeToken()
                     }
                 })()
             } else if (refreshToken) {
                 (async () => {
-                    try {
-                        const result = await postToken({refreshToken})
+                    const result = await postToken({refreshToken})
+                    if (result)  {
                         setAuthUser(result, true)
-
-                        try {
-                            const user = await fetchCurrentUser(result.id)
+                        const user = await fetchCurrentUser(result.id)
+                        if (user) {
                             setUser(user)
-                        } catch (e) {
-                            removeToken(true)
+                        } else {
+                            setFailed(true)
+                            removeToken()
                         }
-                    } catch (e) {
-                        setAuthUser(null, true)
+                    } else {
+                        setFailed(true)
+                        removeToken()
                     }
                 })()
             }
