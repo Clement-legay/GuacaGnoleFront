@@ -1,4 +1,4 @@
-import React, {useContext, useEffect, useState} from 'react';
+import React, {useContext, useEffect} from 'react';
 import {Route, Routes, useNavigate} from 'react-router-dom';
 import AdminLayout from '../Components/Admin/AdminLayout/AdminLayout';
 import CustomerLayout from "../Components/Customer/CustomerLayout/CustomerLayout";
@@ -20,50 +20,46 @@ import Search from "../Components/Customer/Search/Search";
 import Command from "../Components/Sessions/Command/Command";
 
 const PathRoutes = () => {
-    const { isAuth, canAdmin, postToken, setUser, refreshToken, fetchCurrentUser, userId, token, setAuthUser, user, refreshCart, removeToken } = useContext(MainContext)
+    const { isAuth, canAdmin, postToken, setUser, refreshToken, fetchCurrentUser, token, setAuthUser, user, refreshCart, removeToken } = useContext(MainContext)
     const loading = token === undefined || (token && !user)
-    const [failed, setFailed] = useState(false);
     // const navigate = useNavigate();
 
     useEffect(() => {
-        if (isAuth() && loading && !failed) {
+        if (isAuth() && loading) {
             refreshCart()
             if (token) {
                 (async () => {
                     try {
-                        const user = await fetchCurrentUser(userId)
+                        const user = await fetchCurrentUser()
                         if (user) {
-                            console.log(user)
                             setUser(user)
                         } else {
-                            setFailed(true)
                             removeToken()
                         }
-                    } catch (e) {
-                        setFailed(true)
-                        removeToken()
+                    } catch (error) {
+                        console.error("Une erreur s'est produite lors de la récupération des informations de l'utilisateur: ", error);
                     }
-                })()
+                })();
             } else if (refreshToken) {
                 (async () => {
-                    const result = await postToken({refreshToken})
-                    if (result)  {
-                        setAuthUser(result, true)
-                        const user = await fetchCurrentUser(result.id)
-                        if (user) {
-                            setUser(user)
-                        } else {
-                            setFailed(true)
-                            removeToken()
+                    try {
+                        const data = {
+                            refreshToken: refreshToken
                         }
-                    } else {
-                        setFailed(true)
-                        removeToken()
+                        const result = await postToken(data)
+                        if (result) {
+                            setAuthUser(result.data, true)
+                        } else {
+                            removeToken(true)
+                        }
+                    } catch (error) {
+                        console.error("Une erreur s'est produite lors de la récupération du jeton de rafraîchissement: ", error);
+                        // Gérer l'erreur ici
                     }
-                })()
+                })();
             }
         }
-    }, [isAuth, loading, userId, token, refreshToken, postToken, setAuthUser, setUser, fetchCurrentUser, refreshCart, removeToken, failed])
+    }, [isAuth, loading, token, refreshToken, postToken, setAuthUser, setUser, fetchCurrentUser, refreshCart, removeToken])
 
     const RedirectToLogin = () => {
         const navigate = useNavigate();

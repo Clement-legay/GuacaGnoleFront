@@ -70,9 +70,7 @@ export const MainProvider = ({ children }) => {
                     setToken(token);
                     setUserId(id);
                 } catch (e) {
-                    console.log(e);
                     Cookies.remove("token");
-                    Cookies.remove("refreshToken");
                     setToken(null);
                 }
             } else if (cookedRefreshToken) {
@@ -80,7 +78,6 @@ export const MainProvider = ({ children }) => {
                     const refreshToken = atob(cookedRefreshToken);
                     setRefreshToken(refreshToken);
                 } catch (e) {
-                    console.log(e);
                     Cookies.remove("refreshToken");
                     setRefreshToken(null);
                 }
@@ -100,7 +97,17 @@ export const MainProvider = ({ children }) => {
     // log the user in
     const setAuthUser = (item, remember) => {
         if (item) {
+            console.log(item);
             const { accessToken, id, tokenExpires, refreshExpires, refreshToken } = item;
+            setUser({
+                id: id,
+                roleId: item.roleId,
+                email: item.email,
+                firstName: item.firstName,
+                lastName: item.lastName,
+                address: item.address,
+                username: item.username,
+            })
             setToken(accessToken);
             setUserId(id);
             const tokenExpiresDate = new Date(tokenExpires);
@@ -122,10 +129,10 @@ export const MainProvider = ({ children }) => {
     // remove all token if failed
     const removeToken = (all=false) => {
         Cookies.remove("token")
-        setToken(null)
 
         if (all) {
             Cookies.remove("refreshToken")
+            setToken(null)
             setRefreshToken(null)
         }
     };
@@ -133,10 +140,9 @@ export const MainProvider = ({ children }) => {
     // log the user out
     const logUserOut = () => {
         console.log("logout");
-        setToken(null);
         setUser(null);
         setUserId(null);
-        setRefreshToken(null);
+        setToken(null);
         Cookies.remove("token");
         Cookies.remove("refreshToken");
     };

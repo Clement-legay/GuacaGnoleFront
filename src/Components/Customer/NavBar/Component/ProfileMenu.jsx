@@ -1,16 +1,14 @@
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import {StyledButton} from "../../../../Styles/Customer/NavBar/NavBar";
-import {useContext, useEffect, useState} from "react";
+import {useContext, useState} from "react";
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import {Box} from "@mui/system";
 import {Divider, Typography} from "@mui/material";
 import {MainContext} from "../../../../Context/MainContext";
 
-export default function ProfileMenu({isAuth, navigate, logUserOut, sx}) {
-    const { user } = useContext(MainContext);
-    const [isAuthenticate, setIsAuthenticate] = useState(isAuth());
-    const [isAdminUser, setIsAdminUser] = useState(false);
+export default function ProfileMenu({navigate, logUserOut, sx}) {
+    const { user, isAuth, canAdmin } = useContext(MainContext);
     const [anchorEl, setAnchorEl] = useState(null);
     const open = Boolean(anchorEl);
 
@@ -20,15 +18,6 @@ export default function ProfileMenu({isAuth, navigate, logUserOut, sx}) {
     const handleClose = () => {
         setAnchorEl(null);
     };
-
-    useEffect(() => {
-        setIsAuthenticate(isAuth());
-    }, [isAuth])
-
-    useEffect(() => {
-        if (isAuthenticate)
-            setIsAdminUser(user.roleId === 1);
-    }, [user, isAuthenticate])
 
     return (
         <div>
@@ -56,7 +45,7 @@ export default function ProfileMenu({isAuth, navigate, logUserOut, sx}) {
                     display: "flex",
                 }}
             >
-                {isAuthenticate && (
+                {isAuth() && (
                     <Box sx={{
                         width: "100%",
                         alignItems: "center",
@@ -70,12 +59,12 @@ export default function ProfileMenu({isAuth, navigate, logUserOut, sx}) {
                     </Box>
                 )}
 
-                {isAuthenticate && <Divider sx={{width: "100%", my:1}}/>}
-                {(isAuthenticate && isAdminUser) && <MenuItem onClick={() =>{navigate("/admin/")}}>Admin</MenuItem>}
-                {isAuthenticate && <MenuItem onClick={() =>{navigate("/session/account")}}>My account</MenuItem>}
-                {isAuthenticate && <MenuItem onClick={() =>{handleClose(); logUserOut()}}>Logout</MenuItem>}
-                {!isAuthenticate && <MenuItem onClick={() => {navigate("/session/signin")}}>Login</MenuItem>}
-                {!isAuthenticate && <MenuItem onClick={() => {navigate("/session/signup")}}>Register</MenuItem>}
+                {isAuth() && <Divider sx={{width: "100%", my:1}}/>}
+                {(isAuth() && canAdmin()) && <MenuItem onClick={() =>{navigate("/admin/")}}>Admin</MenuItem>}
+                {isAuth() && <MenuItem onClick={() =>{navigate("/session/account")}}>My account</MenuItem>}
+                {isAuth() && <MenuItem onClick={() =>{handleClose(); logUserOut()}}>Logout</MenuItem>}
+                {!isAuth() && <MenuItem onClick={() => {navigate("/session/signin")}}>Login</MenuItem>}
+                {!isAuth() && <MenuItem onClick={() => {navigate("/session/signup")}}>Register</MenuItem>}
             </Menu>
         </div>
     );

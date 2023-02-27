@@ -54,10 +54,10 @@ export const UserEntity = (token) => {
             postAPI(`${userLinkPrefix}/Login`, data)
                 .then(res => res)
         ),
-        postToken: (data) => {
+        postToken: (data) => (
             postAPI(`${userLinkPrefix}/RefreshToken`, data)
                 .then(res => res)
-        },
+        ),
         putUser: (id, data) => (
             postAPI(`${userLinkPrefix}/UpdateUser/${id}`, data)
                 .then(res => res)

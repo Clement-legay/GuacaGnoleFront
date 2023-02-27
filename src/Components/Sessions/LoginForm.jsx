@@ -30,7 +30,6 @@ const LoginForm = () => {
         try {
             const result = await postLogin({username: values.username, password: values.password});
             if (result.status === 200) {
-                console.log(result.data)
                 setAuthUser(result.data, values.remember);
                 navigate('/');
             }
