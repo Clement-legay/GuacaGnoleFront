@@ -7,10 +7,12 @@ import {
     StyledImageBox,
     StyledTextCard
 } from "../../../Styles/Customer/Home/Home";
-import {Typography} from "@mui/material";
+import {Button, Container, Typography} from "@mui/material";
+import {useNavigate} from "react-router-dom";
 const background = require("../../../Assets/img/backgrounds/background_2.png");
 
 const Home = () => {
+    const navigate = useNavigate();
     const { setRouteName } = useContext(MainContext)
 
     useEffect(() => {
@@ -36,7 +38,7 @@ const Home = () => {
                             }}}
                         gutterBottom
                     >
-                        Welcome to the Customer Portal
+                        Bienvenue chez GuacaGnole,
                     </Typography>
                     <Typography sx={{
                         fontSize: "1.3em",
@@ -49,18 +51,26 @@ const Home = () => {
                             fontSize: 16,
                         },
                     }} gutterBottom>
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed euismod, nisl nec
-                        tincidunt luctus, nunc odio lacinia nisl, vitae aliquet nunc nunc vel nisl. Sed
-                        euismod, nisl nec tincidunt luctus, nunc odio lacinia nisl, vitae aliquet nunc
-                        nunc vel nisl.
+                        Votre boutique en ligne spécialisée dans la vente de vins
+                        de qualité pour un public raffiné. Nous sommes passionnés
+                        par le vin et nous avons soigneusement sélectionné pour vous
+                        une large gamme de bouteilles provenant des meilleurs vignobles
+                        du monde entier.
                     </Typography>
+                    <Button onClick={() => {
+                        navigate("/search")
+                    }} variant="contained" sx={{fontSize: "1.2em", mt: 2, mb: 2, backgroundColor: "rgb(47,40,34)", color: "text.title", "&:hover": {backgroundColor: "rgb(68,56,45)"}}}>
+                        Découvrir nos vins
+                    </Button>
                 </StyledTextCard>
                 <StyledImageBox>
                     <StyledImage src={background} alt="illustration"/>
                 </StyledImageBox>
             </StyledContainer>
             <StyledBigCard>
+                <Container maxWidth={"lg"}>
 
+                </Container>
             </StyledBigCard>
         </Fragment>
     )
