@@ -29,6 +29,7 @@ export const postAPI = async (url, data, params) => {
         const response = await RequestAPI(params).post(url, data);
         return await response;
     } catch (error) {
+        console.log(error.response.data);
         return [];
     }
 }
