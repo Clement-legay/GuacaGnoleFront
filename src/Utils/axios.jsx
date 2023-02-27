@@ -20,6 +20,7 @@ export const fetchAPI = async (url, params) => {
         return await response
 
     } catch (error) {
+        console.log(error.response)
         return [];
     }
 };
