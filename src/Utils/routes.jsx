@@ -28,6 +28,7 @@ const PathRoutes = () => {
         if (isAuth() && loading) {
             refreshCart()
             if (token) {
+                console.log(token);
                 (async () => {
                     try {
                         const user = await fetchCurrentUser()

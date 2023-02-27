@@ -59,11 +59,11 @@ export const UserEntity = (token) => {
                 .then(res => res)
         ),
         putUser: (id, data) => (
-            postAPI(`${userLinkPrefix}/UpdateUser/${id}`, data)
+            postAPI(`${userLinkPrefix}/UpdateUser/${id}`, data, {token: token})
                 .then(res => res)
         ),
         deleteUser: (id) => (
-            deleteAPI(`${userLinkPrefix}/DeleteUser/${id}`)
+            deleteAPI(`${userLinkPrefix}/DeleteUser/${id}`, {token: token})
                 .then(res => res.data)
         ),
     }

@@ -35,11 +35,11 @@ export const OrderEntity = (token) => {
                 .then(res => res.data)
         ),
         putOrder: (id, data) => (
-            putAPI(`Order/${id}`, data)
+            putAPI(`Order/${id}`, data, {token: token})
                 .then(res => res.data)
         ),
         deleteOrder: (id) => (
-            deleteAPI(`Order/${id}`)
+            deleteAPI(`Order/${id}`, {token: token})
                 .then(res => res.data)
         )
     };

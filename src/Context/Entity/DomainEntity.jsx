@@ -39,9 +39,7 @@ export const DomainEntity = (token) => {
                 })
         ),
         postDomain: (data) => (
-            postAPI("Domain", data
-                // , {token: token}
-            )
+            postAPI("Domain", data, {token: token})
                 .then((res) => {
                     res.data.id = res.data.domainId;
                     delete res.data.domainId;

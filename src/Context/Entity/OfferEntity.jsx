@@ -81,11 +81,11 @@ export const OfferEntity = (token) => {
                 .then(res => `${API_URL}${res.data}`)
         ),
         putOffer: (id, data) => (
-            putAPI(`Offer/${id}`, data)
+            putAPI(`Offer/${id}`, data, {token: token})
                 .then(res => res.data)
         ),
         deleteOffer: (id) => (
-            deleteAPI(`Offer/${id}`)
+            deleteAPI(`Offer/${id}`, {token: token})
                 .then(res => res.data)
         )
     };
