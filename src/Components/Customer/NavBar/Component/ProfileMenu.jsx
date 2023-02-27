@@ -26,8 +26,9 @@ export default function ProfileMenu({isAuth, navigate, logUserOut, sx}) {
     }, [isAuth])
 
     useEffect(() => {
-        setIsAdminUser(user.roleId === 1);
-    }, [user])
+        if (isAuthenticate)
+            setIsAdminUser(user.roleId === 1);
+    }, [user, isAuthenticate])
 
     return (
         <div>
