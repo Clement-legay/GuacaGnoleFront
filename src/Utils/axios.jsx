@@ -5,9 +5,11 @@ const API_URL = process.env.REACT_APP_DEV_API_LINK;
 const RequestAPI = (params={file:false, token:false}) => {
     return axios.create({
         baseURL: API_URL,
-        headers: {
-            'Content-Type':  params.file ? "multipart/form-data" : 'application/json',
-            'Authorization': params.token ? `bearer ${params.token}` : ''
+        headers: params.token ? {
+            'Content-Type': params.file ? "multipart/form-data" : 'application/json',
+            'Authorization': `bearer ${params.token}`
+        } : {
+            'Content-Type': params.file ? "multipart/form-data" : 'application/json',
         },
     });
 };
@@ -27,6 +29,7 @@ export const postAPI = async (url, data, params) => {
         const response = await RequestAPI(params).post(url, data);
         return await response;
     } catch (error) {
+        console.log(error.response)
         return [];
     }
 }
