@@ -1,4 +1,4 @@
-import {deleteAPI, fetchAPI, postAPI, putAPI} from "../../Utils/axios";
+import {deleteAPI, fetchAPI, fetchAPIPdf, postAPI, putAPI} from "../../Utils/axios";
 import {useState} from "react";
 
 export const InvoiceEntity = (token) => {
@@ -18,6 +18,13 @@ export const InvoiceEntity = (token) => {
                     //         return item
                     //     }
                     // ) : [];
+                    res.data = res.data.length > 0 ? res.data.map(
+                        (invoices) => {
+                            invoices.id = invoices.invoiceFurnisherId;
+                            delete invoices.InvoiceFurnisherId;
+                            return invoices
+                        }
+                    ) : [];
                     if (store) {
                         setInvoices(res.data);
                     }
@@ -25,7 +32,7 @@ export const InvoiceEntity = (token) => {
                 })
         ),
         fetchInvoiceProduct: (store= false) => (
-            fetchAPI(`Invoice/invoiceProduct`)
+            fetchAPIPdf(`Invoice/invoiceProduct`)
                 .then((res) => {
                     // res.data = res.data.length > 0 ? res.data.map(
                     //     (item) => {
@@ -45,12 +52,23 @@ export const InvoiceEntity = (token) => {
                 .then(res => res.data)
         ),
         fetchInvoicePdf: (id) => (
-            fetchAPI(`Invoice/pdf?id=${id}`)
-                .then(res => res.data)
+            fetchAPIPdf(`Invoice/pdf?id=${id}`)
+                .then(res => {
+                    console.log(res)
+                    const blob = new Blob([res.data], {type: 'application/pdf'});
+                    const link = document.createElement("a");
+                    console.log("hey", blob)
+                    link.href = window.URL.createObjectURL(blob);
+                    link.download = "facture"
+                    link.click();
+                })
         ),
         postInvoice: (data) => (
             postAPI("Invoice", data, {token: token})
-                .then(res => res.data)
+                .then(res => {
+                    console.log("resss data: ", res.data)
+                    return res.data
+                })
         ),
         postInvoiceProduct: (data) => (
             postAPI("Invoice/invoiceProduct", data, {token: token})
@@ -58,7 +76,9 @@ export const InvoiceEntity = (token) => {
         ),
         putInvoice: (id, data) => (
             putAPI(`Invoice/${id}`, data, {token: token})
-                .then(res => res.data)
+                .then(res => {
+                    console.log("data du put tsé: ", data)
+                    return res.data})
         ),
         putInvoiceProduct: (id, data) => (
             putAPI(`Invoice/invoiceProduct/${id}`, data, {token: token})

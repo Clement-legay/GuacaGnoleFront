@@ -107,6 +107,12 @@ const linksArray = [
         notification: 0
     },
     {
+        label: "Invoices",
+        icon: <LiquorIcon/>,
+        to: "/admin/invoices",
+        notification: 0
+    },
+    {
         label: "Offers",
         icon: <LocalOfferIcon/>,
         to: "/admin/offers",
