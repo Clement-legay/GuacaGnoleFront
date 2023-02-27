@@ -70,7 +70,7 @@ export default function ProfileMenu({isAuth, navigate, logUserOut, sx}) {
                     </Box>
                 )}
 
-                <Divider sx={{width: "100%", my:1}}/>
+                {isAuthenticate && <Divider sx={{width: "100%", my:1}}/>}
                 {(isAuthenticate && isAdminUser) && <MenuItem onClick={() =>{navigate("/admin/")}}>Admin</MenuItem>}
                 {isAuthenticate && <MenuItem onClick={() =>{navigate("/session/account")}}>My account</MenuItem>}
                 {isAuthenticate && <MenuItem onClick={() =>{handleClose(); logUserOut()}}>Logout</MenuItem>}
