@@ -35,11 +35,12 @@ export const UserEntity = (token) => {
         fetchCurrentUser: () => (
             fetchAPI(`${userLinkPrefix}/GetMesInfos`, {token: token})
                 .then((res) => {
+                    console.log(res);
                     res.data.id = res.data.userId;
                     delete res.data.userId;
                     return res.data;
                 })
-        ),
+        ),  
         fetchUserByUsername: (username) => (
             fetchAPI(`${userLinkPrefix}/GetUserByUsername/${username}`)
         ),

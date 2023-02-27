@@ -1,25 +1,19 @@
 {
-  "short_name": "React App",
   "name": "GuacaGnole",
-  "icons": [
-    {
-      "src": "GuacaGnole.png",
-      "sizes": "64x64 32x32 24x24 16x16",
-      "type": "image/png"
-    },
-    {
-      "src": "GuacaGnoleLogo.png",
-      "type": "image/png",
-      "sizes": "192x192"
-    },
-    {
-      "src": "GuacaGnoleLogo.png",
-      "type": "image/png",
-      "sizes": "512x512"
-    }
-  ],
-  "start_url": ".",
+  "short_name": "GuacaGnole",
+  "theme_color": "#2196f3",
+  "background_color": "#2196f3",
   "display": "standalone",
-  "theme_color": "#000000",
-  "background_color": "#ffffff"
+  "start_url": ".",
+  "icons":[{
+    "src": "./assets/img/GuacaGnoleLogo192.png",
+    "sizes": "192x192",
+    "type": "image/png"
+  },
+  {
+    "src": "./assets/img/GuacaGnoleLogo512.png",
+    "sizes": "512x512",
+    "type": "image/png"
+  }
+  ]
 }
