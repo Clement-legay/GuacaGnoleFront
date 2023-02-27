@@ -5,6 +5,7 @@ import CustomerLayout from "../Components/Customer/CustomerLayout/CustomerLayout
 import DashBoard from "../Components/Admin/DashBoard/DashBoard";
 import Suppliers from "../Components/Admin/Suppliers/Suppliers";
 import Products from "../Components/Admin/Products/Products";
+import Invoices from "../Components/Admin/Invoices/Invoices";
 import Users from "../Components/Admin/Users/Users";
 import {MainContext} from "../Context/MainContext";
 import NotFound from "../Components/Sessions/NotFound";
@@ -84,7 +85,7 @@ const PathRoutes = () => {
                             <Route path="/" element={<DashBoard/>}/>
                             <Route path="/suppliers" element={<Suppliers/>}/>
                             <Route path="/products" element={<Products/>}/>
-                            <Route path="/invoices" element={<Products/>}/>
+                            <Route path="/invoices" element={<Invoices/>}/>
                             <Route path="/users" element={<Users/>}/>
                             <Route path="/offers" element={<Offers/>}/>
                             <Route path="*" element={<NotFound/>}/>

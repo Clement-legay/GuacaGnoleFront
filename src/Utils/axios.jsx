@@ -2,6 +2,19 @@ import axios from 'axios';
 
 const API_URL = process.env.REACT_APP_DEV_API_LINK;
 
+const RequestPdf = ((params={token:false}) => {
+    return axios.create({
+        baseURL: API_URL,
+        responseType: 'blob',
+        headers: params.token ? {
+            'Content-Type': 'blob',
+            'Authorization': `bearer ${params.token}`
+        } : {
+            'Content-Type': 'blob',
+        },
+    });
+});
+
 const RequestAPI = (params={file:false, token:false}) => {
     return axios.create({
         baseURL: API_URL,
@@ -17,6 +30,15 @@ const RequestAPI = (params={file:false, token:false}) => {
 export const fetchAPI = async (url, params) => {
     try {
         const response = await RequestAPI(params).get(url);
+        return await response
+
+    } catch (error) {
+        return [];
+    }
+};
+export const fetchAPIPdf = async (url, params) => {
+    try {
+        const response = await RequestPdf(params).get(url);
         return await response
 
     } catch (error) {
