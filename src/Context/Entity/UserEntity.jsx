@@ -9,7 +9,7 @@ export const UserEntity = (token) => {
     return {
         users: users,
         fetchUsers: (store = false) => (
-            fetchAPI(`${userLinkPrefix}/GetAllUsers`)
+            fetchAPI(`${userLinkPrefix}/GetAllUsers`, {token: token})
                 .then((res) => {
                     res.data = res.data.length > 0 ? res.data.map(
                         (user) => {
