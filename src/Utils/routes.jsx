@@ -22,9 +22,9 @@ import Command from "../Components/Sessions/Command/Command";
 
 const PathRoutes = () => {
     const { isAuth, canAdmin, hasRefreshToken, hasToken, postToken, setUser, fetchCurrentUser, setAuthUser, removeToken } = useContext(MainContext)
-    const [refresh, setRefresh ] = useState(null)
-    const [access, setAccess ] = useState(null)
-    const catching = !access || !refresh
+    const [refresh, setRefresh ] = useState(undefined)
+    const [access, setAccess ] = useState(undefined)
+    const catching = access === undefined || refresh === undefined
     const loading = ((access || refresh) && !isAuth()) || catching
 
     useEffect(() => {
