@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './Components/App';
 import {BrowserRouter} from "react-router-dom";
-import * as serviceWorker from './serviceWorkerRegistration';
+import * as serviceWorker from './Utils/serviceWorkerRegistration';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
