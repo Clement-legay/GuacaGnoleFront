@@ -1,4 +1,4 @@
-import {deleteAPI, fetchAPI, postAPI} from "../../Utils/axios";
+import {deleteAPI, fetchAPI, postAPI, putAPI} from "../../Utils/axios";
 import {useState} from "react";
 
 const userLinkPrefix = "/Auth";
@@ -35,7 +35,6 @@ export const UserEntity = (token) => {
         fetchCurrentUser: () => (
             fetchAPI(`${userLinkPrefix}/GetMesInfos`, {token: token})
                 .then((res) => {
-                    console.log(res);
                     res.data.id = res.data.userId;
                     delete res.data.userId;
                     return res.data;
@@ -61,6 +60,10 @@ export const UserEntity = (token) => {
         ),
         putUser: (id, data) => (
             postAPI(`${userLinkPrefix}/UpdateUser/${id}`, data, {token: token})
+                .then(res => res)
+        ),
+        putCurrentUser: (data) => (
+            putAPI(`${userLinkPrefix}/UpdateMesInfos`, data, {token: token})
                 .then(res => res)
         ),
         deleteUser: (id) => (

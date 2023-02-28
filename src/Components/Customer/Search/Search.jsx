@@ -171,7 +171,6 @@ const Search = () => {
 
     useEffect(() => {
         if (selectedProduct) {
-            console.log(selectedProduct);
             setOpenDialog(true);
             const query = new URLSearchParams(location.search);
             query.set('product', selectedProduct);

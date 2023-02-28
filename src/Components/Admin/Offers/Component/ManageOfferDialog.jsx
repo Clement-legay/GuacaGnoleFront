@@ -58,7 +58,6 @@ const ManageOfferDialog = ({setRefresh, addRequest, setAddRequest, setEditReques
                 }
             })
         };
-        console.log(newItem);
 
         try {
             if (type === "create") {
@@ -72,7 +71,6 @@ const ManageOfferDialog = ({setRefresh, addRequest, setAddRequest, setEditReques
             handleClose();
         } catch (e) {
             setLoading(false);
-            console.log(e);
         }
     };
 

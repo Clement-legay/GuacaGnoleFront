@@ -79,7 +79,6 @@ const ManageProductDialog = ({setRefresh, addRequest, setAddRequest, setEditRequ
     };
 
     const sendData = (newItem) => {
-        console.log(newItem);
         try {
             if (type === "create") {
                 postProduct(newItem);
@@ -92,7 +91,6 @@ const ManageProductDialog = ({setRefresh, addRequest, setAddRequest, setEditRequ
             handleClose();
         } catch (e) {
             setLoading(false);
-            console.log(e);
         }
     }
 

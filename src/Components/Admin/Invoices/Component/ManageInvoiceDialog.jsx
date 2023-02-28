@@ -1,10 +1,7 @@
 import {
-  Checkbox,
   Dialog,
   DialogContent,
   DialogTitle,
-  FormControlLabel,
-  FormLabel,
   Grid,
   TextField,
 } from "@mui/material";
@@ -15,7 +12,6 @@ import { AsynchronousAutocomplete } from "../../PagePart/AsynchronousAutocomplet
 import { LoadingButton } from "@mui/lab";
 import { useContext, useEffect, useState } from "react";
 import { MainContext } from "../../../../Context/MainContext";
-import ImageField from "../../PagePart/ImageField";
 
 const validationSchema = Yup.object().shape({});
 
@@ -53,7 +49,6 @@ const ManageInvoiceDialog = ({
         }
       ),
     };
-    console.log(newItem);
 
     try {
       if (type === "create") {
@@ -67,7 +62,6 @@ const ManageInvoiceDialog = ({
       handleClose();
     } catch (e) {
       setLoading(false);
-      console.log(e);
     }
   };
 

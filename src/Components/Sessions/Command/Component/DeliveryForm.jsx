@@ -1,5 +1,5 @@
 import {MainContext} from "../../../../Context/MainContext";
-import React, {useContext, useState} from "react";
+import React, {Fragment, useContext, useEffect, useState} from "react";
 import {Formik} from "formik";
 import {Button, CircularProgress, Divider, Grid, List, ListItem, TextField, Typography} from "@mui/material";
 import {Box, styled} from "@mui/system";
@@ -11,17 +11,45 @@ import {
 } from "../../../../Styles/Sessions/Command/Command";
 
 const DeliveryForm = ({handleValidate, cartTotalPrice, deliveryPrice}) => {
-    const { user } = useContext(MainContext);
+    const { user, putCurrentUser } = useContext(MainContext);
     const [address, setAddress] = useState("");
     const loading = user === undefined;
 
-    const handleSubmit = (values) => {
-        console.log(values);
+    useEffect(() => {
+        if (!loading) {
+            setAddress(user.address);
+        }
+    }, [loading,  user]);
+
+    const handleSubmit = async () => {
+        if ((address === user.address) && address !== "") {
+            handleValidate();
+            return;
+        }
+
+        const data = {
+            firstName: user.firstName,
+            lastName: user.lastName,
+            email: user.email,
+            phone: user.phone,
+            username: user.user,
+            address: address,
+        };
+        const response = await putCurrentUser(data);
+        if (response.status === 200) {
+            handleValidate();
+        }
+        handleValidate();
     }
 
     const handleSelect = async (value) => {
         setAddress(value);
     };
+
+    const handleFormSubmit = (event) => {
+        event.preventDefault();
+        document.getElementById("handleFormSubmit").click();
+    }
 
     return (
         <Grid container spacing={2} justifyItems={"space-between"}>
@@ -52,6 +80,7 @@ const DeliveryForm = ({handleValidate, cartTotalPrice, deliveryPrice}) => {
                                                 value={address}
                                                 onChange={setAddress}
                                                 onSelect={handleSelect}
+                                                sx={{width: "100%"}}
                                             >
                                                 {({
                                                       getInputProps,
@@ -59,7 +88,7 @@ const DeliveryForm = ({handleValidate, cartTotalPrice, deliveryPrice}) => {
                                                       getSuggestionItemProps,
                                                       loading,
                                                   }) => (
-                                                    <div>
+                                                    <Fragment>
                                                         <TextField
                                                             fullWidth
                                                             type="address"
@@ -103,8 +132,8 @@ const DeliveryForm = ({handleValidate, cartTotalPrice, deliveryPrice}) => {
                                                             }}
                                                             {...getInputProps({ placeholder: "Type address" })}
                                                         />
-                                                        <div>
-                                                            {loading && <div>Loading...</div>}
+                                                        <Fragment>
+                                                            {loading ? <CircularProgress color="inherit" size={20} /> : null}
                                                             {suggestions.map((suggestion, index) => {
                                                                 const className = suggestion.active
                                                                     ? "suggestion-item--active"
@@ -124,7 +153,13 @@ const DeliveryForm = ({handleValidate, cartTotalPrice, deliveryPrice}) => {
                                                                     <List key={index}
                                                                         {...getSuggestionItemProps(suggestion, {
                                                                             className,
-                                                                            style,
+                                                                            sx: {
+                                                                                ...style,
+                                                                                maxHeight: 200,
+                                                                                ":hover": {
+                                                                                    backgroundColor: "grey.200",
+                                                                                }
+                                                                            }
                                                                         })}
                                                                     >
                                                                         <ListItem style={{
@@ -138,10 +173,11 @@ const DeliveryForm = ({handleValidate, cartTotalPrice, deliveryPrice}) => {
                                                                     </List>
                                                                 );
                                                             })}
-                                                        </div>
-                                                    </div>
+                                                        </Fragment>
+                                                    </Fragment>
                                                 )}
                                             </PlacesAutocomplete>
+                                            <Button id={"handleFormSubmit"} type={"submit"} sx={{display: "none"}}/>
                                         </Grid>
                                     </Grid>
                                 </form>
@@ -152,7 +188,7 @@ const DeliveryForm = ({handleValidate, cartTotalPrice, deliveryPrice}) => {
                 <StyledValidateBoxSecond>
                     <Grid container spacing={1} alignItems={"center"} justifyContent={"space-between"} sx={{px:1, py:1}}>
                         <Grid item xs={4}>
-                            <Button variant={"contained"} color={"primary"} sx={{width:'100%', my:1}} onClick={handleValidate}>
+                            <Button variant={"contained"} color={"primary"} sx={{width:'100%', my:1}} onClick={handleFormSubmit}>
                                 Valider vos informations
                             </Button>
                         </Grid>
@@ -173,7 +209,7 @@ const DeliveryForm = ({handleValidate, cartTotalPrice, deliveryPrice}) => {
             </Grid>
             <Grid item xs={12} md={4}>
                 <StyledValidateBox>
-                    <Button variant={"contained"} color={"primary"} sx={{width:'100%', my:1}} onClick={handleValidate}>
+                    <Button variant={"contained"} color={"primary"} sx={{width:'100%', my:1}} onClick={handleFormSubmit}>
                         Valider vos informations
                     </Button>
                     <Typography variant={"body2"} align={"center"}>

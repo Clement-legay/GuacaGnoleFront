@@ -54,7 +54,6 @@ const ManageSupplierDialog = ({setRefresh, addRequest, setAddRequest, setEditReq
             handleClose();
         } catch (e) {
             setLoading(false);
-            console.log(e);
         }
     };
 

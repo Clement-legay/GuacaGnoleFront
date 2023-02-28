@@ -29,7 +29,6 @@ const PathRoutes = () => {
         if (isAuth() && loading) {
             refreshCart()
             if (token) {
-                console.log(token);
                 (async () => {
                     try {
                         const user = await fetchCurrentUser()
@@ -50,7 +49,6 @@ const PathRoutes = () => {
                         }
                         const result = await postToken(data)
                         if (result) {
-                            console.log(result)
                             setAuthUser(result.data, true)
                         } else {
                             // removeToken(true)

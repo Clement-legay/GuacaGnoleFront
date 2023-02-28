@@ -62,7 +62,6 @@ const ManageUserDialog = ({setRefresh, addRequest, setAddRequest, setEditRequest
             handleClose();
         } catch (e) {
             setLoading(false);
-            console.log(e);
         }
     };
 

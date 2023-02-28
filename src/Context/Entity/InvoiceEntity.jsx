@@ -54,10 +54,8 @@ export const InvoiceEntity = (token) => {
         fetchInvoicePdf: (id) => (
             fetchAPIPdf(`Invoice/pdf?id=${id}`)
                 .then(res => {
-                    console.log(res)
                     const blob = new Blob([res.data], {type: 'application/pdf'});
                     const link = document.createElement("a");
-                    console.log("hey", blob)
                     link.href = window.URL.createObjectURL(blob);
                     link.download = "facture"
                     link.click();
@@ -66,7 +64,6 @@ export const InvoiceEntity = (token) => {
         postInvoice: (data) => (
             postAPI("Invoice", data, {token: token})
                 .then(res => {
-                    console.log("resss data: ", res.data)
                     return res.data
                 })
         ),
@@ -77,7 +74,6 @@ export const InvoiceEntity = (token) => {
         putInvoice: (id, data) => (
             putAPI(`Invoice/${id}`, data, {token: token})
                 .then(res => {
-                    console.log("data du put tsé: ", data)
                     return res.data})
         ),
         putInvoiceProduct: (id, data) => (

@@ -9,6 +9,8 @@ import DoneIcon from '@mui/icons-material/Done';
 import IconButton from "@mui/material/IconButton";
 import {useNavigate} from "react-router-dom";
 import DeliveryForm from "./Component/DeliveryForm";
+import PaymentRedirect from "./Component/PaymentRedirect";
+import CommandConfirm from "./Component/CommandConfirm";
 
 const steps = [
     {id:1, label: 'Validation du panier'},
@@ -29,12 +31,12 @@ const HorizontalLabelPositionBelowStepper = ({step, setStep}) => {
                 ) : (
                     <Box key={index}>
                         <IconButton onClick={() => setStep(item.id - 1)} sx={{
-                            backgroundColor: step >= index ? "primary.main" : "grey",
+                            backgroundColor: step >= item.id ? "primary.main" : "grey",
                             width: 30,
                             height: 30,
                             "&:hover": {
                                 opacity: 0.8,
-                                backgroundColor: step >= index ? "primary.main" : "grey",
+                                backgroundColor: step >= item.id ? "primary.main" : "grey",
                             },
                         }}>
                             {step >= item.id ? (
@@ -134,6 +136,12 @@ const Command = ({defineStep}) => {
                 }
                 {step === 1 &&
                     <DeliveryForm cartTotalPrice={cartTotalPrice} deliveryPrice={deliveryPrice} handleValidate={handleValidate}/>
+                }
+                {step === 2 &&
+                    <PaymentRedirect cartTotalPrice={cartTotalPrice} deliveryPrice={deliveryPrice} handleValidate={handleValidate}/>
+                }
+                {step === 3 &&
+                    <CommandConfirm cartTotalPrice={cartTotalPrice} deliveryPrice={deliveryPrice} cart={finalCartArray}/>
                 }
             </Container>
 

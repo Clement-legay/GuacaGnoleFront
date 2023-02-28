@@ -97,7 +97,6 @@ export const MainProvider = ({ children }) => {
     // log the user in
     const setAuthUser = (item, remember) => {
         if (item) {
-            console.log(item);
             const { accessToken, id, tokenExpires, refreshExpires, refreshToken } = item;
             setUser({
                 id: id,
@@ -139,7 +138,6 @@ export const MainProvider = ({ children }) => {
 
     // log the user out
     const logUserOut = () => {
-        console.log("logout");
         setUser(null);
         setUserId(null);
         setToken(null);
@@ -199,7 +197,6 @@ export const MainProvider = ({ children }) => {
                 const cart = JSON.parse(atob(string));
                 setCart(cart);
             } catch (e) {
-                console.log(e);
                 Cookies.remove("cart");
                 setCart([])
             }

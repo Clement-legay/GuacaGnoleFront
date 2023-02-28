@@ -45,7 +45,9 @@ export const AsynchronousAutocomplete = ({fetchString, props, onChangeQuantity})
 
             options={options}
             getOptionLabel={(option) => option.name}
-            isOptionEqualToValue={(option, value) => option.id === value.productId}
+            isOptionEqualToValue={(option, value) => {
+                return option.id === value.productId
+            }}
 
             loading={loading}
             renderInput={(params) => (
