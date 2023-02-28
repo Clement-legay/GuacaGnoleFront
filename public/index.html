@@ -1,17 +1,3 @@
-<script type="text/html">
-  if ('serviceWorker' in navigator) {
-    // askPermission();
-    navigator.serviceWorker.register('serviceWorker.js')
-            .then((registration) => {
-              console.log('Service Worker Registered');
-
-            })
-            .catch((err) => {
-              console.log("Error in service worker", err)
-            });
-  }
-</script>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
