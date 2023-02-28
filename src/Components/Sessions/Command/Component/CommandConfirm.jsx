@@ -1,8 +1,7 @@
 import {Box} from "@mui/system";
-import {Divider, Grid, styled, Typography} from "@mui/material";
+import {Divider, Grid, styled} from "@mui/material";
 import React from "react";
 import {StyledTitle} from "../../../../Styles/Customer/NavBar/NavBar";
-import DataTable from "../../../Admin/PagePart/DataTable";
 
 const CommandConfirm = ({cart, cartTotalPrice, deliveryPrice}) => {
 
