@@ -32,8 +32,8 @@ export const UserEntity = (token) => {
                     return res.data;
                 })
         ),
-        fetchCurrentUser: () => (
-            fetchAPI(`${userLinkPrefix}/GetMesInfos`, {token: token})
+        fetchCurrentUser: (forceToken) => (
+            fetchAPI(`${userLinkPrefix}/GetMesInfos`, {token: forceToken})
                 .then((res) => {
                     res.data.id = res.data.userId;
                     delete res.data.userId;

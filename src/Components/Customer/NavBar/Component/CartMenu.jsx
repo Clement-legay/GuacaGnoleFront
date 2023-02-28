@@ -23,7 +23,7 @@ export default function CartMenu({navigate, sx}) {
     }
 
     useEffect(() => {
-        if (open) {
+        if (open && cart.length > 0) {
             (async () => {
                 const finalCartArray = await Promise.all(cart.map(async (item) => {
                     const offer = await fetchOfferById(item.id)

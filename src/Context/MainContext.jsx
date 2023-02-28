@@ -47,51 +47,55 @@ export const MainProvider = ({ children }) => {
     const [routeName, setRouteName] = useState(null);
 
     const [searchFilters, setSearchFilters] = useState(null);
+    const [token, setToken] = useState(undefined);
+    const [refreshToken, setRefreshToken] = useState(undefined);
 
     const [userId, setUserId] = useState(null);
-    const [refreshToken, setRefreshToken] = useState(null);
     const [user, setUser] = useState(null);
-    const [token, setToken] = useState(undefined);
     const [cart, setCart] = useState([]);
-
     // check user's role
+
     const canAdmin = () => {
         return user.roleId === 1;
     };
 
     // check if user has accessToken in his cookies
     const hasToken = () => {
-        if (token === undefined) {
-            const cookedToken = Cookies.get("token");
-            const cookedRefreshToken = Cookies.get("refreshToken");
-            if (cookedToken) {
-                try {
-                    const [token, id] = atob(cookedToken).split("::::");
-                    setToken(token);
-                    setUserId(id);
-                } catch (e) {
-                    Cookies.remove("token");
-                    setToken(null);
-                }
-            } else if (cookedRefreshToken) {
-                try {
-                    const refreshToken = atob(cookedRefreshToken);
-                    setRefreshToken(refreshToken);
-                } catch (e) {
-                    // Cookies.remove("refreshToken");
-                    setRefreshToken(null);
-                }
-            } else {
-                setToken(null)
+        const cookedToken = Cookies.get("token");
+        if (cookedToken) {
+            try {
+                const [token, id] = atob(cookedToken).split("::::");
+                setToken(token);
+                setUserId(id);
+                return token;
+            } catch (e) {
+                Cookies.remove("token");
+                setToken(null);
             }
         }
-
-        return token !== null;
+        return false;
     };
+
+    // check if user has accessToken in his cookies
+    const hasRefreshToken = () => {
+        const cookedRefreshToken = Cookies.get("refreshToken");
+        if (cookedRefreshToken) {
+            try {
+                const refreshToken = atob(cookedRefreshToken);
+                setRefreshToken(refreshToken);
+                return refreshToken;
+            } catch (e) {
+                Cookies.remove("refreshToken");
+                setRefreshToken(null);
+            }
+        }
+        return false;
+    };
+
 
     // check if user is authenticated
     const isAuth = () => {
-        return user !== null ? true : hasToken();
+        return user !== null;
     };
 
     // log the user in
@@ -191,18 +195,16 @@ export const MainProvider = ({ children }) => {
 
     // refresh the cart from cookies
     const refreshCart = () => {
-        const string = Cookies.get("cart");
-        if (string) {
+        const cookedCart = Cookies.get("cart");
+        if (cookedCart) {
             try {
-                const cart = JSON.parse(atob(string));
+                const cart = JSON.parse(atob(cookedCart));
                 setCart(cart);
             } catch (e) {
                 Cookies.remove("cart");
-                setCart([])
+                setCart([]);
             }
         }
-
-        return true;
     };
 
     // manage the search filters
@@ -227,6 +229,7 @@ export const MainProvider = ({ children }) => {
         addToCart, removeFromCart,
         refreshCart, manageFilters,
         setCartQuantity, removeToken,
+        hasToken, hasRefreshToken,
         ...ProductEntity(token),
         ...SupplierEntity(token),
         ...UserEntity(token),

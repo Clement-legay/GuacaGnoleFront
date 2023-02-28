@@ -25,11 +25,19 @@ const linksArray = [
 
 const Navbar = () => {
     const [scroll, setScroll] = useState(0);
-    const { routeName, isAuth, logUserOut } = useContext(MainContext);
+    const { routeName, isAuth, logUserOut, refreshCart } = useContext(MainContext);
     const [isRoute, setIsRoute] = useState(false);
+    const [cartRefreshed, setCartRefreshed] = useState(false);
     const [isScrolled, setIsScrolled] = useState(false);
 
     const navigate = useNavigate();
+
+    useEffect(() => {
+        if (!cartRefreshed) {
+            refreshCart();
+            setCartRefreshed(true);
+        }
+    }, [isAuth, cartRefreshed, refreshCart, setCartRefreshed]);
 
     useEffect(() => {
         setIsRoute(["Home", "Search"].includes(routeName));

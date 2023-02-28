@@ -1,4 +1,4 @@
-import React, {useContext, useEffect} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {Route, Routes, useNavigate} from 'react-router-dom';
 import AdminLayout from '../Components/Admin/AdminLayout/AdminLayout';
 import CustomerLayout from "../Components/Customer/CustomerLayout/CustomerLayout";
@@ -21,17 +21,29 @@ import Search from "../Components/Customer/Search/Search";
 import Command from "../Components/Sessions/Command/Command";
 
 const PathRoutes = () => {
-    const { isAuth, canAdmin, postToken, setUser, refreshToken, fetchCurrentUser, token, setAuthUser, user, refreshCart, removeToken } = useContext(MainContext)
-    const loading = token === undefined || (token && !user)
-    // const navigate = useNavigate();
+    const { isAuth, canAdmin, hasRefreshToken, hasToken, postToken, setUser, fetchCurrentUser, setAuthUser, removeToken } = useContext(MainContext)
+    const [refresh, setRefresh ] = useState(null)
+    const [access, setAccess ] = useState(null)
+    const catching = !access || !refresh
+    const loading = ((access || refresh) && !isAuth()) || catching
 
     useEffect(() => {
-        if (isAuth() && loading) {
-            refreshCart()
-            if (token) {
+        if(catching)
+            setAccess(hasToken())
+    }, [hasToken, catching])
+
+    useEffect(() => {
+        if (catching)
+            setRefresh(hasRefreshToken())
+    }, [hasRefreshToken, catching])
+
+    useEffect(() => {
+        if ((access || refresh) && !isAuth()) {
+            if (access) {
+                console.log("accessing");
                 (async () => {
                     try {
-                        const user = await fetchCurrentUser()
+                        const user = await fetchCurrentUser(access)
                         if (user) {
                             setUser(user)
                         } else {
@@ -39,28 +51,31 @@ const PathRoutes = () => {
                         }
                     } catch (error) {
                         console.error("Une erreur s'est produite lors de la récupération des informations de l'utilisateur: ", error);
+                        removeToken()
                     }
                 })();
-            } else if (refreshToken) {
+            } else if (refresh) {
+                console.log("refreshing");
                 (async () => {
                     try {
+                        console.log("refreshToken", refresh);
                         const data = {
-                            refreshToken: refreshToken
+                            refreshToken: refresh
                         }
                         const result = await postToken(data)
                         if (result) {
                             setAuthUser(result.data, true)
                         } else {
-                            // removeToken(true)
+                            removeToken(true)
                         }
                     } catch (error) {
                         console.error("Une erreur s'est produite lors de la récupération du jeton de rafraîchissement: ", error);
-                        // Gérer l'erreur ici
+                        removeToken(true)
                     }
                 })();
             }
         }
-    }, [isAuth, loading, token, refreshToken, postToken, setAuthUser, setUser, fetchCurrentUser, refreshCart, removeToken])
+    }, [postToken, fetchCurrentUser, setUser, setAuthUser, removeToken, access, refresh, hasToken, hasRefreshToken, isAuth, loading])
 
     const RedirectToLogin = () => {
         const navigate = useNavigate();
