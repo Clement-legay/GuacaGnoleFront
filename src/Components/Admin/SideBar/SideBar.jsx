@@ -21,6 +21,7 @@ import {AppBar, Autocomplete, Avatar, CssBaseline, Grid, Switch, TextField, Tool
 import {Box} from "@mui/system";
 import Cookies from "js-cookie";
 import {SearchOutlined} from "@mui/icons-material";
+import ReceiptIcon from '@mui/icons-material/Receipt';
 
 const DrawerHeader = styled('div')(({ theme }) => ({
     display: 'flex',
@@ -108,7 +109,7 @@ const linksArray = [
     },
     {
         label: "Invoices",
-        icon: <LiquorIcon/>,
+        icon: <ReceiptIcon/>,
         to: "/admin/invoices",
         notification: 0
     },
